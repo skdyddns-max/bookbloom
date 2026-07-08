@@ -1,0 +1,15 @@
+{
+  "name": "북블룸 — 독서관리",
+  "short_name": "북블룸",
+  "description": "기록이 쌓이면 습관이 되는 독서관리",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FAF7F0",
+  "theme_color": "#6DBE8A",
+  "lang": "ko",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

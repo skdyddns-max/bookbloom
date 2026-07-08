@@ -1,0 +1,29 @@
+/* 북블룸 서비스 워커 — 앱 셸 캐시 (network-first, 오프라인 폴백) */
+const CACHE = 'bookbloom-v1'
+
+self.addEventListener('install', (e) => {
+  self.skipWaiting()
+})
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
+    ),
+  )
+  self.clients.claim()
+})
+
+self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url)
+  if (e.request.method !== 'GET' || url.origin !== location.origin) return
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        const copy = res.clone()
+        caches.open(CACHE).then((c) => c.put(e.request, copy))
+        return res
+      })
+      .catch(() => caches.match(e.request).then((hit) => hit || Response.error())),
+  )
+})
