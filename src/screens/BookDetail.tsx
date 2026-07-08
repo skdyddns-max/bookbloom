@@ -101,16 +101,20 @@ export function BookDetail({ bookId, onBack }: { bookId: string; onBack: () => v
         <button className="btn-text danger" onClick={remove}>삭제</button>
       </header>
 
-      <section className="card detail-head">
-        <BookCover book={book} size="lg" />
-        <div className="detail-meta">
-          <b className="book-title-lg">{book.title}</b>
-          <span className="muted">{book.author}</span>
-          {book.publisher && <span className="muted small">{book.publisher}</span>}
-          <span className="muted small">
-            {book.category}{book.totalPages > 0 ? ` · ${book.totalPages}쪽` : ''}
+      <section className="detail-hero">
+        {book.coverUrl && (
+          <div className="detail-backdrop" style={{ backgroundImage: `url(${book.coverUrl})` }} />
+        )}
+        <div className="detail-hero-inner">
+          <BookCover book={book} size="lg" />
+          <b className="book-title-lg serif">{book.title}</b>
+          <span className="detail-author">{book.author}</span>
+          <span className="detail-sub">
+            {book.publisher ? `${book.publisher} · ` : ''}
+            {book.category}
+            {book.totalPages > 0 ? ` · ${book.totalPages}쪽` : ''}
           </span>
-          <button className="btn-text" onClick={() => setEditMeta(!editMeta)}>
+          <button className="btn-text detail-edit" onClick={() => setEditMeta(!editMeta)}>
             {editMeta ? '닫기' : '정보 수정'}
           </button>
         </div>

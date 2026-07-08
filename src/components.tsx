@@ -62,7 +62,7 @@ export function ProgressBar({ current, total }: { current: number; total: number
   )
 }
 
-const DONUT_COLORS = ['#6DBE8A', '#8FCEA6', '#B4DFC4', '#4E9C6F', '#D5ECDF', '#3E7D59']
+const DONUT_COLORS = ['#2F5D43', '#6DBE8A', '#D9A441', '#C96F4A', '#5B6E7F', '#7D5A6E']
 
 export function Donut({ data }: { data: Array<{ label: string; value: number }> }) {
   const total = data.reduce((s, d) => s + d.value, 0)

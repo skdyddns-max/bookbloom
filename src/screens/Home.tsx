@@ -65,26 +65,36 @@ export function Home({
   const gap = daysSinceLastLog(data.logs)
   const showRest = reading.length > 0 && gap !== null && gap >= 3
 
-  return (
-    <div className="screen">
-      <header className="app-header">
-        <h1>🌱 북블룸</h1>
-        <p className="app-tagline">기록이 쌓이면, 습관이 피어나요</p>
-      </header>
+  const want = data.books.filter((b) => b.status === 'want')
 
-      <section className="card streak-card">
-        <div className="streak-main">
-          <span className="streak-num">{streak}</span>
-          <span className="streak-unit">일 연속 기록 중</span>
+  return (
+    <div className="screen screen-hero">
+      <header className="hero">
+        <p className="hero-eyebrow">BOOKBLOOM</p>
+        <h1 className="hero-title">
+          {streak === 0 ? (
+            <>오늘 한 쪽부터,<br />다시 피어나요</>
+          ) : (
+            <>오늘도 한 쪽,<br />마음이 자라요</>
+          )}
+        </h1>
+        <div className="hero-stats">
+          <div className="hero-stat">
+            <span className="hero-stat-num accent">{streak}</span>
+            <span className="hero-stat-label">일 연속</span>
+          </div>
+          <div className="hero-divider" />
+          <div className="hero-stat">
+            <span className="hero-stat-num">{todayPages}</span>
+            <span className="hero-stat-label">오늘 읽은 쪽</span>
+          </div>
+          <div className="hero-divider" />
+          <div className="hero-stat">
+            <span className="hero-stat-num">{doneThisYear}</span>
+            <span className="hero-stat-label">올해 완독</span>
+          </div>
         </div>
-        <p className="streak-sub">
-          {streak === 0
-            ? '오늘 한 쪽부터 시작해 보세요. 괜찮아요.'
-            : todayPages > 0
-              ? `오늘 ${todayPages}쪽을 읽었어요. 잘하고 있어요!`
-              : '오늘 기록을 남기면 스트릭이 이어져요.'}
-        </p>
-      </section>
+      </header>
 
       {showRest && (
         <div className="card rest-banner">
@@ -124,7 +134,7 @@ export function Home({
               <div className="reading-card-top" onClick={() => onOpenBook(b.id)}>
                 <BookCover book={b} size="sm" />
                 <div className="reading-card-meta">
-                  <b className="book-title">{b.title}</b>
+                  <b className="book-title serif">{b.title}</b>
                   <span className="muted small">{b.author}</span>
                 </div>
               </div>
@@ -133,6 +143,23 @@ export function Home({
           ))
         )}
       </section>
+
+      {want.length > 0 && (
+        <section>
+          <div className="section-title-row">
+            <h2>읽고 싶은 책</h2>
+            <span className="muted small">{want.length}권</span>
+          </div>
+          <div className="want-shelf">
+            {want.map((b) => (
+              <button key={b.id} className="want-item" onClick={() => onOpenBook(b.id)}>
+                <BookCover book={b} size="md" />
+                <span className="shelf-title">{b.title}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
