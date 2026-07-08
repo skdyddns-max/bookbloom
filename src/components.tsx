@@ -162,6 +162,34 @@ export function MonthCalendar({
   )
 }
 
+/** 월별 추이 막대 차트 — 값 라벨 항상 표시, 브랜드 그린 단색 */
+export function BarChart({
+  data,
+  unit,
+}: {
+  data: Array<{ label: string; value: number; sub?: string }>
+  unit: string
+}) {
+  const max = Math.max(1, ...data.map((d) => d.value))
+  return (
+    <div className="bars" role="img" aria-label={`월별 ${unit} 추이`}>
+      {data.map((d) => (
+        <div key={d.label} className="bar-col">
+          <span className="bar-value">{d.value > 0 ? d.value.toLocaleString() : ''}</span>
+          <div className="bar-track">
+            <div
+              className="bar-fill"
+              style={{ height: `${Math.max(d.value > 0 ? 6 : 0, (d.value / max) * 100)}%` }}
+            />
+          </div>
+          <span className="bar-label">{d.label}</span>
+          {d.sub && <span className="bar-sub">{d.sub}</span>}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export const CATEGORIES = [
   '소설/시/희곡', '에세이', '인문학', '자기계발', '경제경영', '과학',
   '역사', '사회과학', '예술/대중문화', '종교/역학', '어린이', '기타',

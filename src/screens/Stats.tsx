@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { useAppData } from '../store'
-import { calcStreak, pagesReadByLog } from '../utils'
-import { Donut, MonthCalendar } from '../components'
+import { calcStreak, maxStreak, pagesReadByLog } from '../utils'
+import { BarChart, Donut, MonthCalendar } from '../components'
+import { makeYearCard } from '../lib/sharecard'
 
 function monthStr(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -47,6 +48,39 @@ export function Stats() {
   const streak = calcStreak(data.logs)
   const goal = data.settings.yearlyGoal
 
+  // 최근 6개월 추이 (읽은 쪽수 + 완독 권수)
+  const now = new Date()
+  const trend = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1)
+    const m = monthStr(d)
+    let pages = 0
+    for (const l of data.logs) {
+      if (l.date.startsWith(m)) pages += byLog.get(l.id) || 0
+    }
+    const done = data.books.filter((b) => b.status === 'done' && b.finishedAt?.startsWith(m)).length
+    return { label: `${d.getMonth() + 1}월`, value: pages, sub: done > 0 ? `${done}권` : ' ' }
+  })
+
+  // 올해의 책 톱3 (별점순)
+  const topBooks = [...doneInYear].filter((b) => b.rating > 0).sort((a, b) => b.rating - a.rating).slice(0, 3)
+
+  const saveYearCard = () => {
+    const url = makeYearCard({
+      year,
+      doneCount: doneInYear.length,
+      totalPages: data.logs
+        .filter((l) => l.date.startsWith(year))
+        .reduce((s, l) => s + (byLog.get(l.id) || 0), 0),
+      bestStreak: maxStreak(data.logs),
+      topCategories: catData,
+      topBooks,
+    })
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `bookbloom-${year}-결산.png`
+    a.click()
+  }
+
   return (
     <div className="screen">
       <header className="screen-header">
@@ -76,6 +110,12 @@ export function Stats() {
       </section>
 
       <section className="card">
+        <h2>최근 6개월 읽은 쪽수</h2>
+        <BarChart data={trend} unit="쪽수" />
+        <p className="muted small">막대 아래 숫자는 그 달의 완독 권수예요.</p>
+      </section>
+
+      <section className="card">
         <div className="card-title-row">
           <h2>{year}년 카테고리 분포</h2>
         </div>
@@ -91,6 +131,21 @@ export function Stats() {
           <h2>{year}년 완독</h2>
           <span className="muted">{doneInYear.length} / {goal}권</span>
         </div>
+        {topBooks.length > 0 && (
+          <div className="top-books">
+            <p className="muted small">올해의 책</p>
+            {topBooks.map((b, i) => (
+              <p key={b.id} className="top-book-row">
+                <b>{i + 1}.</b> {b.title} <span className="muted small">★{b.rating}</span>
+              </p>
+            ))}
+          </div>
+        )}
+        {doneInYear.length > 0 && (
+          <button className="btn btn-coral" onClick={saveYearCard}>
+            {year}년 독서 결산 카드 저장
+          </button>
+        )}
         {doneInYear.length > 0 && (
           <ul className="done-list">
             {doneInYear

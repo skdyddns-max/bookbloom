@@ -637,6 +637,69 @@ textarea {
   margin-right: 6px;
 }
 
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 150px;
+  padding-top: 4px;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+}
+.bar-value {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green-dark);
+  min-height: 14px;
+}
+.bar-track {
+  flex: 1;
+  width: 100%;
+  max-width: 34px;
+  display: flex;
+  align-items: flex-end;
+  background: var(--green-soft);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.bar-fill {
+  width: 100%;
+  background: var(--green);
+  border-radius: 8px 8px 0 0;
+}
+.bar-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.bar-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--green-dark);
+  min-height: 13px;
+}
+
+.rest-banner {
+  background: var(--green-soft);
+  box-shadow: none;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.top-books {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.top-book-row {
+  font-size: 14px;
+}
+
 .done-list {
   list-style: none;
   display: flex;

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAppData, store } from '../store'
-import { calcStreak, pagesReadByLog, todayStr, uid, clamp } from '../utils'
+import { calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp } from '../utils'
 import { BookCover, ProgressBar } from '../components'
 import type { Book } from '../types'
 
@@ -62,6 +62,9 @@ export function Home({
     .filter((l) => l.date === todayStr())
     .reduce((s, l) => s + (byLog.get(l.id) || 0), 0)
 
+  const gap = daysSinceLastLog(data.logs)
+  const showRest = reading.length > 0 && gap !== null && gap >= 3
+
   return (
     <div className="screen">
       <header className="app-header">
@@ -82,6 +85,14 @@ export function Home({
               : '오늘 기록을 남기면 스트릭이 이어져요.'}
         </p>
       </section>
+
+      {showRest && (
+        <div className="card rest-banner">
+          <p>
+            <b>{gap}일 쉬어갔어요.</b> 오늘 한 쪽이면 다시 이어져요. 천천히 가도 괜찮아요.
+          </p>
+        </div>
+      )}
 
       <section className="card">
         <div className="card-title-row">

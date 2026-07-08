@@ -1,5 +1,11 @@
 import { useRef } from 'react'
 import { useAppData, store } from '../store'
+import { fmtDate } from '../utils'
+
+function csvField(v: string | number | undefined): string {
+  const s = String(v ?? '')
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+}
 
 export function Settings() {
   const data = useAppData()
@@ -10,6 +16,25 @@ export function Settings() {
     const a = document.createElement('a')
     a.href = URL.createObjectURL(blob)
     a.download = `bookbloom-backup-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  const exportCsv = () => {
+    const header = '제목,저자,출판사,카테고리,상태,별점,한줄평,전체쪽수,시작일,완독일'
+    const statusKo = { want: '읽고싶어요', reading: '읽는중', done: '다읽음' } as const
+    const rows = data.books.map((b) =>
+      [
+        b.title, b.author, b.publisher ?? '', b.category, statusKo[b.status],
+        b.rating > 0 ? b.rating : '', b.oneLine, b.totalPages > 0 ? b.totalPages : '',
+        b.startedAt ? fmtDate(b.startedAt) : '', b.finishedAt ? fmtDate(b.finishedAt) : '',
+      ].map(csvField).join(','),
+    )
+    // BOM: 엑셀에서 한글 깨짐 방지
+    const blob = new Blob(['\uFEFF' + [header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `bookbloom-서재-${new Date().toISOString().slice(0, 10)}.csv`
     a.click()
     URL.revokeObjectURL(a.href)
   }
@@ -75,7 +100,8 @@ export function Settings() {
           기록은 이 기기(브라우저)에만 저장돼요. 기기를 바꾸기 전에 내보내기로 백업하세요.
         </p>
         <div className="settings-actions">
-          <button className="btn btn-outline" onClick={exportData}>내보내기 (백업)</button>
+          <button className="btn btn-outline" onClick={exportData}>내보내기 (백업 JSON)</button>
+          <button className="btn btn-outline" onClick={exportCsv}>서재 CSV 내보내기 (엑셀용)</button>
           <input
             ref={importRef}
             type="file"
@@ -98,7 +124,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        북블룸 v0.1 · 기록이 쌓이면, 습관이 피어나요 🌱
+        북블룸 v0.2 · 기록이 쌓이면, 습관이 피어나요 🌱
       </p>
     </div>
   )

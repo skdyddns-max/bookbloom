@@ -32,6 +32,28 @@ export function calcStreak(logs: ProgressLog[]): number {
   return streak
 }
 
+/** 기록 이력 전체에서 가장 길었던 연속 기록 일수 */
+export function maxStreak(logs: ProgressLog[]): number {
+  const days = [...new Set(logs.map((l) => l.date))].sort()
+  let best = 0
+  let run = 0
+  let prev = ''
+  for (const d of days) {
+    run = prev && addDays(prev, 1) === d ? run + 1 : 1
+    best = Math.max(best, run)
+    prev = d
+  }
+  return best
+}
+
+/** 마지막 기록일로부터 경과 일수 (기록 없으면 null) */
+export function daysSinceLastLog(logs: ProgressLog[]): number | null {
+  if (logs.length === 0) return null
+  const last = logs.reduce((m, l) => (l.date > m ? l.date : m), logs[0].date)
+  const diff = (new Date(todayStr() + 'T00:00:00').getTime() - new Date(last + 'T00:00:00').getTime()) / 86400000
+  return Math.round(diff)
+}
+
 /** 책별로 날짜순 정렬된 로그에서, 각 로그의 '그날 읽은 쪽수'(이전 도달점과의 차) 계산 */
 export function pagesReadByLog(logs: ProgressLog[]): Map<string, number> {
   const byBook = new Map<string, ProgressLog[]>()
