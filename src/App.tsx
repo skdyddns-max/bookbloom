@@ -6,6 +6,9 @@ import { Search } from './screens/Search'
 import { BookDetail } from './screens/BookDetail'
 import { Stats } from './screens/Stats'
 import { Settings } from './screens/Settings'
+import { Welcome } from './screens/Welcome'
+
+const ONBOARD_KEY = 'bookbloom_onboarded'
 
 const ICON_PATHS: Record<Tab, string> = {
   home: 'M3 10.5 12 3l9 7.5M5.5 9v11h5v-6h3v6h5V9',
@@ -33,6 +36,22 @@ const TABS: Array<{ key: Tab; label: string }> = [
 export default function App() {
   const [screen, setScreen] = useState<Screen>({ view: 'tab', tab: 'home' })
   const [lastTab, setLastTab] = useState<Tab>('home')
+  const [showWelcome, setShowWelcome] = useState(() => {
+    try {
+      return localStorage.getItem(ONBOARD_KEY) !== '1'
+    } catch {
+      return false
+    }
+  })
+
+  const dismissWelcome = () => {
+    try {
+      localStorage.setItem(ONBOARD_KEY, '1')
+    } catch {
+      /* private mode */
+    }
+    setShowWelcome(false)
+  }
 
   const goTab = (tab: Tab) => {
     setLastTab(tab)
@@ -42,6 +61,18 @@ export default function App() {
   const openBook = (bookId: string) => setScreen({ view: 'book', bookId })
   const openSearch = () => setScreen({ view: 'search' })
   const back = () => setScreen({ view: 'tab', tab: lastTab })
+
+  if (showWelcome) {
+    return (
+      <Welcome
+        onStart={() => {
+          dismissWelcome()
+          setScreen({ view: 'search' })
+        }}
+        onSkip={dismissWelcome}
+      />
+    )
+  }
 
   return (
     <div className="app">
