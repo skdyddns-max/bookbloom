@@ -2,10 +2,11 @@ import { useRef, useState } from 'react'
 import { useAppData, store } from '../store'
 import { BookCover, ProgressBar, StarRating, CATEGORIES } from '../components'
 import { fmtDate, todayStr, uid, clamp } from '../utils'
-import { makeShareCard } from '../lib/sharecard'
+import { makeShareCard, makeQuoteCard } from '../lib/sharecard'
 import { ocrImage } from '../lib/ocr'
 import { getGroupSession, setPostDraft } from '../lib/group'
 import { hasSupabase } from '../lib/supabase'
+import { pickQuestion } from '../lib/questions'
 import type { BookStatus } from '../types'
 
 export function BookDetail({
@@ -22,6 +23,7 @@ export function BookDetail({
   const [page, setPage] = useState('')
   const [noteText, setNoteText] = useState('')
   const [noteType, setNoteType] = useState<'note' | 'quote'>('quote')
+  const [qIndex, setQIndex] = useState(0)
   const [ocrState, setOcrState] = useState<'idle' | 'busy'>('idle')
   const [ocrPct, setOcrPct] = useState(0)
   const [editMeta, setEditMeta] = useState(false)
@@ -234,6 +236,48 @@ export function BookDetail({
         </section>
       )}
 
+      {book.status !== 'want' && (
+        <section className="card question-card">
+          <div className="card-title-row">
+            <h2>독후 질문 카드</h2>
+            <button className="btn-text" onClick={() => setQIndex(qIndex + 1)}>다른 질문 ↻</button>
+          </div>
+          <p className="question-text serif">{pickQuestion(book.category, book.id, qIndex)}</p>
+          <div className="note-actions">
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => {
+                setNoteType('note')
+                setNoteText((prev) => {
+                  const q = `Q. ${pickQuestion(book.category, book.id, qIndex)}\n\n`
+                  return prev.startsWith('Q. ') ? q : q + prev
+                })
+              }}
+            >
+              메모로 답하기
+            </button>
+            {hasSupabase && getGroupSession() && (
+              <button
+                className="btn btn-green btn-sm"
+                onClick={() => {
+                  setPostDraft({
+                    bookTitle: book.title,
+                    bookAuthor: book.author,
+                    coverUrl: book.coverUrl ?? '',
+                    kind: 'thought',
+                    content: `Q. ${pickQuestion(book.category, book.id, qIndex)}\n\n`,
+                    rating: 0,
+                  })
+                  onShareToGroup()
+                }}
+              >
+                모임 글감으로
+              </button>
+            )}
+          </div>
+        </section>
+      )}
+
       <section className="card">
         <h2>문장 수집 · 메모</h2>
         <div className="seg seg-sm">
@@ -271,7 +315,22 @@ export function BookDetail({
             <p>{n.content}</p>
             <div className="note-foot">
               <span className="muted small">{n.type === 'quote' ? '문장' : '메모'} · {fmtDate(n.createdAt.slice(0, 10))}</span>
-              <button className="btn-text danger" onClick={() => store.removeNote(n.id)}>삭제</button>
+              <span className="note-foot-actions">
+                {n.type === 'quote' && (
+                  <button
+                    className="btn-text"
+                    onClick={() => {
+                      const a = document.createElement('a')
+                      a.href = makeQuoteCard(book, n.content)
+                      a.download = `bookbloom-문장-${book.title.slice(0, 12)}.png`
+                      a.click()
+                    }}
+                  >
+                    카드 저장
+                  </button>
+                )}
+                <button className="btn-text danger" onClick={() => store.removeNote(n.id)}>삭제</button>
+              </span>
             </div>
           </div>
         ))}

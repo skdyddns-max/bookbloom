@@ -33,6 +33,24 @@ export interface FeedPost {
   comments: FeedComment[]
 }
 
+export interface RoomBookProgress {
+  member_id: string
+  nickname: string
+  page: number
+  updated_at: string | null
+}
+
+export interface RoomBook {
+  id: string
+  book_title: string
+  book_author: string
+  cover_url: string
+  total_pages: number
+  due_date: string | null
+  status: 'active' | 'done'
+  progress: RoomBookProgress[]
+}
+
 export interface PostDraft {
   bookTitle: string
   bookAuthor: string
@@ -156,5 +174,33 @@ export const groupApi = {
   },
   async toggleLike(s: GroupSession, postId: string): Promise<void> {
     await rpc('bb_api_toggle_like', { p_member: s.memberId, p_token: s.token, p_post: postId })
+  },
+  async getRoomBook(roomId: string): Promise<RoomBook | null> {
+    return rpc<RoomBook | null>('bb_api_get_room_book', { p_room: roomId })
+  },
+  async setRoomBook(
+    s: GroupSession,
+    b: { title: string; author: string; coverUrl: string; totalPages: number; dueDate: string | null },
+  ): Promise<void> {
+    await rpc('bb_api_set_room_book', {
+      p_member: s.memberId,
+      p_token: s.token,
+      p_title: b.title,
+      p_author: b.author,
+      p_cover: b.coverUrl,
+      p_pages: b.totalPages,
+      p_due: b.dueDate,
+    })
+  },
+  async closeRoomBook(s: GroupSession, roomBookId: string): Promise<void> {
+    await rpc('bb_api_close_room_book', { p_member: s.memberId, p_token: s.token, p_room_book: roomBookId })
+  },
+  async updateRoomProgress(s: GroupSession, roomBookId: string, page: number): Promise<void> {
+    await rpc('bb_api_update_room_progress', {
+      p_member: s.memberId,
+      p_token: s.token,
+      p_room_book: roomBookId,
+      p_page: page,
+    })
   },
 }

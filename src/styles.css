@@ -1064,6 +1064,120 @@ textarea {
   padding: 6px 14px;
 }
 
+/* ---------- 함께 읽는 책 ---------- */
+.roombook-card {
+  background: linear-gradient(160deg, var(--ink) 0%, #16281f 100%);
+  border: none;
+  color: var(--paper);
+}
+.roombook-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.roombook-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--green);
+}
+.roombook-dday {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--coral); /* 모임 화면 코랄 1곳 */
+}
+.roombook-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+}
+.roombook-author {
+  font-size: 13px;
+  color: rgba(247, 244, 236, 0.6);
+  margin-top: -6px;
+}
+.roombook-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 6px 0;
+}
+.roombook-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.roombook-nick {
+  width: 64px;
+  flex-shrink: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(247, 244, 236, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.roombook-nick.me {
+  color: var(--green);
+  font-weight: 800;
+}
+.roombook-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(247, 244, 236, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.roombook-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+.roombook-num {
+  width: 58px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(247, 244, 236, 0.85);
+}
+.roombook-card input {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(247, 244, 236, 0.18);
+  color: var(--paper);
+}
+.roombook-card input::placeholder {
+  color: rgba(247, 244, 236, 0.45);
+}
+.roombook-close {
+  align-self: center;
+  color: rgba(247, 244, 236, 0.5);
+}
+.roombook-empty-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- 독후 질문 카드 ---------- */
+.question-card {
+  background: linear-gradient(120deg, var(--green-soft), #f2ead8);
+  border: none;
+}
+.question-text {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.note-foot-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
 /* ---------- 설정 ---------- */
 .settings-actions {
   display: flex;

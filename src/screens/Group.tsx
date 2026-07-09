@@ -3,9 +3,10 @@ import { useAppData } from '../store'
 import { hasSupabase } from '../lib/supabase'
 import {
   groupApi, getGroupSession, clearGroupSession, takePostDraft,
-  type GroupSession, type FeedPost, type PostDraft,
+  type GroupSession, type FeedPost, type PostDraft, type RoomBook,
 } from '../lib/group'
 import { StarRating } from '../components'
+import { clamp } from '../utils'
 
 const KIND_LABEL = { review: '후기', quote: '문장', thought: '생각' } as const
 
@@ -91,6 +92,164 @@ function JoinOrCreate({ onDone }: { onDone: (s: GroupSession) => void }) {
           {busy ? '연결 중…' : mode === 'join' ? '참여하기' : '만들기'}
         </button>
       </div>
+    </div>
+  )
+}
+
+function RoomBookCard({
+  session,
+  roomBook,
+  onChanged,
+}: {
+  session: GroupSession
+  roomBook: RoomBook | null
+  onChanged: () => void
+}) {
+  const data = useAppData()
+  const [formOpen, setFormOpen] = useState(false)
+  const [bookId, setBookId] = useState('')
+  const [title, setTitle] = useState('')
+  const [pages, setPages] = useState('')
+  const [due, setDue] = useState('')
+  const [myPage, setMyPage] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  const act = async (fn: () => Promise<void>) => {
+    setBusy(true)
+    try {
+      await fn()
+      onChanged()
+    } catch (e) {
+      alert(e instanceof Error ? e.message : '실패했어요')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const submitBook = () => {
+    const book = data.books.find((b) => b.id === bookId)
+    const t = book ? book.title : title.trim()
+    if (!t) return
+    act(() =>
+      groupApi.setRoomBook(session, {
+        title: t,
+        author: book?.author ?? '',
+        coverUrl: book?.coverUrl ?? '',
+        totalPages: book?.totalPages || parseInt(pages, 10) || 0,
+        dueDate: due || null,
+      }),
+    ).then(() => {
+      setFormOpen(false)
+      setBookId('')
+      setTitle('')
+      setPages('')
+      setDue('')
+    })
+  }
+
+  if (!roomBook) {
+    return (
+      <div className="card roombook-empty">
+        {formOpen ? (
+          <div className="manual-form">
+            <b>함께 읽을 책 정하기</b>
+            <select value={bookId} onChange={(e) => setBookId(e.target.value)}>
+              <option value="">내 서재에서 선택</option>
+              {data.books.map((b) => (
+                <option key={b.id} value={b.id}>{b.title}</option>
+              ))}
+            </select>
+            {!bookId && (
+              <>
+                <input placeholder="책 제목 직접 입력" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <input type="number" inputMode="numeric" placeholder="전체 쪽수 (선택)" value={pages} onChange={(e) => setPages(e.target.value)} />
+              </>
+            )}
+            <label className="field-label">목표일 (선택)</label>
+            <input type="date" value={due} onChange={(e) => setDue(e.target.value)} />
+            <div className="note-actions">
+              <button className="btn-text" onClick={() => setFormOpen(false)}>닫기</button>
+              <button className="btn btn-green btn-sm" onClick={submitBook} disabled={busy || (!bookId && !title.trim())}>
+                이 책으로 시작
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="roombook-empty-row">
+            <span className="muted small">이달의 책을 정하면 멤버 진도 현황판이 생겨요</span>
+            <button className="btn btn-outline btn-sm" onClick={() => setFormOpen(true)}>책 정하기</button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const dday = roomBook.due_date
+    ? Math.ceil((new Date(roomBook.due_date + 'T00:00:00').getTime() - Date.now()) / 86400000)
+    : null
+
+  return (
+    <div className="card roombook-card">
+      <div className="roombook-head">
+        <span className="roombook-label">📚 함께 읽는 책</span>
+        {dday !== null && (
+          <span className="roombook-dday">{dday > 0 ? `D-${dday}` : dday === 0 ? 'D-Day' : '기한 지남'}</span>
+        )}
+      </div>
+      <b className="roombook-title serif">{roomBook.book_title}</b>
+      {roomBook.book_author && <span className="roombook-author">{roomBook.book_author}</span>}
+
+      <div className="roombook-progress">
+        {roomBook.progress.map((p) => {
+          const pct = roomBook.total_pages > 0 ? clamp(Math.round((p.page / roomBook.total_pages) * 100), 0, 100) : 0
+          const done = roomBook.total_pages > 0 && p.page >= roomBook.total_pages
+          return (
+            <div key={p.member_id} className="roombook-row">
+              <span className={`roombook-nick ${p.member_id === session.memberId ? 'me' : ''}`}>
+                {p.nickname}
+              </span>
+              <div className="roombook-bar">
+                <div className="roombook-bar-fill" style={{ width: `${pct}%` }} />
+              </div>
+              <span className="roombook-num">
+                {done ? '완독 🎉' : roomBook.total_pages > 0 ? `${pct}%` : `${p.page}쪽`}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="quicklog-row">
+        <input
+          type="number"
+          inputMode="numeric"
+          placeholder="내가 읽은 쪽수까지 입력"
+          value={myPage}
+          onChange={(e) => setMyPage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && myPage) {
+              act(() => groupApi.updateRoomProgress(session, roomBook.id, parseInt(myPage, 10) || 0))
+              setMyPage('')
+            }
+          }}
+        />
+        <button
+          className="btn btn-green btn-sm"
+          disabled={busy || !myPage}
+          onClick={() => {
+            act(() => groupApi.updateRoomProgress(session, roomBook.id, parseInt(myPage, 10) || 0))
+            setMyPage('')
+          }}
+        >
+          기록
+        </button>
+      </div>
+      <button
+        className="btn-text roombook-close"
+        onClick={() => confirm('함께 읽기를 마칠까요? (기록은 남아요)') && act(() => groupApi.closeRoomBook(session, roomBook.id))}
+      >
+        함께 읽기 마치기
+      </button>
     </div>
   )
 }
@@ -300,6 +459,7 @@ function PostCard({
 export function Group() {
   const [session, setSession] = useState<GroupSession | null>(getGroupSession)
   const [feed, setFeed] = useState<FeedPost[] | null>(null)
+  const [roomBook, setRoomBook] = useState<RoomBook | null>(null)
   const [err, setErr] = useState('')
   const [draft] = useState(takePostDraft)
 
@@ -307,7 +467,9 @@ export function Group() {
     if (!s) return
     try {
       setErr('')
-      setFeed(await groupApi.getFeed(s.roomId))
+      const [f, rb] = await Promise.all([groupApi.getFeed(s.roomId), groupApi.getRoomBook(s.roomId)])
+      setFeed(f)
+      setRoomBook(rb)
     } catch (e) {
       setErr(e instanceof Error ? e.message : '피드를 불러오지 못했어요')
     }
@@ -356,12 +518,15 @@ export function Group() {
               clearGroupSession()
               setSession(null)
               setFeed(null)
+              setRoomBook(null)
             }
           }}
         >
           나가기
         </button>
       </p>
+
+      <RoomBookCard session={session} roomBook={roomBook} onChanged={() => refresh()} />
 
       <Composer session={session} onPosted={() => refresh()} draft={draft} />
 

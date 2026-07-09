@@ -199,3 +199,78 @@ export function makeYearCard(s: YearSummary): string {
 
   return canvas.toDataURL('image/png')
 }
+
+/** 문장 수집 카드(1080x1080) — 세리프 인용 중심, 코랄 없음(별도 화면 아님) */
+export function makeQuoteCard(book: Pick<Book, 'title' | 'author'>, quote: string): string {
+  const W = 1080
+  const H = 1080
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+  const serif = (weight: number, size: number) =>
+    `${weight} ${size}px "Noto Serif KR", Pretendard, serif`
+  const sans = (weight: number, size: number) =>
+    `${weight} ${size}px Pretendard, "Pretendard Variable", sans-serif`
+
+  // 딥 포레스트 배경 + 은은한 그린 광
+  const bg = ctx.createLinearGradient(0, 0, W, H)
+  bg.addColorStop(0, '#1E3329')
+  bg.addColorStop(1, '#16281F')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W * 0.85, -50, 0, W * 0.85, -50, 700)
+  glow.addColorStop(0, 'rgba(109,190,138,0.28)')
+  glow.addColorStop(1, 'rgba(109,190,138,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  ctx.textAlign = 'center'
+
+  // 큰따옴표 장식
+  ctx.fillStyle = '#6DBE8A'
+  ctx.font = serif(900, 160)
+  ctx.fillText('“', W / 2, 230)
+
+  // 본문 (길이에 따라 폰트 크기 조절)
+  const size = quote.length > 120 ? 40 : quote.length > 60 ? 48 : 56
+  ctx.font = serif(600, size)
+  ctx.fillStyle = '#F7F4EC'
+  const lines: string[] = []
+  let line = ''
+  for (const ch of quote) {
+    if (ch === '\n' || ctx.measureText(line + ch).width > W - 260) {
+      lines.push(line)
+      line = ch === '\n' ? '' : ch
+      if (lines.length === 9) {
+        lines[8] = lines[8].slice(0, -1) + '…'
+        line = ''
+        break
+      }
+    } else {
+      line += ch
+    }
+  }
+  if (line) lines.push(line)
+  const lh = size * 1.65
+  let y = H / 2 - ((lines.length - 1) * lh) / 2 + 40
+  for (const l of lines) {
+    ctx.fillText(l, W / 2, y)
+    y += lh
+  }
+
+  // 출처
+  ctx.font = sans(700, 34)
+  ctx.fillStyle = 'rgba(247,244,236,0.85)'
+  ctx.fillText(`『${book.title}』`, W / 2, H - 170)
+  if (book.author) {
+    ctx.font = sans(400, 28)
+    ctx.fillStyle = 'rgba(247,244,236,0.55)'
+    ctx.fillText(book.author, W / 2, H - 125)
+  }
+  ctx.font = sans(700, 28)
+  ctx.fillStyle = '#6DBE8A'
+  ctx.fillText('🌱 북블룸', W / 2, H - 56)
+
+  return canvas.toDataURL('image/png')
+}
