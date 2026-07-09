@@ -4,9 +4,19 @@ import { BookCover, ProgressBar, StarRating, CATEGORIES } from '../components'
 import { fmtDate, todayStr, uid, clamp } from '../utils'
 import { makeShareCard } from '../lib/sharecard'
 import { ocrImage } from '../lib/ocr'
+import { getGroupSession, setPostDraft } from '../lib/group'
+import { hasSupabase } from '../lib/supabase'
 import type { BookStatus } from '../types'
 
-export function BookDetail({ bookId, onBack }: { bookId: string; onBack: () => void }) {
+export function BookDetail({
+  bookId,
+  onBack,
+  onShareToGroup,
+}: {
+  bookId: string
+  onBack: () => void
+  onShareToGroup: () => void
+}) {
   const data = useAppData()
   const book = data.books.find((b) => b.id === bookId)
   const [page, setPage] = useState('')
@@ -203,6 +213,24 @@ export function BookDetail({ bookId, onBack }: { bookId: string; onBack: () => v
             {fmtDate(book.startedAt)} ~ {fmtDate(book.finishedAt)}
           </p>
           <button className="btn btn-coral" onClick={share}>완독 카드 저장하기</button>
+          {hasSupabase && getGroupSession() && (
+            <button
+              className="btn btn-outline"
+              onClick={() => {
+                setPostDraft({
+                  bookTitle: book.title,
+                  bookAuthor: book.author,
+                  coverUrl: book.coverUrl ?? '',
+                  kind: 'review',
+                  content: book.oneLine,
+                  rating: book.rating,
+                })
+                onShareToGroup()
+              }}
+            >
+              모임에 후기 공유하기
+            </button>
+          )}
         </section>
       )}
 

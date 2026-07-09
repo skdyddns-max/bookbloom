@@ -58,7 +58,7 @@ export interface SearchResult {
   source: 'aladin' | 'kakao'
 }
 
-export type Tab = 'home' | 'library' | 'stats' | 'settings'
+export type Tab = 'home' | 'library' | 'group' | 'stats' | 'settings'
 export type Screen =
   | { view: 'tab'; tab: Tab }
   | { view: 'search' }

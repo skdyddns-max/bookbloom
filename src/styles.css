@@ -932,6 +932,138 @@ textarea {
   padding-top: 8px;
 }
 
+/* ---------- 모임 ---------- */
+.group-intro {
+  background: linear-gradient(160deg, var(--ink) 0%, #16281f 100%);
+  border: none;
+  color: var(--paper);
+  padding: 26px 22px;
+}
+.group-intro .muted {
+  color: rgba(247, 244, 236, 0.66);
+}
+.group-intro-title {
+  font-weight: 900;
+  font-size: 24px;
+  line-height: 1.4;
+}
+.group-sub {
+  margin-top: -8px;
+  padding: 0 4px;
+}
+.group-leave {
+  display: inline;
+  padding: 0;
+  font-size: 13px;
+}
+.composer-closed {
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 15px;
+}
+.post-card {
+  gap: 12px;
+}
+.post-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.post-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.post-head-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+}
+.post-book-chip {
+  align-self: flex-start;
+  background: var(--green-soft);
+  color: var(--ink-2);
+  border-radius: 999px;
+  padding: 6px 13px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.post-rating {
+  color: var(--gold);
+}
+.post-content {
+  font-size: 15px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+.post-content-quote {
+  font-weight: 600;
+  padding-left: 14px;
+  border-left: 3px solid var(--green);
+}
+.post-actions {
+  display: flex;
+  gap: 8px;
+}
+.post-action {
+  border: 1px solid var(--line);
+  background: none;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--muted);
+  cursor: pointer;
+}
+.post-action-on {
+  border-color: var(--coral);
+  color: var(--coral);
+  font-weight: 800;
+}
+.post-comments {
+  border-top: 1px dashed var(--line);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.post-comment {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.post-comment b {
+  flex-shrink: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.post-comment span {
+  flex: 1;
+  min-width: 0;
+}
+.group-refresh {
+  align-self: center;
+  color: var(--muted);
+  padding: 6px 14px;
+}
+
 /* ---------- 설정 ---------- */
 .settings-actions {
   display: flex;
