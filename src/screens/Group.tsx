@@ -7,6 +7,7 @@ import {
 } from '../lib/group'
 import { StarRating } from '../components'
 import { clamp } from '../utils'
+import { OPEN_CHAT_URL } from '../config'
 
 const KIND_LABEL = { review: '후기', quote: '문장', thought: '생각' } as const
 
@@ -58,6 +59,10 @@ function JoinOrCreate({ onDone }: { onDone: (s: GroupSession) => void }) {
           독서모임 멤버들과 후기·문장·생각을 나누는 공간이에요. 방 코드 하나로 함께 시작해요.
         </p>
       </div>
+
+      <a className="btn btn-kakao" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
+        💬 아직 모임이 없다면? 북블룸 오픈채팅 구경하기
+      </a>
 
       <div className="seg">
         <button className={`seg-btn ${mode === 'join' ? 'seg-btn-on' : ''}`} onClick={() => setMode('join')}>
@@ -544,6 +549,9 @@ export function Group() {
       <button className="btn-text center group-refresh" onClick={() => refresh()}>
         ↺ 새로고침
       </button>
+      <a className="btn-text center group-openchat" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
+        💬 북블룸 오픈채팅방에서 더 많은 이웃 만나기
+      </a>
     </div>
   )
 }

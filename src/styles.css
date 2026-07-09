@@ -1063,6 +1063,21 @@ textarea {
   color: var(--muted);
   padding: 6px 14px;
 }
+.group-openchat {
+  align-self: center;
+  text-decoration: none;
+  padding: 2px 14px 10px;
+}
+.btn-kakao {
+  background: #fee500;
+  color: #191919;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  text-align: center;
+}
 
 /* ---------- 함께 읽는 책 ---------- */
 .roombook-card {

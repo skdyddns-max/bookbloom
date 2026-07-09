@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useAppData, store } from '../store'
 import { fmtDate } from '../utils'
+import { OPEN_CHAT_URL } from '../config'
 
 function csvField(v: string | number | undefined): string {
   const s = String(v ?? '')
@@ -95,6 +96,16 @@ export function Settings() {
       </section>
 
       <section className="card">
+        <h2>커뮤니티</h2>
+        <p className="muted small">
+          오늘의 한 문장, 완독 인증이 오가는 북블룸 오픈채팅방이 있어요. 함께 읽는 이웃을 만나보세요.
+        </p>
+        <a className="btn btn-kakao" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
+          💬 카카오 오픈채팅 참여하기
+        </a>
+      </section>
+
+      <section className="card">
         <h2>데이터</h2>
         <p className="muted small">
           기록은 이 기기(브라우저)에만 저장돼요. 기기를 바꾸기 전에 내보내기로 백업하세요.
@@ -124,7 +135,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        북블룸 v0.6 · 기록이 쌓이면, 습관이 피어나요 🌱
+        북블룸 v0.7 · 기록이 쌓이면, 습관이 피어나요 🌱
       </p>
     </div>
   )
