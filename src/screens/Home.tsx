@@ -67,17 +67,18 @@ export function Home({
 
   const want = data.books.filter((b) => b.status === 'want')
 
+  const goalLeft = goal - doneThisYear
+
   return (
     <div className="screen screen-hero">
       <header className="hero">
-        <p className="hero-eyebrow">BOOKBLOOM</p>
-        <h1 className="hero-title">
-          {streak === 0 ? (
-            <>오늘 한 쪽부터,<br />다시 피어나요</>
-          ) : (
-            <>오늘도 한 쪽,<br />마음이 자라요</>
-          )}
-        </h1>
+        <div className="hero-topline">
+          <p className="hero-eyebrow">BOOKBLOOM</p>
+          <p className="hero-greeting">
+            {streak === 0 ? '오늘 한 쪽부터 다시 피어나요' : '오늘도 한 쪽, 마음이 자라요'}
+          </p>
+        </div>
+
         <div className="hero-stats">
           <div className="hero-stat">
             <span className="hero-stat-num accent">{streak}</span>
@@ -94,6 +95,23 @@ export function Home({
             <span className="hero-stat-label">올해 완독</span>
           </div>
         </div>
+
+        <div className="hero-goal">
+          <div className="hero-goal-head">
+            <span>올해 목표</span>
+            <span className="hero-goal-count">
+              {doneThisYear} <span className="hero-goal-total">/ {goal}권</span>
+            </span>
+          </div>
+          <div className="hero-goal-bar">
+            <div className="hero-goal-fill" style={{ width: `${goalPct}%` }} />
+          </div>
+          <p className="hero-goal-note">
+            {doneThisYear >= goal
+              ? '목표 달성! 대단해요 🎉'
+              : `${goalLeft}권 남았어요 · 천천히 꾸준히면 충분해요`}
+          </p>
+        </div>
       </header>
 
       {showRest && (
@@ -104,24 +122,12 @@ export function Home({
         </div>
       )}
 
-      <section className="card">
-        <div className="card-title-row">
-          <h2>올해 목표</h2>
-          <span className="muted">{doneThisYear} / {goal}권</span>
-        </div>
-        <div className="pbar pbar-lg">
-          <div className="pbar-fill" style={{ width: `${goalPct}%` }} />
-        </div>
-        <p className="muted small">
-          {doneThisYear >= goal
-            ? '목표 달성! 대단해요 🎉'
-            : `${goal - doneThisYear}권 남았어요. 천천히, 꾸준히면 충분해요.`}
-        </p>
-      </section>
-
       <section>
         <div className="section-title-row">
           <h2>읽는 중</h2>
+          {reading.length > 0 && (
+            <button className="section-add" onClick={onSearch}>+ 책 추가</button>
+          )}
         </div>
         {reading.length === 0 ? (
           <div className="card empty-card">
