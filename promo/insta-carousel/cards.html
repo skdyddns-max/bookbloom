@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #333; }
+  .card {
+    width: 1080px; height: 1080px; position: relative; overflow: hidden;
+    background: linear-gradient(163deg, #1E3329 0%, #16281F 100%);
+    font-family: 'Pretendard Variable', sans-serif; color: #F7F4EC;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 96px 92px;
+  }
+  .glow {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(46% 40% at 86% 8%, rgba(109,190,138,0.34) 0%, transparent 60%);
+  }
+  .grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  .frame {
+    position: absolute; inset: 40px; border: 1px solid rgba(247,244,236,0.14); border-radius: 26px; pointer-events: none;
+  }
+  .eyebrow { font-size: 24px; letter-spacing: 0.34em; font-weight: 700; color: #6DBE8A; margin-bottom: 40px; }
+  .title { font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 82px; line-height: 1.42; letter-spacing: -0.01em; }
+  .quote-mark { font-family: 'Noto Serif KR', serif; font-weight: 900; font-size: 200px; line-height: 0.7; color: #6DBE8A; height: 110px; }
+  .quote { font-family: 'Noto Serif KR', serif; font-weight: 700; font-size: 80px; line-height: 1.55; margin-top: 30px; }
+  .source { margin-top: 54px; font-size: 30px; font-weight: 500; color: rgba(247,244,236,0.6); letter-spacing: 0.01em; }
+  .badge {
+    margin-top: 44px; display: inline-block; background: #F2845C; color: #fff;
+    font-size: 32px; font-weight: 800; padding: 18px 34px; border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(242,132,92,0.34);
+  }
+  .sign { position: absolute; bottom: 78px; left: 0; right: 0; text-align: center; font-size: 30px; font-weight: 700; color: #6DBE8A; }
+  .sign-cta { position: absolute; bottom: 78px; left: 0; right: 0; text-align: center; font-size: 28px; font-weight: 700; color: rgba(247,244,236,0.82); }
+  .sign-cta b { color: #6DBE8A; }
+</style>
+</head>
+<body>
+
+<div class="card" id="c1">
+  <div class="glow"></div><div class="grain"></div><div class="frame"></div>
+  <div class="eyebrow">BOOKBLOOM · 독서기록</div>
+  <div class="title">마음에 남은 문장,<br/>어디에 모으세요?</div>
+  <div class="sign">🌱 북블룸</div>
+</div>
+
+<div class="card" id="c2">
+  <div class="glow"></div><div class="grain"></div><div class="frame"></div>
+  <div class="quote-mark">“</div>
+  <div class="quote">가장 중요한 건<br/>눈에 보이지 않아.</div>
+  <div class="source">생텍쥐페리 『어린 왕자』</div>
+  <div class="sign">🌱 북블룸</div>
+</div>
+
+<div class="card" id="c3">
+  <div class="glow"></div><div class="grain"></div><div class="frame"></div>
+  <div class="quote-mark">“</div>
+  <div class="quote">새는 알에서 나오려고<br/>투쟁한다.</div>
+  <div class="source">헤르만 헤세 『데미안』</div>
+  <div class="sign">🌱 북블룸</div>
+</div>
+
+<div class="card" id="c4">
+  <div class="glow"></div><div class="grain"></div><div class="frame"></div>
+  <div class="title">읽고 느낀 것을,<br/>카드로 남기세요</div>
+  <div class="badge">가입 없이 30초 · 무료</div>
+  <div class="sign-cta"><b>🌱 북블룸</b> · 프로필 링크에서 시작하기</div>
+</div>
+
+</body>
+</html>
