@@ -172,7 +172,7 @@ export function BookDetail({
 
       <a
         className="btn-text book-shop-link"
-        href={aladinBookUrl(book.title, book.author)}
+        href={aladinBookUrl(book)}
         target="_blank"
         rel="noreferrer"
       >
