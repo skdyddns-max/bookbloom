@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAppData, store } from '../store'
-import { searchAladin, searchKakao, lookupAladinPages } from '../lib/search'
+import { searchAladin, searchKakao, lookupAladinPages, hasAladinProxy } from '../lib/search'
 import { BookCover, CATEGORIES } from '../components'
 import { todayStr, uid } from '../utils'
 import type { BookStatus, SearchResult } from '../types'
@@ -11,8 +11,8 @@ function statusLabel(s: BookStatus) {
 
 export function Search({ onBack, onAdded }: { onBack: () => void; onAdded: (id: string) => void }) {
   const data = useAppData()
-  const { aladinKey, kakaoKey } = data.settings
-  const hasKey = !!(aladinKey || kakaoKey)
+  const { kakaoKey } = data.settings
+  const hasKey = hasAladinProxy || !!kakaoKey
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<SearchResult[]>([])
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle')
@@ -31,7 +31,7 @@ export function Search({ onBack, onAdded }: { onBack: () => void; onAdded: (id: 
     setState('loading')
     setErrMsg('')
     try {
-      const res = aladinKey ? await searchAladin(aladinKey, q) : await searchKakao(kakaoKey, q)
+      const res = hasAladinProxy ? await searchAladin(q) : await searchKakao(kakaoKey, q)
       setResults(res)
       setState('done')
     } catch (e) {
@@ -42,8 +42,8 @@ export function Search({ onBack, onAdded }: { onBack: () => void; onAdded: (id: 
 
   const addFromResult = async (r: SearchResult, status: BookStatus) => {
     let pages = r.totalPages
-    if (!pages && r.source === 'aladin' && aladinKey && /^\d{13}$/.test(r.id)) {
-      pages = await lookupAladinPages(aladinKey, r.id)
+    if (!pages && r.source === 'aladin' && hasAladinProxy && /^\d{13}$/.test(r.id)) {
+      pages = await lookupAladinPages(r.id)
     }
     const ok = store.addBook({
       id: r.id,
@@ -109,10 +109,9 @@ export function Search({ onBack, onAdded }: { onBack: () => void; onAdded: (id: 
       ) : (
         <div className="card notice-card">
           <p>
-            <b>검색 기능은 API 키 등록 후 열려요.</b>
+            <b>이 빌드는 검색 서버에 연결되지 않았어요.</b>
             <br />
-            설정 탭에서 알라딘 또는 카카오 키를 등록하면 제목 검색으로 표지·쪽수까지 자동
-            등록됩니다. 지금은 아래에서 직접 입력으로 추가할 수 있어요.
+            아래 직접 입력으로 책을 추가할 수 있어요.
           </p>
         </div>
       )}

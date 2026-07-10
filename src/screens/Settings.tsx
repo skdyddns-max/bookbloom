@@ -71,28 +71,11 @@ export function Settings() {
       </section>
 
       <section className="card">
-        <h2>책 검색 API 키</h2>
+        <h2>책 검색</h2>
         <p className="muted small">
-          키를 등록하면 제목 검색으로 표지·쪽수까지 자동 등록돼요. 키는 이 기기에만 저장됩니다.
+          제목만 검색하면 표지·쪽수·카테고리가 자동으로 등록돼요. 검색 데이터는 알라딘에서
+          제공합니다.
         </p>
-        <label className="field-label">알라딘 TTB 키 (권장 — 쪽수·카테고리 제공)</label>
-        <input
-          type="text"
-          placeholder="ttb로 시작하는 키"
-          defaultValue={data.settings.aladinKey}
-          onBlur={(e) => store.setSettings({ aladinKey: e.target.value.trim() })}
-        />
-        <p className="muted small">
-          발급: aladin.co.kr → 알라딘 Open API 신청 (무료, 일 5,000건)
-        </p>
-        <label className="field-label">카카오 REST API 키 (대안)</label>
-        <input
-          type="text"
-          placeholder="카카오 디벨로퍼스 REST API 키"
-          defaultValue={data.settings.kakaoKey}
-          onBlur={(e) => store.setSettings({ kakaoKey: e.target.value.trim() })}
-        />
-        <p className="muted small">발급: developers.kakao.com → 앱 만들기 → REST API 키</p>
       </section>
 
       <section className="card">
@@ -135,7 +118,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        북블룸 v0.7 · 기록이 쌓이면, 습관이 피어나요 🌱
+        북블룸 v0.8 · 기록이 쌓이면, 습관이 피어나요 🌱
       </p>
     </div>
   )
