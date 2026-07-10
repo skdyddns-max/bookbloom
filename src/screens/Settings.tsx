@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { useAppData, store } from '../store'
 import { fmtDate } from '../utils'
-import { OPEN_CHAT_URL } from '../config'
+import { OPEN_CHAT_URL, BLOOM_FAMILY } from '../config'
 
 function csvField(v: string | number | undefined): string {
   const s = String(v ?? '')
@@ -117,8 +117,27 @@ export function Settings() {
         </div>
       </section>
 
+      <section className="card">
+        <h2>블룸 패밀리 🌱</h2>
+        <p className="muted small">
+          북블룸은 '천천히, 나답게 자라기'를 돕는 블룸 도구들 중 하나예요. 함께 보면 좋은 앱을 소개해요.
+        </p>
+        <div className="family-list">
+          {BLOOM_FAMILY.map((app) => (
+            <a key={app.name} className="family-item" href={app.url} target="_blank" rel="noreferrer">
+              <span className="family-emoji">{app.emoji}</span>
+              <span className="family-meta">
+                <b>{app.name}</b>
+                <span className="muted small">{app.desc}</span>
+              </span>
+              <span className="family-arrow">›</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
       <p className="muted small center">
-        북블룸 v0.9 · 기록이 쌓이면, 습관이 피어나요 🌱
+        북블룸 v0.10 · 기록이 쌓이면, 습관이 피어나요 🌱
       </p>
     </div>
   )

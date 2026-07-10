@@ -3,6 +3,7 @@ import { useAppData } from '../store'
 import { calcStreak, maxStreak, pagesReadByLog } from '../utils'
 import { BarChart, Donut, MonthCalendar } from '../components'
 import { makeYearCard } from '../lib/sharecard'
+import { computeBadges } from '../lib/badges'
 
 function monthStr(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -47,6 +48,8 @@ export function Stats() {
 
   const streak = calcStreak(data.logs)
   const goal = data.settings.yearlyGoal
+  const badges = computeBadges(data)
+  const earnedCount = badges.filter((b) => b.earned).length
 
   // 최근 6개월 추이 (읽은 쪽수 + 완독 권수)
   const now = new Date()
@@ -102,6 +105,26 @@ export function Stats() {
           <span className="stat-label">연속 기록일</span>
         </div>
       </div>
+
+      <section className="card">
+        <div className="card-title-row">
+          <h2>독서 뱃지</h2>
+          <span className="muted small">{earnedCount} / {badges.length}</span>
+        </div>
+        <div className="badge-grid">
+          {badges.map((b) => (
+            <div key={b.key} className={`badge ${b.earned ? 'badge-on' : ''}`} title={b.desc}>
+              <span className="badge-icon">{b.icon}</span>
+              <span className="badge-title">{b.title}</span>
+              {b.earned ? (
+                <span className="badge-status">완료</span>
+              ) : (
+                <span className="badge-status muted">{b.progress ?? ''}</span>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="card">
         <h2>독서 캘린더</h2>

@@ -1253,6 +1253,94 @@ textarea {
   align-items: center;
 }
 
+/* ---------- 독서 뱃지 ---------- */
+.badge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 10px;
+}
+.badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  text-align: center;
+  opacity: 0.55;
+  filter: grayscale(0.7);
+}
+.badge-on {
+  opacity: 1;
+  filter: none;
+  background: linear-gradient(160deg, #fff, var(--green-soft));
+  border-color: transparent;
+  box-shadow: var(--shadow);
+}
+.badge-icon {
+  font-size: 26px;
+  line-height: 1;
+}
+.badge-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dark);
+  line-height: 1.25;
+}
+.badge-status {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--green-dark);
+}
+.badge-status.muted {
+  color: var(--muted);
+}
+
+/* ---------- 알라딘 링크 ---------- */
+.book-shop-link {
+  align-self: center;
+  color: var(--muted);
+}
+
+/* ---------- 블룸 패밀리 ---------- */
+.family-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.family-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--dark);
+}
+.family-emoji {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.family-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.family-meta b {
+  font-size: 15px;
+  color: var(--ink);
+}
+.family-arrow {
+  font-size: 22px;
+  color: var(--muted);
+}
+
 /* ---------- 설정 ---------- */
 .settings-actions {
   display: flex;

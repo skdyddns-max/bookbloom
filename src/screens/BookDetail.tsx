@@ -6,6 +6,7 @@ import { makeShareCard, makeQuoteCard } from '../lib/sharecard'
 import { ocrImage } from '../lib/ocr'
 import { getGroupSession, setPostDraft } from '../lib/group'
 import { hasSupabase } from '../lib/supabase'
+import { aladinBookUrl } from '../config'
 import { pickQuestion } from '../lib/questions'
 import type { BookStatus } from '../types'
 
@@ -168,6 +169,15 @@ export function BookDetail({
           </button>
         ))}
       </div>
+
+      <a
+        className="btn-text book-shop-link"
+        href={aladinBookUrl(book.title, book.author)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        알라딘에서 이 책 보기 ›
+      </a>
 
       {book.status !== 'want' && (
         <section className="card">
