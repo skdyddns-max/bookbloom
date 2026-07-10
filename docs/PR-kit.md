@@ -2,6 +2,8 @@
 
 앱: https://skdyddns-max.github.io/bookbloom/
 오픈채팅: https://open.kakao.com/o/gd4EllDi (⚠️ 끝의 i까지 복사)
+앱 모임 코드: 25AZUN (방 "북블룸 함께읽기", 호스트=북블룸)
+소개 블로그: https://blog.naver.com/naryong-/224342976168
 이미지 에셋: `~/projects/naver-blog-pipeline/queue/2026-07-11-bookbloom-intro/스크린샷-{홈,통계,모임}.png` (앱 문장카드·완독카드도 활용 가능)
 
 ---
@@ -58,7 +60,7 @@
 > **북블룸 시작 (30초, 가입·설치 없음)**
 > ① https://skdyddns-max.github.io/bookbloom/
 > ② 책 제목 검색 → 표지·쪽수 자동 등록
-> ③ 모임 탭 → 코드 [방 코드] → 진도 현황판·후기 공유
+> ③ 모임 탭 → 코드 25AZUN → 진도 현황판·후기 공유
 >
 > 앱 불편한 점은 이 방에 편하게 남겨주세요. 만든 사람이 상주합니다 🙂
 
