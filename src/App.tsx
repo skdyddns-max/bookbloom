@@ -10,6 +10,7 @@ import { Welcome } from './screens/Welcome'
 import { Group } from './screens/Group'
 import { Celebration } from './screens/Celebration'
 import { onCelebrate } from './store'
+import { startSyncEngine, pullMerge } from './lib/cloudsync'
 
 const ONBOARD_KEY = 'bookbloom_onboarded'
 
@@ -51,6 +52,10 @@ export default function App() {
 
   const [celebrateBook, setCelebrateBook] = useState<Book | null>(null)
   useEffect(() => onCelebrate((book) => setCelebrateBook(book)), [])
+  useEffect(() => {
+    startSyncEngine()
+    pullMerge() // 앱 시작 시 다른 기기 변경 받아오기
+  }, [])
 
   const dismissWelcome = () => {
     try {

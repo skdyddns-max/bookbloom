@@ -1533,6 +1533,24 @@ textarea {
   color: var(--muted);
 }
 
+/* ---------- 클라우드 동기화 ---------- */
+.sync-code-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--green-soft);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+.sync-code {
+  flex: 1;
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+}
+
 /* ---------- 설정 ---------- */
 .settings-actions {
   display: flex;

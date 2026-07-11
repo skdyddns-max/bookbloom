@@ -49,6 +49,24 @@ export function useAppData(): AppData {
   )
 }
 
+/** 스토어 변경 구독 (클라우드 동기화 푸시 트리거용) */
+export function subscribe(fn: () => void): () => void {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+
+let applyingRemote = false
+export function isApplyingRemote(): boolean {
+  return applyingRemote
+}
+/** 원격(클라우드)에서 받아온 데이터를 그대로 반영 — 푸시 에코 방지 플래그와 함께 */
+export function applyRemote(next: AppData) {
+  applyingRemote = true
+  data = next
+  persist()
+  applyingRemote = false
+}
+
 function mutate(next: Partial<AppData>) {
   data = { ...data, ...next }
   persist()

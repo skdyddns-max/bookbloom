@@ -1,7 +1,96 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useAppData, store } from '../store'
 import { fmtDate } from '../utils'
 import { OPEN_CHAT_URL } from '../config'
+import {
+  syncAvailable, getSyncState, createSync, linkSync, clearSyncState,
+} from '../lib/cloudsync'
+
+function CloudSync() {
+  const [state, setState] = useState(getSyncState())
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const [linking, setLinking] = useState(false)
+  const [codeInput, setCodeInput] = useState('')
+  const [copied, setCopied] = useState(false)
+
+  if (!syncAvailable) return null
+
+  const start = async () => {
+    setBusy(true); setErr('')
+    try { await createSync(); setState(getSyncState()) }
+    catch (e) { setErr(e instanceof Error ? e.message : '실패했어요') }
+    finally { setBusy(false) }
+  }
+  const link = async () => {
+    setBusy(true); setErr('')
+    try { await linkSync(codeInput); setState(getSyncState()); setLinking(false); setCodeInput('') }
+    catch (e) { setErr(e instanceof Error ? e.message : '실패했어요') }
+    finally { setBusy(false) }
+  }
+  const unlink = () => {
+    if (confirm('이 기기에서 동기화를 끌까요? (기록은 이 기기에 그대로 남아요)')) {
+      clearSyncState(); setState(null)
+    }
+  }
+
+  return (
+    <section className="card">
+      <h2>클라우드 동기화</h2>
+      {state ? (
+        <>
+          <p className="muted small">
+            동기화 중이에요. 다른 기기 설정에서 아래 코드를 입력하면 같은 기록을 이어서 볼 수 있어요.
+          </p>
+          <div className="sync-code-box">
+            <span className="sync-code">{state.code}</span>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => {
+                navigator.clipboard?.writeText(state.code)
+                setCopied(true); setTimeout(() => setCopied(false), 1500)
+              }}
+            >
+              {copied ? '복사됨' : '코드 복사'}
+            </button>
+          </div>
+          <button className="btn-text danger" onClick={unlink}>동기화 끄기</button>
+        </>
+      ) : linking ? (
+        <>
+          <p className="muted small">다른 기기에서 받은 동기화 코드를 입력하세요.</p>
+          <div className="quicklog-row">
+            <input
+              placeholder="예: 6GX22GZS"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+              autoCapitalize="characters"
+            />
+            <button className="btn btn-green btn-sm" onClick={link} disabled={busy || codeInput.trim().length < 4}>
+              {busy ? '…' : '연결'}
+            </button>
+          </div>
+          <button className="btn-text" onClick={() => { setLinking(false); setErr('') }}>취소</button>
+        </>
+      ) : (
+        <>
+          <p className="muted small">
+            코드 하나로 여러 기기에서 같은 기록을 봐요. 이메일·비밀번호 없이, 코드만 있으면 돼요.
+          </p>
+          <div className="settings-actions">
+            <button className="btn btn-green" onClick={start} disabled={busy}>
+              {busy ? '만드는 중…' : '동기화 켜기 (코드 만들기)'}
+            </button>
+            <button className="btn btn-outline" onClick={() => setLinking(true)}>
+              코드로 이 기기 연결하기
+            </button>
+          </div>
+        </>
+      )}
+      {err && <p className="error-msg">{err}</p>}
+    </section>
+  )
+}
 
 function csvField(v: string | number | undefined): string {
   const s = String(v ?? '')
@@ -88,10 +177,12 @@ export function Settings() {
         </a>
       </section>
 
+      <CloudSync />
+
       <section className="card">
         <h2>데이터</h2>
         <p className="muted small">
-          기록은 이 기기(브라우저)에만 저장돼요. 기기를 바꾸기 전에 내보내기로 백업하세요.
+          기록은 이 기기(브라우저)에 저장돼요. 여러 기기에서 보려면 위 클라우드 동기화를, 백업은 아래 내보내기를 이용하세요.
         </p>
         <div className="settings-actions">
           <button className="btn btn-outline" onClick={exportData}>내보내기 (백업 JSON)</button>
@@ -118,7 +209,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        결 v0.24 · 한 줄씩, 나의 결이 쌓여요 🌱
+        결 v0.25 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )
