@@ -1,10 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#6DBE8A"/>
-  <g fill="none" stroke="#FAF7F0" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M256 168 C 226 138, 156 130, 116 156 L 116 356 C 156 330, 226 338, 256 368"/>
-    <path d="M256 168 C 286 138, 356 130, 396 156 L 396 356 C 356 330, 286 338, 256 368"/>
-    <line x1="256" y1="168" x2="256" y2="368"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a241a"/>
+      <stop offset="1" stop-color="#1c1810"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#bg)"/>
+  <!-- 결: 켜켜이 쌓인 나뭇결 — 길이 불규칙, 완만한 결 -->
+  <g fill="none" stroke="#faf5ea" stroke-width="24" stroke-linecap="round">
+    <path d="M116 164 C 220 152, 320 154, 396 160"/>
+    <path d="M116 228 C 190 220, 268 222, 320 226" opacity="0.88"/>
+    <path d="M116 292 C 230 282, 336 284, 396 290" stroke="#4e9c6f" opacity="1"/>
+    <path d="M116 356 C 176 350, 240 350, 284 354" opacity="0.88"/>
+    <path d="M116 420 C 210 410, 322 412, 380 418"/>
   </g>
-  <circle cx="256" cy="122" r="26" fill="#F2845C"/>
-  <path d="M256 96 C 244 76, 256 56, 256 56 C 256 56, 268 76, 256 96 Z" fill="#F2845C"/>
 </svg>
