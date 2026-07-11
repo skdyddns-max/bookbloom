@@ -8,6 +8,7 @@ import {
 import { StarRating } from '../components'
 import { clamp } from '../utils'
 import { OPEN_CHAT_URL } from '../config'
+import { ChallengeSection } from './Challenges'
 
 const KIND_LABEL = { review: '후기', quote: '문장', thought: '생각' } as const
 
@@ -59,6 +60,8 @@ function JoinOrCreate({ onDone }: { onDone: (s: GroupSession) => void }) {
           독서모임 멤버들과 후기·문장·생각을 나누는 공간이에요. 방 코드 하나로 함께 시작해요.
         </p>
       </div>
+
+      <ChallengeSection />
 
       <a className="btn btn-kakao" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
         💬 아직 모임이 없다면? 결 오픈채팅 구경하기
@@ -530,6 +533,8 @@ export function Group() {
           나가기
         </button>
       </p>
+
+      <ChallengeSection />
 
       <RoomBookCard session={session} roomBook={roomBook} onChanged={() => refresh()} />
 

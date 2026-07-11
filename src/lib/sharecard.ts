@@ -365,6 +365,137 @@ export function makePersonaCard(p: PersonaCardData): string {
   return canvas.toDataURL('image/png')
 }
 
+export interface WeeklyItem { quote: string; title: string }
+
+/** 이번 주 밑줄 회고 카드(1080x1080) — 이번 주 모은 문장 모음 */
+export function makeWeeklyCard(range: string, items: WeeklyItem[]): string {
+  const W = 1080
+  const H = 1080
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+
+  ctx.fillStyle = '#FAF6EC'
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W * 0.85, 90, 0, W * 0.85, 90, 620)
+  glow.addColorStop(0, 'rgba(224,122,85,0.10)')
+  glow.addColorStop(1, 'rgba(224,122,85,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  ctx.textAlign = 'left'
+  ctx.font = paper(600, 24)
+  ctx.fillStyle = '#A79E8D'
+  ctx.save()
+  ctx.letterSpacing = '8px'
+  ctx.fillText('이번 주 밑줄', 90, 130)
+  ctx.restore()
+  ctx.font = sans(500, 28)
+  ctx.fillStyle = '#9a9184'
+  ctx.fillText(range, 90, 176)
+
+  const shown = items.slice(0, 4)
+  const blockH = (H - 320) / Math.max(shown.length, 1)
+  let y = 280
+  for (const it of shown) {
+    ctx.fillStyle = '#4E9C6F'
+    ctx.fillRect(90, y - 34, 6, 44)
+    ctx.font = maru('MaruBuriSemiBold', it.quote.length > 44 ? 34 : 40)
+    ctx.fillStyle = '#2c2419'
+    const lines = wrapWords(ctx, it.quote, W - 220, 3)
+    let ly = y
+    for (const l of lines) {
+      ctx.fillText(l, 116, ly)
+      ly += (it.quote.length > 44 ? 46 : 54)
+    }
+    ctx.font = sans(500, 24)
+    ctx.fillStyle = '#a49a89'
+    ctx.fillText(`— 『${it.title}』`, 116, ly + 6)
+    y += blockH
+  }
+
+  ctx.textAlign = 'center'
+  ctx.font = sans(700, 32)
+  ctx.fillStyle = '#4E9C6F'
+  ctx.fillText('🌱 결', W / 2, H - 66)
+  ctx.font = sans(400, 24)
+  ctx.fillStyle = '#9a9a9a'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 34)
+  return canvas.toDataURL('image/png')
+}
+
+/** 결 챌린지 완주 카드(1080x1350) */
+export function makeChallengeCard(c: {
+  emoji: string; title: string; cheer: string; valueLabel: string
+}): string {
+  const W = 1080
+  const H = 1350
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+  ctx.textAlign = 'center'
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H)
+  bg.addColorStop(0, '#1E3329')
+  bg.addColorStop(1, '#16281F')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W / 2, 380, 0, W / 2, 380, 620)
+  glow.addColorStop(0, 'rgba(109,190,138,0.30)')
+  glow.addColorStop(1, 'rgba(109,190,138,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  ctx.font = paper(600, 26)
+  ctx.fillStyle = 'rgba(247,244,236,0.7)'
+  ctx.save()
+  ctx.letterSpacing = '10px'
+  ctx.fillText('결 챌린지 완주', W / 2, 200)
+  ctx.restore()
+
+  ctx.font = '150px "Apple Color Emoji", sans-serif'
+  ctx.fillText(c.emoji, W / 2, 420)
+
+  ctx.fillStyle = '#F7F4EC'
+  ctx.font = maru('MaruBuriBold', 62)
+  const titleLines = wrapWords(ctx, c.title, W - 200, 2)
+  let y = 560
+  for (const l of titleLines) {
+    ctx.fillText(l, W / 2, y)
+    y += 82
+  }
+
+  ctx.strokeStyle = '#6DBE8A'
+  ctx.lineWidth = 4
+  ctx.beginPath()
+  ctx.moveTo(W / 2 - 44, y + 4)
+  ctx.lineTo(W / 2 + 44, y + 4)
+  ctx.stroke()
+  y += 74
+
+  ctx.font = maru('MaruBuriSemiBold', 44)
+  ctx.fillStyle = 'rgba(247,244,236,0.92)'
+  const cheerLines = wrapWords(ctx, c.cheer, W - 240, 3)
+  for (const l of cheerLines) {
+    ctx.fillText(l, W / 2, y)
+    y += 64
+  }
+
+  ctx.font = sans(700, 40)
+  ctx.fillStyle = '#6DBE8A'
+  ctx.fillText(c.valueLabel, W / 2, y + 60)
+
+  ctx.font = sans(700, 34)
+  ctx.fillStyle = '#6DBE8A'
+  ctx.fillText('🌱 결', W / 2, H - 78)
+  ctx.font = sans(400, 26)
+  ctx.fillStyle = 'rgba(247,244,236,0.45)'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
+  return canvas.toDataURL('image/png')
+}
+
 export type QuoteStyle = 'forest' | 'light' | 'mesh'
 
 export const QUOTE_STYLES: Array<{ key: QuoteStyle; label: string }> = [

@@ -6,6 +6,8 @@ export type GenreBucket = 'fiction' | 'essay' | 'practical' | 'knowledge' | 'sci
 export function genreBucket(category: string): GenreBucket {
   const c = category || ''
   if (/어린이|유아|아동|그림책|청소년/.test(c)) return 'kids'
+  // 인문/사회 계열을 fiction보다 먼저 — '인문학'이 아래 '문학'에 오분류되지 않도록
+  if (/인문|철학|심리|역사|사회|정치|종교|예술|사상/.test(c)) return 'knowledge'
   if (/소설|시|희곡|만화|판타지|무협|추리|미스터리|로맨스|라이트노벨|문학|웹툰/.test(c)) return 'fiction'
   if (/에세이|산문|여행/.test(c)) return 'essay'
   if (/과학|공학|수학|물리|화학|생물|의학|천문|기술|IT|컴퓨터/.test(c)) return 'science'

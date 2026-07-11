@@ -110,3 +110,18 @@ grant execute on function bb_api_set_room_book(uuid, uuid, text, text, text, int
 grant execute on function bb_api_close_room_book(uuid, uuid, uuid) to anon;
 grant execute on function bb_api_update_room_progress(uuid, uuid, uuid, int) to anon;
 grant execute on function bb_api_get_room_book(uuid) to anon;
+
+-- ── 결 챌린지(시즌 공동 챌린지) 참여자 집계 — v0.27 (bb-migrate-ch로 배포) ──
+create table if not exists bb_challenge_participants (
+  challenge_id text not null,
+  pid text not null,          -- 로컬 익명 참여자 id (bookbloom_pid)
+  nickname text not null default '',
+  progress int not null default 0,
+  target int not null default 0,
+  done boolean not null default false,
+  joined_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (challenge_id, pid)
+);
+alter table bb_challenge_participants enable row level security; -- 직접 접근 차단, RPC(security definer)만 허용
+-- RPC: bb_challenge_stats / bb_challenge_join / bb_challenge_progress / bb_challenge_leave (anon execute)

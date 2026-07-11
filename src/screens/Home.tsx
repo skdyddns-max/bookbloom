@@ -1,9 +1,55 @@
 import { useState } from 'react'
 import { useAppData, store } from '../store'
-import { addDays, calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp } from '../utils'
+import { addDays, calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp, fmtDate } from '../utils'
 import { BookCover, ProgressBar } from '../components'
 import { readingPrompt } from '../lib/questions'
+import { makeWeeklyCard, ensureCardFonts } from '../lib/sharecard'
 import type { Book } from '../types'
+
+function WeeklyUnderline({ weekStart, weekEnd }: { weekStart: string; weekEnd: string }) {
+  const data = useAppData()
+  const titleOf = (bookId: string) => data.books.find((b) => b.id === bookId)?.title ?? ''
+  const items = data.notes
+    .filter((n) => n.type === 'quote' && n.createdAt.slice(0, 10) >= weekStart && n.createdAt.slice(0, 10) <= weekEnd)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .map((n) => ({ quote: n.content, title: titleOf(n.bookId) }))
+    .filter((it) => it.quote)
+
+  if (items.length === 0) return null
+
+  const range = `${fmtDate(weekStart)} – ${fmtDate(weekEnd)}`
+  const save = async () => {
+    await ensureCardFonts()
+    const url = makeWeeklyCard(range, items)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = '결-이번주밑줄.png'
+    a.click()
+  }
+
+  return (
+    <section className="weekly-underline">
+      <div className="section-title-row">
+        <h2>이번 주 밑줄</h2>
+        <span className="muted small">{items.length}개의 문장</span>
+      </div>
+      <div className="card weekly-card">
+        {items.slice(0, 4).map((it, i) => (
+          <div key={i} className="weekly-item">
+            <p className="weekly-quote serif">“{it.quote}”</p>
+            {it.title && <span className="weekly-book muted small">— 『{it.title}』</span>}
+          </div>
+        ))}
+        {items.length > 4 && (
+          <p className="muted small weekly-more">그리고 {items.length - 4}개의 문장을 더 담았어요.</p>
+        )}
+        <button className="btn btn-outline btn-sm weekly-save" onClick={save}>
+          이번 주 밑줄 카드 저장
+        </button>
+      </div>
+    </section>
+  )
+}
 
 function QuickLog({ book, onOpenBook }: { book: Book; onOpenBook: (id: string) => void }) {
   const data = useAppData()
@@ -204,6 +250,8 @@ export function Home({
           ))
         )}
       </section>
+
+      <WeeklyUnderline weekStart={weekStart} weekEnd={addDays(weekStart, 6)} />
 
       {want.length > 0 && (
         <section>

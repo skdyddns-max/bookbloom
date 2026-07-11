@@ -1856,3 +1856,70 @@ textarea {
   border-radius: 999px;
   transition: width 0.4s ease;
 }
+
+/* ── 이번 주 밑줄 ── */
+.weekly-underline { margin-top: 4px; }
+.weekly-card { display: flex; flex-direction: column; gap: 14px; }
+.weekly-item {
+  padding-left: 14px;
+  border-left: 3px solid var(--green);
+}
+.weekly-quote {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  word-break: keep-all;
+  margin: 0 0 4px;
+}
+.weekly-book { display: block; }
+.weekly-more { margin: -2px 0 0; }
+.weekly-save { align-self: flex-start; margin-top: 2px; }
+
+/* ── 결 챌린지 ── */
+.challenge-section { margin-bottom: 4px; }
+.challenge-card { display: flex; flex-direction: column; gap: 14px; }
+.challenge-done { border-color: var(--green); background: linear-gradient(180deg, var(--green-soft), var(--card) 60%); }
+.challenge-head { display: flex; align-items: flex-start; gap: 12px; }
+.challenge-emoji { font-size: 30px; line-height: 1.1; }
+.challenge-head-meta { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.challenge-title { font-size: 17px; color: var(--ink); word-break: keep-all; }
+.challenge-dday {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--coral);
+  background: var(--coral-soft);
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.challenge-progress { display: flex; align-items: center; gap: 12px; }
+.challenge-bar {
+  flex: 1;
+  height: 10px;
+  background: var(--track);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.challenge-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+.challenge-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--green-dark);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.challenge-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.challenge-social { word-break: keep-all; }
+.challenge-leave { white-space: nowrap; padding: 0; }
