@@ -21,46 +21,98 @@ export interface Challenge {
   bookTitle?: string
   bookAuthor?: string
   cheer: string // 완주 시 축하 한 줄
+  badgeLabel: string // 완주 뱃지에 새길 짧은 이름
 }
 
-/** 편성된 챌린지 목록 — 기간이 오늘을 포함하면 '진행 중' */
-export const CHALLENGES: Challenge[] = [
+// ── 시즌 자동 편성 — 매달 코드 수정 없이 그 달의 챌린지가 생성된다 ──
+
+/** 월별 함께읽기 도서 — 로테이션 풀(널리 읽히는 책). 특정 달은 아래 map으로 지정 편성 */
+const BOOK_POOL: Array<{ t: string; a: string }> = [
+  { t: '아몬드', a: '손원평' },
+  { t: '불편한 편의점', a: '김호연' },
+  { t: '달러구트 꿈 백화점', a: '이미예' },
+  { t: '미드나잇 라이브러리', a: '매트 헤이그' },
+  { t: '어린 왕자', a: '앙투안 드 생텍쥐페리' },
+  { t: '데미안', a: '헤르만 헤세' },
+  { t: '파친코 1', a: '이민진' },
+  { t: '나미야 잡화점의 기적', a: '히가시노 게이고' },
+]
+/** 지정 편성(에디토리얼) — 없으면 풀에서 자동 로테이션 */
+const BOOK_OF_MONTH: Record<string, { t: string; a: string }> = {
+  '2026-07': { t: '아몬드', a: '손원평' },
+}
+
+/** 월별 로테이션 테마(3번째 챌린지) */
+const THEME_POOL: Array<Omit<Challenge, 'id' | 'start' | 'end' | 'badgeLabel'>> = [
   {
-    id: '2026-07-amond',
-    emoji: '📖',
-    title: '7월 함께읽기 · 『아몬드』',
-    subtitle: '손원평의 『아몬드』를 이달 안에 함께 완독해요',
-    start: '2026-07-01',
-    end: '2026-07-31',
-    kind: 'book',
-    goal: 1,
-    bookTitle: '아몬드',
-    bookAuthor: '손원평',
-    cheer: '감정을 배우는 여정, 끝까지 함께했어요.',
+    emoji: '🌾', kind: 'genre-breadth', goal: 4,
+    title: '장르 넓히기', subtitle: '서로 다른 4개 분야를 이달 안에 읽어봐요',
+    cheer: '네 갈래의 결, 독서가 한결 넓어졌어요.',
   },
   {
-    id: '2026-summer-quotes',
-    emoji: '✍️',
-    title: '여름밤 문장 수집',
-    subtitle: '마음에 닿은 문장 10개를 이 여름에 모아요',
-    start: '2026-07-01',
-    end: '2026-08-31',
-    kind: 'count-quote',
-    goal: 10,
-    cheer: '당신의 여름은 열 개의 문장으로 남았어요.',
-  },
-  {
-    id: '2026-genre-widen',
-    emoji: '🌾',
-    title: '장르 넓히기',
-    subtitle: '서로 다른 5개 분야를 두루 읽어봐요',
-    start: '2026-07-01',
-    end: '2026-12-31',
-    kind: 'genre-breadth',
-    goal: 5,
-    cheer: '다섯 갈래의 결, 당신의 독서가 넓어졌어요.',
+    emoji: '📚', kind: 'count-done', goal: 3,
+    title: '이달 세 권', subtitle: '이번 달, 세 권을 완독해봐요',
+    cheer: '한 달에 세 권, 단단한 리듬이에요.',
   },
 ]
+
+const MONTH_NAME = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
+
+function d2(n: number): string {
+  return String(n).padStart(2, '0')
+}
+
+function monthWindow(today: string): { y: number; m: number; ym: string; start: string; end: string; idx: number } {
+  const [y, m] = today.split('-').map(Number)
+  const last = new Date(y, m, 0).getDate()
+  return {
+    y, m,
+    ym: `${y}-${d2(m)}`,
+    start: `${y}-${d2(m)}-01`,
+    end: `${y}-${d2(m)}-${d2(last)}`,
+    idx: y * 12 + (m - 1),
+  }
+}
+
+/** 오늘이 속한 달의 챌린지 3종을 자동 편성 */
+export function activeChallenges(today: string): Challenge[] {
+  const w = monthWindow(today)
+  const mn = MONTH_NAME[w.m - 1]
+
+  const book = BOOK_OF_MONTH[w.ym] ?? BOOK_POOL[w.idx % BOOK_POOL.length]
+  const bookCh: Challenge = {
+    id: `book-${w.ym}`,
+    emoji: '📖',
+    title: `${mn} 함께읽기 · 『${book.t}』`,
+    subtitle: `${book.a}의 『${book.t}』를 이달 안에 함께 완독해요`,
+    start: w.start, end: w.end,
+    kind: 'book', goal: 1,
+    bookTitle: book.t, bookAuthor: book.a,
+    cheer: `『${book.t}』의 마지막 장을 함께 덮었어요.`,
+    badgeLabel: `『${book.t}』 완독`,
+  }
+
+  const quoteCh: Challenge = {
+    id: `quotes-${w.ym}`,
+    emoji: '✍️',
+    title: `${mn} 문장 수집`,
+    subtitle: '마음에 닿은 문장 10개를 이달 안에 모아요',
+    start: w.start, end: w.end,
+    kind: 'count-quote', goal: 10,
+    cheer: `${mn}의 당신은 열 개의 문장으로 남았어요.`,
+    badgeLabel: `${mn} 문장 수집`,
+  }
+
+  const t = THEME_POOL[w.idx % THEME_POOL.length]
+  const themeCh: Challenge = {
+    ...t,
+    id: `theme-${w.ym}`,
+    start: w.start, end: w.end,
+    badgeLabel: t.title,
+  }
+
+  return [bookCh, quoteCh, themeCh]
+}
 
 export interface ChallengeProgress {
   value: number
@@ -108,42 +160,47 @@ export function challengeProgress(c: Challenge, data: AppData): ChallengeProgres
   return { value: n, target: c.goal, pct: Math.min(100, Math.round((n / c.goal) * 100)), done: n >= c.goal, unit: '분야' }
 }
 
-export function activeChallenges(today: string): Challenge[] {
-  return CHALLENGES.filter((c) => today >= c.start && today <= c.end)
-}
-
 // ── 완주 기록(영구) — 챌린지 기간·창이 지나도 뱃지는 남는다 ──
-const DONE_KEY = 'bookbloom_challenge_done' // { [id]: 'YYYY-MM-DD' }
+const DONE_KEY = 'bookbloom_challenge_done' // { [id]: { date, emoji, label } }
 
-export function getCompletedChallenges(): Record<string, string> {
+interface DoneRecord { date: string; emoji: string; label: string }
+
+export function getCompletedChallenges(): Record<string, DoneRecord> {
   try {
-    return JSON.parse(localStorage.getItem(DONE_KEY) || '{}')
+    const raw = JSON.parse(localStorage.getItem(DONE_KEY) || '{}') as Record<string, DoneRecord | string>
+    const out: Record<string, DoneRecord> = {}
+    for (const [id, v] of Object.entries(raw)) {
+      // 구버전(문자열 날짜) 호환
+      out[id] = typeof v === 'string' ? { date: v, emoji: '🏅', label: id } : v
+    }
+    return out
   } catch {
     return {}
   }
 }
-/** 완주 조건을 만족하면 최초 1회 기록. 새로 기록됐으면 true */
-export function recordCompletion(id: string): boolean {
+/** 완주 조건을 만족하면 최초 1회 기록. 뱃지가 기간 후에도 남도록 메타를 함께 저장. */
+export function recordCompletion(c: Challenge): boolean {
   const map = getCompletedChallenges()
-  if (map[id]) return false
-  map[id] = todayStr()
+  if (map[c.id]) return false
+  map[c.id] = { date: todayStr(), emoji: c.emoji, label: c.badgeLabel }
   try {
     localStorage.setItem(DONE_KEY, JSON.stringify(map))
   } catch { /* private mode */ }
   return true
 }
 
-/** 완주한 챌린지 → 뱃지 목록 (Stats 뱃지 그리드에 노출) */
+/** 완주한 챌린지 → 뱃지 목록 (Stats 뱃지 그리드에 노출). 완주 기록에서 직접 생성해 과거 시즌도 유지 */
 export function challengeBadges(): Badge[] {
   const done = getCompletedChallenges()
-  return CHALLENGES.map((c) => ({
-    key: `ch-${c.id}`,
-    icon: c.emoji,
-    title: c.title.replace(/^[0-9]+월 /, '').split(' · ')[0],
-    desc: `결 챌린지 · ${c.subtitle}`,
-    earned: !!done[c.id],
-    progress: done[c.id] ? undefined : '진행 중',
-  })).filter((b) => b.earned) // 완주한 것만 노출(빈 뱃지 방지)
+  return Object.entries(done)
+    .sort((a, b) => b[1].date.localeCompare(a[1].date))
+    .map(([id, r]) => ({
+      key: `ch-${id}`,
+      icon: r.emoji,
+      title: r.label,
+      desc: `결 챌린지 완주 · ${r.date}`,
+      earned: true,
+    }))
 }
 
 // ── 참여 상태 (로컬) + 익명 집계 (Supabase) ──
@@ -191,10 +248,19 @@ export function isJoined(id: string): boolean {
   return !!getJoined()[id]
 }
 
+export interface BoardRow {
+  pid: string
+  nickname: string
+  progress: number
+  target: number
+  done: boolean
+}
+
 export interface ChallengeStats {
   count: number
   done_count: number
   recent: string[]
+  board: BoardRow[]
 }
 
 export const challengeApi = {

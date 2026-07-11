@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAppData } from '../store'
 import { todayStr } from '../utils'
 import {
-  activeChallenges, challengeProgress, challengeApi, isJoined, recordCompletion,
+  activeChallenges, challengeProgress, challengeApi, isJoined, recordCompletion, getPid,
   type Challenge, type ChallengeStats,
 } from '../lib/challenges'
 import { getGroupSession } from '../lib/group'
@@ -14,6 +14,8 @@ function ChallengeCard({ c }: { c: Challenge }) {
   const [joined, setJoinedState] = useState(isJoined(c.id))
   const [stats, setStats] = useState<ChallengeStats | null>(null)
   const [busy, setBusy] = useState(false)
+  const [showBoard, setShowBoard] = useState(false)
+  const myPid = getPid()
 
   useEffect(() => {
     let alive = true
@@ -24,7 +26,7 @@ function ChallengeCard({ c }: { c: Challenge }) {
   // 참여 중이면 진도를 서버에 반영(소셜 완주 집계) + 완주 시 뱃지 영구 기록
   useEffect(() => {
     if (joined) challengeApi.progress(c, prog).then((s) => s && setStats(s))
-    if (prog.done) recordCompletion(c.id)
+    if (prog.done) recordCompletion(c)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joined, prog.value, prog.done])
 
@@ -92,6 +94,33 @@ function ChallengeCard({ c }: { c: Challenge }) {
           <button className="btn-text muted challenge-leave" onClick={leave}>참여 중 · 빠지기</button>
         )}
       </div>
+
+      {stats && stats.board && stats.board.length > 0 && (
+        <div className="challenge-board-wrap">
+          <button className="btn-text challenge-board-toggle" onClick={() => setShowBoard((v) => !v)}>
+            🏅 완주 리더보드 {showBoard ? '숨기기' : `보기 (${stats.count}명)`}
+          </button>
+          {showBoard && (
+            <ol className="challenge-board">
+              {stats.board.map((row, i) => {
+                const me = row.pid === myPid
+                const label = row.done
+                  ? '완주 🎉'
+                  : c.kind === 'book'
+                    ? `${row.progress}%`
+                    : `${row.progress}/${row.target}`
+                return (
+                  <li key={row.pid || i} className={`board-row ${me ? 'board-me' : ''} ${row.done ? 'board-done' : ''}`}>
+                    <span className="board-rank">{i + 1}</span>
+                    <span className="board-nick">{row.nickname || '익명의 독자'}{me ? ' · 나' : ''}</span>
+                    <span className="board-val">{label}</span>
+                  </li>
+                )
+              })}
+            </ol>
+          )}
+        </div>
+      )}
     </div>
   )
 }
