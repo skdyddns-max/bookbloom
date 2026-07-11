@@ -23,7 +23,7 @@ function QuickLog({ book, onOpenBook }: { book: Book; onOpenBook: (id: string) =
     } else {
       // 진도를 기록한 '그 순간' = 독서 상황 → 읽은 지점에 맞는 생각거리를 띄운다
       const pct = book.totalPages > 0 ? (p / book.totalPages) * 100 : 0
-      setThink(readingPrompt(book.id, pct, logs.length))
+      setThink(readingPrompt(book.id, pct, logs.length, book.category))
     }
     setPage('')
   }

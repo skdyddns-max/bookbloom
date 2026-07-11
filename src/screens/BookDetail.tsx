@@ -49,7 +49,7 @@ export function BookDetail({
   const pct = book.totalPages > 0 ? Math.round((current / book.totalPages) * 100) : 0
   const isReading = book.status === 'reading'
   const question = isReading
-    ? readingPrompt(book.id, pct, qIndex)
+    ? readingPrompt(book.id, pct, qIndex, book.category)
     : pickQuestion(book.category, book.id, qIndex)
   const qTitle = isReading ? '읽는 중 생각거리' : '독후 질문 카드'
 
