@@ -145,6 +145,69 @@ body {
   height: 34px;
   background: var(--line);
 }
+.hero-week {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.hero-week-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.hero-week-count {
+  font-weight: 800;
+  color: var(--green-dark);
+}
+.hero-week-dots {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+}
+.hw-day {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+.hw-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line);
+  background: transparent;
+  transition: background 0.2s, border-color 0.2s;
+}
+.hw-read .hw-dot {
+  background: var(--green);
+  border-color: var(--green);
+}
+.hw-today .hw-dot {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-soft);
+}
+.hw-future .hw-dot {
+  opacity: 0.45;
+}
+.hw-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.hw-today .hw-label {
+  color: var(--ink);
+}
+.hw-future .hw-label {
+  opacity: 0.5;
+}
+
 .hero-goal {
   border-top: 1px solid var(--line);
   padding-top: 14px;

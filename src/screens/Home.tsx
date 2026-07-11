@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useAppData, store } from '../store'
-import { calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp } from '../utils'
+import { addDays, calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp } from '../utils'
 import { BookCover, ProgressBar } from '../components'
 import { readingPrompt } from '../lib/questions'
 import type { Book } from '../types'
@@ -83,6 +83,23 @@ export function Home({
   const gap = daysSinceLastLog(data.logs)
   const showRest = reading.length > 0 && gap !== null && gap >= 3
 
+  // 이번 주(일~토) 기록 현황 — 홈에서 바로 보는 습관 피드백
+  const WEEKDAYS = ['일', '월', '화', '수', '목', '금', '토']
+  const today = todayStr()
+  const weekStart = addDays(today, -new Date(today + 'T00:00:00').getDay())
+  const logDates = new Set(data.logs.map((l) => l.date))
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const date = addDays(weekStart, i)
+    return {
+      date,
+      label: WEEKDAYS[i],
+      read: logDates.has(date),
+      isToday: date === today,
+      future: date > today,
+    }
+  })
+  const weekReadCount = weekDays.filter((d) => d.read).length
+
   const want = data.books.filter((b) => b.status === 'want')
 
   const goalLeft = goal - doneThisYear
@@ -111,6 +128,26 @@ export function Home({
           <div className="hero-stat">
             <span className="hero-stat-num">{doneThisYear}</span>
             <span className="hero-stat-label">올해 완독</span>
+          </div>
+        </div>
+
+        <div className="hero-week">
+          <div className="hero-week-head">
+            <span>이번 주</span>
+            <span className="hero-week-count">
+              {weekReadCount > 0 ? `${weekReadCount}일 읽었어요` : '오늘 한 쪽부터 시작해요'}
+            </span>
+          </div>
+          <div className="hero-week-dots">
+            {weekDays.map((d) => (
+              <div
+                key={d.date}
+                className={`hw-day${d.read ? ' hw-read' : ''}${d.isToday ? ' hw-today' : ''}${d.future ? ' hw-future' : ''}`}
+              >
+                <span className="hw-dot" />
+                <span className="hw-label">{d.label}</span>
+              </div>
+            ))}
           </div>
         </div>
 
