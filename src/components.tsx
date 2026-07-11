@@ -62,7 +62,8 @@ export function ProgressBar({ current, total }: { current: number; total: number
   )
 }
 
-const DONUT_COLORS = ['#2F5D43', '#6DBE8A', '#D9A441', '#C96F4A', '#5B6E7F', '#7D5A6E']
+// 페이퍼 에디션 — 그린 모노 스케일 (짙은 → 옅은 세이지, 단일 액센트 규칙)
+const DONUT_COLORS = ['#2c4d3a', '#3e7d59', '#6dbe8a', '#9fd4b4', '#c4e5d1', '#e0f0e6']
 
 export function Donut({ data }: { data: Array<{ label: string; value: number }> }) {
   const total = data.reduce((s, d) => s + d.value, 0)

@@ -480,11 +480,11 @@ body {
   align-self: flex-start;
 }
 .danger {
-  color: #c25b5b;
+  color: #b06a58;
 }
 .danger-outline {
-  border-color: #d9b8b8;
-  color: #c25b5b;
+  border-color: #d8c3ba;
+  color: #b06a58;
 }
 .chip {
   border: 1px solid var(--line);
@@ -768,7 +768,7 @@ textarea {
   margin-top: 4px;
 }
 .error-msg {
-  color: #c25b5b;
+  color: #b06a58;
   font-size: 14px;
   text-align: center;
 }
