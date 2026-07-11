@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAppData } from '../store'
 import { calcStreak, maxStreak, pagesReadByLog } from '../utils'
 import { BarChart, Donut, MonthCalendar } from '../components'
-import { makeYearCard } from '../lib/sharecard'
+import { makeYearCard, ensureCardFonts } from '../lib/sharecard'
 import { computeBadges } from '../lib/badges'
 
 function monthStr(d = new Date()): string {
@@ -67,7 +67,8 @@ export function Stats() {
   // 올해의 책 톱3 (별점순)
   const topBooks = [...doneInYear].filter((b) => b.rating > 0).sort((a, b) => b.rating - a.rating).slice(0, 3)
 
-  const saveYearCard = () => {
+  const saveYearCard = async () => {
+    await ensureCardFonts()
     const url = makeYearCard({
       year,
       doneCount: doneInYear.length,

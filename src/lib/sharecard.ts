@@ -63,9 +63,9 @@ export function makeShareCard(book: Book): string {
   ctx.textAlign = 'center'
   ctx.fillText('📖 한 권을 다 읽었어요', W / 2, 136)
 
-  // 제목
+  // 제목 (마루부리 — 트렌드 부리체)
   ctx.fillStyle = DARK
-  ctx.font = font(800, 72)
+  ctx.font = maru('MaruBuriBold', 72)
   const titleLines = wrapText(ctx, book.title, W - 200, 3)
   let y = 340
   for (const line of titleLines) {
@@ -91,7 +91,7 @@ export function makeShareCard(book: Book): string {
 
   // 한줄평
   if (book.oneLine) {
-    ctx.font = font(500, 48)
+    ctx.font = maru('MaruBuriSemiBold', 48)
     ctx.fillStyle = DARK
     const lines = wrapText(ctx, `“${book.oneLine}”`, W - 240, 4)
     y += 30
@@ -139,15 +139,15 @@ export function makeYearCard(s: YearSummary): string {
   ctx.textAlign = 'center'
 
   ctx.fillStyle = DARK
-  ctx.font = font(800, 64)
+  ctx.font = maru('MaruBuriBold', 64)
   ctx.fillText(`${s.year}년 나의 독서 결산`, W / 2, 140)
 
-  // 완독 권수 (코랄 1곳)
+  // 완독 권수 (코랄 1곳, 마루부리 숫자)
   ctx.fillStyle = CORAL
-  ctx.font = font(800, 200)
+  ctx.font = maru('MaruBuriBold', 200)
   ctx.fillText(String(s.doneCount), W / 2, 400)
   ctx.fillStyle = DARK
-  ctx.font = font(700, 52)
+  ctx.font = maru('MaruBuriSemiBold', 52)
   ctx.fillText('권을 읽었어요', W / 2, 480)
 
   // 보조 지표 2개

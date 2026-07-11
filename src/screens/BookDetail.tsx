@@ -100,7 +100,8 @@ export function BookDetail({
     }
   }
 
-  const share = () => {
+  const share = async () => {
+    await ensureCardFonts()
     const url = makeShareCard(book)
     const a = document.createElement('a')
     a.href = url
