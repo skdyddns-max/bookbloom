@@ -63,3 +63,4 @@ export type Screen =
   | { view: 'tab'; tab: Tab }
   | { view: 'search' }
   | { view: 'book'; bookId: string }
+  | { view: 'help' }

@@ -140,7 +140,7 @@ function csvField(v: string | number | undefined): string {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 
-export function Settings() {
+export function Settings({ onOpenHelp }: { onOpenHelp: () => void }) {
   const data = useAppData()
   const importRef = useRef<HTMLInputElement>(null)
 
@@ -185,6 +185,15 @@ export function Settings() {
         <h1>설정</h1>
         <span />
       </header>
+
+      <button className="card help-entry" onClick={onOpenHelp}>
+        <span className="help-entry-icon">📖</span>
+        <span className="help-entry-text">
+          <b>사용 방법 · 도움말</b>
+          <span className="muted small">결을 쓰는 법을 한눈에 살펴보세요</span>
+        </span>
+        <span className="help-entry-arrow">›</span>
+      </button>
 
       <section className="card">
         <h2>올해 목표</h2>
@@ -254,7 +263,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        결 v0.30 · 한 줄씩, 나의 결이 쌓여요 🌱
+        결 v0.31 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )

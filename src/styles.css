@@ -2111,3 +2111,70 @@ textarea {
   font-weight: 600;
   color: #bfe6cd;
 }
+
+/* ── 설정: 도움말 진입 ── */
+.help-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--line);
+}
+.help-entry-icon { font-size: 26px; }
+.help-entry-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.help-entry-text b { color: var(--ink); }
+.help-entry-arrow { font-size: 24px; color: var(--muted); }
+
+/* ── 도움말 화면 ── */
+.help-intro { text-align: center; }
+.help-intro-title { font-size: 20px; color: var(--ink); margin-bottom: 6px; }
+.help-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.help-item {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.help-open { box-shadow: var(--shadow); }
+.help-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+.help-icon { font-size: 22px; }
+.help-title { flex: 1; font-weight: 700; color: var(--ink); word-break: keep-all; }
+.help-chevron { font-size: 22px; color: var(--muted); line-height: 1; }
+.help-body {
+  list-style: none;
+  margin: 0;
+  padding: 0 18px 18px 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.help-body li {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--dark);
+  word-break: keep-all;
+}
+.help-body li::before {
+  content: '';
+  position: absolute;
+  left: -18px;
+  top: 9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+}
+.help-openchat { margin-top: 4px; }

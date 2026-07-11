@@ -8,6 +8,7 @@ import { Stats } from './screens/Stats'
 import { Settings } from './screens/Settings'
 import { Welcome } from './screens/Welcome'
 import { Group } from './screens/Group'
+import { Help } from './screens/Help'
 import { Celebration } from './screens/Celebration'
 import { onCelebrate, getData } from './store'
 import { startSyncEngine, pullMerge } from './lib/cloudsync'
@@ -100,7 +101,10 @@ export default function App() {
       )}
       {screen.view === 'tab' && screen.tab === 'group' && <Group />}
       {screen.view === 'tab' && screen.tab === 'stats' && <Stats />}
-      {screen.view === 'tab' && screen.tab === 'settings' && <Settings />}
+      {screen.view === 'tab' && screen.tab === 'settings' && (
+        <Settings onOpenHelp={() => setScreen({ view: 'help' })} />
+      )}
+      {screen.view === 'help' && <Help onBack={back} />}
       {screen.view === 'search' && <Search onBack={back} onAdded={openBook} />}
       {screen.view === 'book' && (
         <BookDetail bookId={screen.bookId} onBack={back} onShareToGroup={() => goTab('group')} />
