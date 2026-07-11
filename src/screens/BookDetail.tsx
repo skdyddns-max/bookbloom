@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useAppData, store } from '../store'
 import { BookCover, ProgressBar, StarRating, CATEGORIES } from '../components'
 import { fmtDate, todayStr, uid, clamp } from '../utils'
-import { makeShareCard, makeQuoteCard, QUOTE_STYLES, type QuoteStyle } from '../lib/sharecard'
+import { makeShareCard, makeQuoteCard, ensureCardFonts, QUOTE_STYLES, type QuoteStyle } from '../lib/sharecard'
 import { ocrImage } from '../lib/ocr'
 import { getGroupSession, setPostDraft } from '../lib/group'
 import { hasSupabase } from '../lib/supabase'
@@ -354,7 +354,8 @@ export function BookDetail({
                     <button
                       key={s.key}
                       className={`card-style-btn card-style-${s.key}`}
-                      onClick={() => {
+                      onClick={async () => {
+                        await ensureCardFonts()
                         const a = document.createElement('a')
                         a.href = makeQuoteCard(book, n.content, s.key as QuoteStyle)
                         a.download = `bookbloom-문장-${s.key}-${book.title.slice(0, 10)}.png`

@@ -216,6 +216,26 @@ export const QUOTE_STYLES: Array<{ key: QuoteStyle; label: string }> = [
 
 const serif = (w: number, s: number) => `${w} ${s}px "Noto Serif KR", Pretendard, serif`
 const sans = (w: number, s: number) => `${w} ${s}px Pretendard, "Pretendard Variable", sans-serif`
+// 2026 트렌드 폰트 — 마루부리(네이버, 굵기별 패밀리명)·페이퍼로지(9굵기)
+const maru = (fam: 'MaruBuri' | 'MaruBuriSemiBold' | 'MaruBuriBold', s: number) =>
+  `400 ${s}px ${fam}, "Noto Serif KR", serif`
+const paper = (w: number, s: number) => `${w} ${s}px Paperlogy, Pretendard, sans-serif`
+
+/** 카드 생성 전에 호출 — 캔버스는 로드된 폰트만 그릴 수 있어서 웹폰트를 미리 당겨온다 */
+export async function ensureCardFonts(): Promise<void> {
+  try {
+    await Promise.all([
+      document.fonts.load('400 56px MaruBuri'),
+      document.fonts.load('400 56px MaruBuriSemiBold'),
+      document.fonts.load('400 56px MaruBuriBold'),
+      document.fonts.load('800 56px Paperlogy'),
+      document.fonts.load('600 56px Paperlogy'),
+      document.fonts.load('900 56px "Noto Serif KR"'),
+    ])
+  } catch {
+    // 네트워크 실패 시 폴백 폰트로 진행
+  }
+}
 
 /** 단어·문장부호 단위(토큰)로 나눈 뒤 줄 수를 구해 균형 배치 — 단어 중간 끊김·고아 줄 방지 */
 function wrapQuote(ctx: CanvasRenderingContext2D, quote: string, maxW: number): string[] {
@@ -309,17 +329,17 @@ export function makeQuoteCard(
   const size = quote.length > 120 ? 40 : quote.length > 60 ? 48 : 56
 
   if (style === 'light') {
-    // 밝은 종이 + 큰 세리프 (미니멀·고급)
+    // 밝은 종이 + 페이퍼로지 (미니멀·모던, 2026 트렌드 산세리프)
     ctx.fillStyle = '#FBF9F4'
     ctx.fillRect(0, 0, W, H)
-    ctx.font = sans(700, 22)
+    ctx.font = paper(600, 22)
     ctx.fillStyle = '#B0A99A'
     ctx.save()
     ctx.letterSpacing = '8px'
     ctx.fillText('BOOKBLOOM', W / 2, 150)
     ctx.restore()
 
-    ctx.font = serif(700, size + 6)
+    ctx.font = paper(800, size + 4)
     ctx.fillStyle = '#1A1A1A'
     const lines = wrapQuote(ctx, quote, W - 220)
     const lh = (size + 6) * 1.5
@@ -376,9 +396,9 @@ export function makeQuoteCard(
     ctx.restore()
 
     ctx.fillStyle = '#4E9C6F'
-    ctx.font = serif(900, 130)
+    ctx.font = maru('MaruBuriBold', 130)
     ctx.fillText('“', W / 2, 350)
-    ctx.font = serif(700, size)
+    ctx.font = maru('MaruBuriBold', size)
     ctx.fillStyle = '#243B2E'
     const lines = wrapQuote(ctx, quote, W - 320)
     const lh = size * 1.55
@@ -408,9 +428,9 @@ export function makeQuoteCard(
   ctx.fillStyle = glow
   ctx.fillRect(0, 0, W, H)
   ctx.fillStyle = '#6DBE8A'
-  ctx.font = serif(900, 160)
+  ctx.font = maru('MaruBuriBold', 160)
   ctx.fillText('“', W / 2, 230)
-  ctx.font = serif(600, size)
+  ctx.font = maru('MaruBuriSemiBold', size)
   ctx.fillStyle = '#F7F4EC'
   const lines = wrapQuote(ctx, quote, W - 260)
   const lh = size * 1.65
