@@ -115,7 +115,7 @@ export function makeShareCard(book: Book): string {
 
   ctx.font = font(700, 40)
   ctx.fillStyle = GREEN
-  ctx.fillText('🌱 북블룸', W / 2, H - 78)
+  ctx.fillText('🌱 결', W / 2, H - 78)
   ctx.font = font(400, 26)
   ctx.fillStyle = '#9a9a9a'
   ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
@@ -198,7 +198,7 @@ export function makeYearCard(s: YearSummary): string {
 
   ctx.font = font(700, 40)
   ctx.fillStyle = GREEN
-  ctx.fillText('🌱 북블룸', W / 2, H - 78)
+  ctx.fillText('🌱 결', W / 2, H - 78)
   ctx.font = font(400, 26)
   ctx.fillStyle = '#9a9a9a'
   ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
@@ -336,7 +336,7 @@ export function makeQuoteCard(
     ctx.fillStyle = '#A79E8D'
     ctx.save()
     ctx.letterSpacing = '8px'
-    ctx.fillText('BOOKBLOOM', W / 2, 150)
+    ctx.fillText('GYEOL', W / 2, 150)
     ctx.restore()
 
     ctx.font = paper(800, size + 4)
@@ -359,7 +359,7 @@ export function makeQuoteCard(
     ctx.fillText(`${book.author ? book.author + ' ' : ''}『${book.title}』`, W / 2, y + 66)
     ctx.font = sans(800, 28)
     ctx.fillStyle = '#4E9C6F'
-    ctx.fillText('🌱 북블룸 · skdyddns-max.github.io/bookbloom', W / 2, H - 70)
+    ctx.fillText('🌱 결 · skdyddns-max.github.io/bookbloom', W / 2, H - 70)
     return canvas.toDataURL('image/png')
   }
 
@@ -412,7 +412,7 @@ export function makeQuoteCard(
     ctx.fillText(`${book.author ? book.author + ' ' : ''}『${book.title}』`, W / 2, y + 40)
     ctx.font = sans(800, 27)
     ctx.fillStyle = '#4E9C6F'
-    ctx.fillText('🌱 북블룸', W / 2, y + 88)
+    ctx.fillText('🌱 결', W / 2, y + 88)
     return canvas.toDataURL('image/png')
   }
 
@@ -449,7 +449,7 @@ export function makeQuoteCard(
   }
   ctx.font = sans(700, 28)
   ctx.fillStyle = '#6DBE8A'
-  ctx.fillText('🌱 북블룸', W / 2, H - 72)
+  ctx.fillText('🌱 결', W / 2, H - 72)
   ctx.font = sans(400, 24)
   ctx.fillStyle = 'rgba(247,244,236,0.45)'
   ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 40)

@@ -1,4 +1,4 @@
-/** 북블룸 커뮤니티 카카오 오픈채팅 (독서기록·함께읽기 Book_bloom) */
+/** 결 커뮤니티 카카오 오픈채팅 (독서기록·함께읽기 Book_bloom) */
 export const OPEN_CHAT_URL = 'https://open.kakao.com/o/gd4EllDi'
 
 /** 알라딘 구매 링크 — 프록시(op=buy)가 TTB 키를 붙여 상품페이지로 리다이렉트.

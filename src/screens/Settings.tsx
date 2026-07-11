@@ -81,7 +81,7 @@ export function Settings() {
       <section className="card">
         <h2>커뮤니티</h2>
         <p className="muted small">
-          오늘의 한 문장, 완독 인증이 오가는 북블룸 오픈채팅방이 있어요. 함께 읽는 이웃을 만나보세요.
+          오늘의 한 문장, 완독 인증이 오가는 결 오픈채팅방이 있어요. 함께 읽는 이웃을 만나보세요.
         </p>
         <a className="btn btn-kakao" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
           💬 카카오 오픈채팅 참여하기
@@ -118,7 +118,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        북블룸 v0.22 · 기록이 쌓이면, 습관이 피어나요 🌱
+        결 v0.23 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )

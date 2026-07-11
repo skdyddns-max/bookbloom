@@ -108,9 +108,9 @@ export function Home({
     <div className="screen screen-hero">
       <header className="hero">
         <div className="hero-topline">
-          <p className="hero-eyebrow">BOOKBLOOM</p>
+          <p className="hero-eyebrow">GYEOL</p>
           <p className="hero-greeting">
-            {streak === 0 ? '오늘 한 쪽부터 다시 피어나요' : '오늘도 한 쪽, 마음이 자라요'}
+            {streak === 0 ? '오늘 한 쪽부터, 다시' : '오늘도 한 쪽, 결이 쌓여요'}
           </p>
         </div>
 

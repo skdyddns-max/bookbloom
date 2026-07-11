@@ -8,9 +8,9 @@ export function Welcome({ onStart, onSkip }: { onStart: () => void; onSkip: () =
   return (
     <div className="welcome">
       <div className="welcome-inner">
-        <p className="hero-eyebrow">BOOKBLOOM</p>
+        <p className="hero-eyebrow">GYEOL</p>
         <h1 className="welcome-title">
-          기록이 쌓이면,<br />습관이 피어나요
+          한 줄씩 쌓이면,<br />나의 결이 됩니다
         </h1>
         <p className="welcome-sub">가입도 설치도 없이, 오늘 한 쪽부터.</p>
 

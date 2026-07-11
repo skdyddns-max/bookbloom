@@ -1,11 +1,11 @@
 {
-  "name": "북블룸 — 독서관리",
-  "short_name": "북블룸",
-  "description": "기록이 쌓이면 습관이 되는 독서관리",
+  "name": "결 — 독서 기록",
+  "short_name": "결",
+  "description": "한 줄씩 쌓이는 나의 독서 기록",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#FAF7F0",
-  "theme_color": "#6DBE8A",
+  "background_color": "#faf5ea",
+  "theme_color": "#faf5ea",
   "lang": "ko",
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" },

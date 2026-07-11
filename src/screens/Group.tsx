@@ -61,7 +61,7 @@ function JoinOrCreate({ onDone }: { onDone: (s: GroupSession) => void }) {
       </div>
 
       <a className="btn btn-kakao" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
-        💬 아직 모임이 없다면? 북블룸 오픈채팅 구경하기
+        💬 아직 모임이 없다면? 결 오픈채팅 구경하기
       </a>
 
       <div className="seg">
@@ -550,7 +550,7 @@ export function Group() {
         ↺ 새로고침
       </button>
       <a className="btn-text center group-openchat" href={OPEN_CHAT_URL} target="_blank" rel="noreferrer">
-        💬 북블룸 오픈채팅방에서 더 많은 이웃 만나기
+        💬 결 오픈채팅방에서 더 많은 이웃 만나기
       </a>
     </div>
   )

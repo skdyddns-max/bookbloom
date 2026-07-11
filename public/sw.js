@@ -1,4 +1,4 @@
-/* 북블룸 서비스 워커 — 앱 셸 캐시 (network-first, 오프라인 폴백) */
+/* 결 서비스 워커 — 앱 셸 캐시 (network-first, 오프라인 폴백) */
 const CACHE = 'bookbloom-v1'
 
 self.addEventListener('install', (e) => {
