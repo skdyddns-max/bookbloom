@@ -1716,3 +1716,143 @@ textarea {
 .center {
   text-align: center;
 }
+
+/* ── 리딩 페르소나 카드 ── */
+.persona-card {
+  text-align: center;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(78, 156, 111, 0.10), transparent 60%),
+    var(--card);
+  border: 1px solid var(--line);
+}
+.persona-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.persona-mark {
+  font-size: 52px;
+  line-height: 1.1;
+  margin: 10px 0 4px;
+}
+.persona-name {
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 2px 0 6px;
+  word-break: keep-all;
+}
+.persona-tagline {
+  color: var(--gold);
+  font-size: 14px;
+  margin: 0 0 12px;
+  word-break: keep-all;
+}
+.persona-line {
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--green-dark);
+  line-height: 1.6;
+  word-break: keep-all;
+  margin: 0 auto 16px;
+  max-width: 21em;
+  position: relative;
+  padding-top: 16px;
+}
+.persona-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--green);
+}
+.persona-traits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.persona-chip {
+  background: rgba(78, 156, 111, 0.12);
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+}
+.persona-genres {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 18px;
+  text-align: left;
+}
+.persona-genre-row {
+  display: grid;
+  grid-template-columns: 84px 1fr 40px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--gold);
+}
+.persona-genre-row .pg-label { word-break: keep-all; }
+.persona-genre-row .pg-bar {
+  height: 8px;
+  background: var(--track);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.persona-genre-row .pg-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+}
+.persona-genre-row .pg-val { text-align: right; font-variant-numeric: tabular-nums; }
+.persona-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 16px 0;
+  margin-bottom: 14px;
+  border-top: 1px solid var(--line);
+}
+.persona-stats > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.persona-stats b {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  font-weight: 800;
+  word-break: keep-all;
+}
+.persona-stats span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.persona-foot { margin-top: 10px; }
+.persona-locked .persona-progress {
+  height: 8px;
+  background: var(--track);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 14px;
+}
+.persona-locked .persona-progress > span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}

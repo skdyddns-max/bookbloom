@@ -39,6 +39,33 @@ function wrapText(
   return lines
 }
 
+/** 어절(공백) 단위로 줄바꿈 — 단어 중간 끊김 방지. 넘치면 …로 클램프 */
+function wrapWords(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number,
+): string[] {
+  const words = text.split(' ')
+  const lines: string[] = []
+  let line = ''
+  for (const w of words) {
+    const next = line ? line + ' ' + w : w
+    if (line && ctx.measureText(next).width > maxWidth) {
+      lines.push(line)
+      line = w
+      if (lines.length === maxLines) {
+        lines[maxLines - 1] = lines[maxLines - 1].replace(/.$/, '…')
+        return lines
+      }
+    } else {
+      line = next
+    }
+  }
+  if (line) lines.push(line)
+  return lines
+}
+
 /** 완독 공유 카드(1080x1350)를 PNG dataURL로 생성. 표지는 CORS 문제로 텍스트 중심 디자인 */
 export function makeShareCard(book: Book): string {
   const W = 1080
@@ -200,6 +227,138 @@ export function makeYearCard(s: YearSummary): string {
   ctx.fillStyle = GREEN
   ctx.fillText('🌱 결', W / 2, H - 78)
   ctx.font = font(400, 26)
+  ctx.fillStyle = '#9a9a9a'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
+
+  return canvas.toDataURL('image/png')
+}
+
+export interface PersonaCardData {
+  mark: string
+  name: string
+  tagline: string
+  line: string
+  traits: string[]
+  stats: { doneCount: number; topGenre: string; bestStreak: number; quotes: number }
+}
+
+/** 리딩 페르소나 카드(1080x1350) — 페이퍼 에디션 톤, 인스타 공유용 */
+export function makePersonaCard(p: PersonaCardData): string {
+  const W = 1080
+  const H = 1350
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+  ctx.textAlign = 'center'
+
+  // 웜 종이 + 미묘한 그린 글로우
+  ctx.fillStyle = '#FAF6EC'
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W / 2, 300, 0, W / 2, 300, 620)
+  glow.addColorStop(0, 'rgba(78,156,111,0.10)')
+  glow.addColorStop(1, 'rgba(78,156,111,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  // 상단 라벨
+  ctx.font = paper(600, 26)
+  ctx.fillStyle = '#A79E8D'
+  ctx.save()
+  ctx.letterSpacing = '10px'
+  ctx.fillText('나의 리딩 페르소나', W / 2, 150)
+  ctx.restore()
+
+  // 마크
+  ctx.font = '120px "Apple Color Emoji", sans-serif'
+  ctx.fillText(p.mark, W / 2, 320)
+
+  // 이름 (마루부리)
+  ctx.fillStyle = '#211D16'
+  ctx.font = maru('MaruBuriBold', 78)
+  const nameLines = wrapText(ctx, p.name, W - 200, 2)
+  let y = 430
+  for (const l of nameLines) {
+    ctx.fillText(l, W / 2, y)
+    y += 96
+  }
+
+  // 태그라인
+  ctx.font = sans(500, 38)
+  ctx.fillStyle = '#6f6858'
+  ctx.fillText(p.tagline, W / 2, y + 6)
+  y += 90
+
+  // 결 문장 (인용 톤)
+  ctx.strokeStyle = '#4E9C6F'
+  ctx.lineWidth = 4
+  ctx.beginPath()
+  ctx.moveTo(W / 2 - 44, y + 8)
+  ctx.lineTo(W / 2 + 44, y + 8)
+  ctx.stroke()
+  y += 70
+  ctx.font = maru('MaruBuriSemiBold', 46)
+  ctx.fillStyle = '#2c3f33'
+  const quoteLines = wrapWords(ctx, p.line, W - 200, 3)
+  for (const l of quoteLines) {
+    ctx.fillText(l, W / 2, y)
+    y += 66
+  }
+  y += 34
+
+  // 성향 칩
+  if (p.traits.length) {
+    ctx.font = sans(600, 32)
+    const gap = 26
+    const padX = 34
+    const hgt = 66
+    const widths = p.traits.map((t) => ctx.measureText(t).width + padX * 2)
+    const totalW = widths.reduce((s, w) => s + w, 0) + gap * (p.traits.length - 1)
+    let x = (W - totalW) / 2
+    for (let i = 0; i < p.traits.length; i++) {
+      const w = widths[i]
+      ctx.fillStyle = 'rgba(78,156,111,0.12)'
+      ctx.beginPath()
+      ctx.roundRect(x, y, w, hgt, hgt / 2)
+      ctx.fill()
+      ctx.fillStyle = '#3d7a55'
+      ctx.fillText(p.traits[i], x + w / 2, y + 44)
+      x += w + gap
+    }
+    y += hgt
+  }
+  y += 70
+
+  // 지표 4칸
+  const stats: Array<[string, string]> = [
+    [String(p.stats.doneCount), '완독'],
+    [p.stats.topGenre, '최애 분야'],
+    [`${p.stats.bestStreak}일`, '최장 연속'],
+    [String(p.stats.quotes), '모은 문장'],
+  ]
+  ctx.strokeStyle = '#e6ddcb'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.moveTo(80, y)
+  ctx.lineTo(W - 80, y)
+  ctx.stroke()
+  y += 70
+  const colW = (W - 160) / 4
+  for (let i = 0; i < stats.length; i++) {
+    const cx = 80 + colW * i + colW / 2
+    ctx.fillStyle = '#211D16'
+    ctx.font = maru('MaruBuriBold', stats[i][0].length > 4 ? 34 : 52)
+    ctx.fillText(stats[i][0], cx, y)
+    ctx.font = sans(500, 26)
+    ctx.fillStyle = '#9a9184'
+    ctx.fillText(stats[i][1], cx, y + 44)
+  }
+
+  // 푸터
+  ctx.font = sans(700, 38)
+  ctx.fillStyle = '#4E9C6F'
+  ctx.fillText('🌱 결', W / 2, H - 78)
+  ctx.font = sans(400, 26)
   ctx.fillStyle = '#9a9a9a'
   ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
 

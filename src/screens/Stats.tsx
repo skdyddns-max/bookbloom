@@ -2,8 +2,88 @@ import { useState } from 'react'
 import { useAppData } from '../store'
 import { calcStreak, maxStreak, pagesReadByLog } from '../utils'
 import { BarChart, Donut, MonthCalendar } from '../components'
-import { makeYearCard, ensureCardFonts } from '../lib/sharecard'
+import { makeYearCard, makePersonaCard, ensureCardFonts } from '../lib/sharecard'
 import { computeBadges } from '../lib/badges'
+import { computePersona } from '../lib/persona'
+
+function PersonaCard() {
+  const data = useAppData()
+  const p = computePersona(data)
+
+  const save = async () => {
+    await ensureCardFonts()
+    const url = makePersonaCard({
+      mark: p.mark,
+      name: p.name,
+      tagline: p.tagline,
+      line: p.line,
+      traits: p.traits.map((t) => t.label),
+      stats: p.stats,
+    })
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `결-리딩페르소나.png`
+    a.click()
+  }
+
+  if (!p.ready) {
+    const pct = Math.round((p.progress.have / p.progress.need) * 100)
+    return (
+      <section className="card persona-card persona-locked">
+        <span className="persona-eyebrow">나의 리딩 페르소나</span>
+        <div className="persona-mark">🌱</div>
+        <h2 className="persona-name">곧 당신의 결이 드러나요</h2>
+        <p className="muted small">
+          책 {p.progress.need}권을 읽거나 기록하면, 당신만의 독서 성향이 카드로 그려져요.
+          지금은 {p.progress.have} / {p.progress.need}.
+        </p>
+        <div className="persona-progress">
+          <span style={{ width: `${pct}%` }} />
+        </div>
+      </section>
+    )
+  }
+
+  return (
+    <section className="card persona-card">
+      <span className="persona-eyebrow">나의 리딩 페르소나</span>
+      <div className="persona-mark">{p.mark}</div>
+      <h2 className="persona-name">{p.name}</h2>
+      <p className="persona-tagline">{p.tagline}</p>
+      <p className="persona-line">“{p.line}”</p>
+
+      {p.traits.length > 0 && (
+        <div className="persona-traits">
+          {p.traits.map((t) => (
+            <span key={t.key} className="persona-chip" title={t.desc}>{t.label}</span>
+          ))}
+        </div>
+      )}
+
+      {p.genres.length > 0 && (
+        <div className="persona-genres">
+          {p.genres.map((g) => (
+            <div key={g.bucket} className="persona-genre-row">
+              <span className="pg-label">{g.label}</span>
+              <span className="pg-bar"><span style={{ width: `${Math.round(g.ratio * 100)}%` }} /></span>
+              <span className="pg-val">{Math.round(g.ratio * 100)}%</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="persona-stats">
+        <div><b>{p.stats.doneCount}</b><span>완독</span></div>
+        <div><b>{p.stats.topGenre}</b><span>최애 분야</span></div>
+        <div><b>{p.stats.bestStreak}일</b><span>최장 연속</span></div>
+        <div><b>{p.stats.quotes}</b><span>모은 문장</span></div>
+      </div>
+
+      <button className="btn btn-green" onClick={save}>페르소나 카드 저장 (공유용)</button>
+      <p className="muted small center persona-foot">읽을수록 페르소나는 계속 자라요.</p>
+    </section>
+  )
+}
 
 function monthStr(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
@@ -106,6 +186,8 @@ export function Stats() {
           <span className="stat-label">연속 기록일</span>
         </div>
       </div>
+
+      <PersonaCard />
 
       <section className="card">
         <div className="card-title-row">
