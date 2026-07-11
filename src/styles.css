@@ -1923,3 +1923,86 @@ textarea {
 }
 .challenge-social { word-break: keep-all; }
 .challenge-leave { white-space: nowrap; padding: 0; }
+
+/* ── 지난 주 되돌아보기 리추얼 ── */
+.weekreview-card {
+  background:
+    radial-gradient(130% 90% at 100% 0%, rgba(224,122,85,0.10), transparent 55%),
+    var(--card);
+}
+.weekreview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.weekreview-eyebrow {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.weekreview-close { padding: 0; white-space: nowrap; }
+.weekreview-title {
+  font-size: 20px;
+  color: var(--ink);
+  margin: 6px 0 12px;
+}
+.weekreview-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.weekreview-chip {
+  background: var(--green-soft);
+  color: var(--green-dark);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+.weekreview-quote {
+  font-size: 15px;
+  color: var(--green-dark);
+  line-height: 1.6;
+  word-break: keep-all;
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
+  margin: 0 0 14px;
+}
+.weekreview-save { align-self: flex-start; }
+
+/* ── 설정 토글 ── */
+.setting-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.setting-row-text { flex: 1; }
+.setting-row-text h2 { margin-bottom: 4px; }
+.toggle {
+  flex-shrink: 0;
+  width: 48px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--track);
+  border: none;
+  padding: 3px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 2px;
+}
+.toggle-on { background: var(--green); }
+.toggle-knob {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  transform: translateX(0);
+  transition: transform 0.2s ease;
+}
+.toggle-on .toggle-knob { transform: translateX(20px); }

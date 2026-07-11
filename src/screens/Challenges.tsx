@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAppData } from '../store'
 import { todayStr } from '../utils'
 import {
-  activeChallenges, challengeProgress, challengeApi, isJoined,
+  activeChallenges, challengeProgress, challengeApi, isJoined, recordCompletion,
   type Challenge, type ChallengeStats,
 } from '../lib/challenges'
 import { getGroupSession } from '../lib/group'
@@ -21,9 +21,10 @@ function ChallengeCard({ c }: { c: Challenge }) {
     return () => { alive = false }
   }, [c.id])
 
-  // 참여 중이면 진도를 서버에 반영(소셜 완주 집계)
+  // 참여 중이면 진도를 서버에 반영(소셜 완주 집계) + 완주 시 뱃지 영구 기록
   useEffect(() => {
     if (joined) challengeApi.progress(c, prog).then((s) => s && setStats(s))
+    if (prog.done) recordCompletion(c.id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [joined, prog.value, prog.done])
 

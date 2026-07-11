@@ -5,6 +5,49 @@ import { OPEN_CHAT_URL } from '../config'
 import {
   syncAvailable, getSyncState, createSync, linkSync, clearSyncState,
 } from '../lib/cloudsync'
+import {
+  notificationsSupported, reviewNotifyOn, enableReviewNotify, disableReviewNotify,
+} from '../lib/weekly'
+
+function WeeklyNotify() {
+  const [on, setOn] = useState(reviewNotifyOn())
+  const [msg, setMsg] = useState('')
+  if (!notificationsSupported) return null
+
+  const toggle = async () => {
+    if (on) {
+      disableReviewNotify()
+      setOn(false)
+      setMsg('')
+    } else {
+      const ok = await enableReviewNotify()
+      setOn(ok)
+      setMsg(ok ? '' : '브라우저에서 알림이 차단돼 있어요. 사이트 알림 권한을 허용해 주세요.')
+    }
+  }
+
+  return (
+    <section className="card">
+      <div className="setting-row">
+        <div className="setting-row-text">
+          <h2>주간 되돌아보기 알림</h2>
+          <p className="muted small">
+            새로운 한 주가 시작되면, 앱을 열 때 지난주 독서 요약을 살짝 알려드려요.
+          </p>
+        </div>
+        <button
+          className={`toggle ${on ? 'toggle-on' : ''}`}
+          role="switch"
+          aria-checked={on}
+          onClick={toggle}
+        >
+          <span className="toggle-knob" />
+        </button>
+      </div>
+      {msg && <p className="muted small">{msg}</p>}
+    </section>
+  )
+}
 
 function CloudSync() {
   const [state, setState] = useState(getSyncState())
@@ -179,6 +222,8 @@ export function Settings() {
 
       <CloudSync />
 
+      <WeeklyNotify />
+
       <section className="card">
         <h2>데이터</h2>
         <p className="muted small">
@@ -209,7 +254,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        결 v0.27 · 한 줄씩, 나의 결이 쌓여요 🌱
+        결 v0.28 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )

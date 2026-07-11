@@ -2,8 +2,9 @@
  * 정의는 코드에 편성(에디토리얼), 진도는 사용자 자기 기록에서 자동 산출,
  * 참여자 수는 Supabase에 익명 집계(소셜 증거). */
 import type { AppData } from '../types'
+import type { Badge } from './badges'
 import { genreBucket } from './questions'
-import { pagesReadByLog } from '../utils'
+import { pagesReadByLog, todayStr } from '../utils'
 import { supabase, hasSupabase } from './supabase'
 
 export type ChallengeKind = 'book' | 'count-quote' | 'count-done' | 'genre-breadth'
@@ -109,6 +110,40 @@ export function challengeProgress(c: Challenge, data: AppData): ChallengeProgres
 
 export function activeChallenges(today: string): Challenge[] {
   return CHALLENGES.filter((c) => today >= c.start && today <= c.end)
+}
+
+// ── 완주 기록(영구) — 챌린지 기간·창이 지나도 뱃지는 남는다 ──
+const DONE_KEY = 'bookbloom_challenge_done' // { [id]: 'YYYY-MM-DD' }
+
+export function getCompletedChallenges(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(DONE_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+/** 완주 조건을 만족하면 최초 1회 기록. 새로 기록됐으면 true */
+export function recordCompletion(id: string): boolean {
+  const map = getCompletedChallenges()
+  if (map[id]) return false
+  map[id] = todayStr()
+  try {
+    localStorage.setItem(DONE_KEY, JSON.stringify(map))
+  } catch { /* private mode */ }
+  return true
+}
+
+/** 완주한 챌린지 → 뱃지 목록 (Stats 뱃지 그리드에 노출) */
+export function challengeBadges(): Badge[] {
+  const done = getCompletedChallenges()
+  return CHALLENGES.map((c) => ({
+    key: `ch-${c.id}`,
+    icon: c.emoji,
+    title: c.title.replace(/^[0-9]+월 /, '').split(' · ')[0],
+    desc: `결 챌린지 · ${c.subtitle}`,
+    earned: !!done[c.id],
+    progress: done[c.id] ? undefined : '진행 중',
+  })).filter((b) => b.earned) // 완주한 것만 노출(빈 뱃지 방지)
 }
 
 // ── 참여 상태 (로컬) + 익명 집계 (Supabase) ──

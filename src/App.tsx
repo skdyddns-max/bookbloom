@@ -9,8 +9,10 @@ import { Settings } from './screens/Settings'
 import { Welcome } from './screens/Welcome'
 import { Group } from './screens/Group'
 import { Celebration } from './screens/Celebration'
-import { onCelebrate } from './store'
+import { onCelebrate, getData } from './store'
 import { startSyncEngine, pullMerge } from './lib/cloudsync'
+import { runWeeklyReminder } from './lib/weekly'
+import { todayStr } from './utils'
 
 const ONBOARD_KEY = 'bookbloom_onboarded'
 
@@ -55,6 +57,7 @@ export default function App() {
   useEffect(() => {
     startSyncEngine()
     pullMerge() // 앱 시작 시 다른 기기 변경 받아오기
+    runWeeklyReminder(getData(), todayStr()) // 새 주면 지난주 요약 알림(선택)
   }, [])
 
   const dismissWelcome = () => {

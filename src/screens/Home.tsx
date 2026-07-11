@@ -4,7 +4,61 @@ import { addDays, calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, c
 import { BookCover, ProgressBar } from '../components'
 import { readingPrompt } from '../lib/questions'
 import { makeWeeklyCard, ensureCardFonts } from '../lib/sharecard'
+import { lastWeekReview, weekStartOf, isReviewSeen, markReviewSeen } from '../lib/weekly'
 import type { Book } from '../types'
+
+function WeeklyReview() {
+  const data = useAppData()
+  const today = todayStr()
+  const review = lastWeekReview(data, today)
+  const [dismissed, setDismissed] = useState(() => (review ? isReviewSeen(review.start) : true))
+
+  if (!review || dismissed) return null
+
+  const close = () => {
+    markReviewSeen(review.start)
+    setDismissed(true)
+  }
+  const save = async () => {
+    await ensureCardFonts()
+    const items = review.items.length
+      ? review.items
+      : [{ quote: `${review.daysRead}일 기록 · ${review.pages}쪽을 읽은 한 주`, title: '결' }]
+    const url = makeWeeklyCard(review.range, items)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = '결-지난주-되돌아보기.png'
+    a.click()
+  }
+
+  const chips = [
+    review.daysRead > 0 ? `${review.daysRead}일 기록` : '',
+    review.pages > 0 ? `${review.pages.toLocaleString()}쪽` : '',
+    review.done > 0 ? `완독 ${review.done}권` : '',
+    review.quotes > 0 ? `밑줄 ${review.quotes}개` : '',
+  ].filter(Boolean)
+
+  return (
+    <section className="card weekreview-card">
+      <div className="weekreview-head">
+        <span className="weekreview-eyebrow">지난 주 되돌아보기 · {review.range}</span>
+        <button className="btn-text muted weekreview-close" onClick={close}>닫기</button>
+      </div>
+      <h2 className="weekreview-title serif">지난 주, 이렇게 읽으셨어요</h2>
+      <div className="weekreview-chips">
+        {chips.map((c) => (
+          <span key={c} className="weekreview-chip">{c}</span>
+        ))}
+      </div>
+      {review.items.length > 0 && (
+        <p className="weekreview-quote serif">“{review.items[0].quote}”</p>
+      )}
+      <button className="btn btn-outline btn-sm weekreview-save" onClick={save}>
+        되돌아보기 카드 저장
+      </button>
+    </section>
+  )
+}
 
 function WeeklyUnderline({ weekStart, weekEnd }: { weekStart: string; weekEnd: string }) {
   const data = useAppData()
@@ -214,6 +268,8 @@ export function Home({
           </p>
         </div>
       </header>
+
+      <WeeklyReview />
 
       {showRest && (
         <div className="card rest-banner">

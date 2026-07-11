@@ -5,6 +5,7 @@ import { BarChart, Donut, MonthCalendar } from '../components'
 import { makeYearCard, makePersonaCard, ensureCardFonts } from '../lib/sharecard'
 import { computeBadges } from '../lib/badges'
 import { computePersona } from '../lib/persona'
+import { challengeBadges } from '../lib/challenges'
 
 function PersonaCard() {
   const data = useAppData()
@@ -128,7 +129,7 @@ export function Stats() {
 
   const streak = calcStreak(data.logs)
   const goal = data.settings.yearlyGoal
-  const badges = computeBadges(data)
+  const badges = [...computeBadges(data), ...challengeBadges()]
   const earnedCount = badges.filter((b) => b.earned).length
 
   // 최근 6개월 추이 (읽은 쪽수 + 완독 권수)
