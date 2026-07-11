@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { useAppData, store } from '../store'
 import { BookCover, ProgressBar, StarRating, CATEGORIES } from '../components'
 import { fmtDate, todayStr, uid, clamp } from '../utils'
-import { makeShareCard, makeQuoteCard } from '../lib/sharecard'
+import { makeShareCard, makeQuoteCard, QUOTE_STYLES, type QuoteStyle } from '../lib/sharecard'
 import { ocrImage } from '../lib/ocr'
 import { getGroupSession, setPostDraft } from '../lib/group'
 import { hasSupabase } from '../lib/supabase'
@@ -25,6 +25,7 @@ export function BookDetail({
   const [noteText, setNoteText] = useState('')
   const [noteType, setNoteType] = useState<'note' | 'quote'>('quote')
   const [qIndex, setQIndex] = useState(0)
+  const [cardPicker, setCardPicker] = useState<string | null>(null)
   const [ocrState, setOcrState] = useState<'idle' | 'busy'>('idle')
   const [ocrPct, setOcrPct] = useState(0)
   const [editMeta, setEditMeta] = useState(false)
@@ -337,12 +338,7 @@ export function BookDetail({
                 {n.type === 'quote' && (
                   <button
                     className="btn-text"
-                    onClick={() => {
-                      const a = document.createElement('a')
-                      a.href = makeQuoteCard(book, n.content)
-                      a.download = `bookbloom-문장-${book.title.slice(0, 12)}.png`
-                      a.click()
-                    }}
+                    onClick={() => setCardPicker(cardPicker === n.id ? null : n.id)}
                   >
                     카드 저장
                   </button>
@@ -350,6 +346,28 @@ export function BookDetail({
                 <button className="btn-text danger" onClick={() => store.removeNote(n.id)}>삭제</button>
               </span>
             </div>
+            {cardPicker === n.id && (
+              <div className="card-style-picker">
+                <span className="muted small">스타일 선택</span>
+                <div className="card-style-row">
+                  {QUOTE_STYLES.map((s) => (
+                    <button
+                      key={s.key}
+                      className={`card-style-btn card-style-${s.key}`}
+                      onClick={() => {
+                        const a = document.createElement('a')
+                        a.href = makeQuoteCard(book, n.content, s.key as QuoteStyle)
+                        a.download = `bookbloom-문장-${s.key}-${book.title.slice(0, 10)}.png`
+                        a.click()
+                        setCardPicker(null)
+                      }}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </section>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#2a2a2a}
+  .card{width:1080px;height:1350px;position:relative;overflow:hidden;font-family:'Pretendard Variable',sans-serif}
+  .serif{font-family:'Noto Serif KR',serif}
+
+  /* ===== Style 1: 미니멀 라이트 (Apple/Notion 감성) ===== */
+  #s1{background:#FBF9F4;display:flex;flex-direction:column;justify-content:center;padding:120px 110px;color:#1A1A1A}
+  #s1 .eyebrow{font-size:26px;letter-spacing:0.4em;font-weight:700;color:#B0A99A;margin-bottom:70px}
+  #s1 .q{font-family:'Noto Serif KR',serif;font-weight:700;font-size:96px;line-height:1.5;letter-spacing:-0.01em}
+  #s1 .rule{width:80px;height:3px;background:#1A1A1A;margin:64px 0 34px}
+  #s1 .src{font-size:34px;color:#8a8375;font-weight:500}
+  #s1 .brand{position:absolute;bottom:90px;left:110px;font-size:30px;font-weight:800;color:#6DBE8A}
+
+  /* ===== Style 2: 그라디언트 메시 + 글래스 (2025 트렌드) ===== */
+  #s2{
+    background:
+      radial-gradient(at 18% 20%, #BDE9CE 0px, transparent 48%),
+      radial-gradient(at 82% 14%, #FFE1C9 0px, transparent 46%),
+      radial-gradient(at 78% 82%, #CFE0FF 0px, transparent 46%),
+      radial-gradient(at 22% 86%, #F3E6B8 0px, transparent 48%),
+      #FBF7EE;
+    display:flex;align-items:center;justify-content:center;padding:90px}
+  #s2 .glass{
+    width:100%;padding:100px 80px;border-radius:44px;text-align:center;
+    background:rgba(255,255,255,0.38);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+    border:1.5px solid rgba(255,255,255,0.7);box-shadow:0 30px 80px rgba(80,90,70,0.18)}
+  #s2 .mark{font-family:'Noto Serif KR',serif;font-size:150px;line-height:0.6;color:#4E9C6F;height:96px}
+  #s2 .q{font-family:'Noto Serif KR',serif;font-weight:700;font-size:82px;line-height:1.55;color:#243B2E;margin-top:24px}
+  #s2 .src{margin-top:52px;font-size:32px;color:#5c6b5f;font-weight:600}
+  #s2 .brand{margin-top:20px;font-size:28px;font-weight:800;color:#4E9C6F}
+
+  /* ===== Style 3: 표지 피처드 (Spotify Wrapped 감성) ===== */
+  #s3{background:linear-gradient(165deg,#3B2A4A 0%,#1C1526 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:110px 90px;color:#fff}
+  #s3 .glow{position:absolute;inset:0;background:radial-gradient(50% 34% at 50% 22%,rgba(200,150,255,0.28) 0%,transparent 60%);pointer-events:none}
+  #s3 .cover{width:360px;height:520px;object-fit:cover;border-radius:14px;box-shadow:0 40px 90px rgba(0,0,0,0.55);position:relative}
+  #s3 .q{position:relative;font-family:'Noto Serif KR',serif;font-weight:700;font-size:66px;line-height:1.55;text-align:center;margin-top:70px}
+  #s3 .src{position:relative;margin-top:44px;font-size:30px;color:rgba(255,255,255,0.65);font-weight:500}
+  #s3 .brand{position:absolute;bottom:80px;font-size:28px;font-weight:800;color:#C9A9FF}
+</style>
+</head>
+<body>
+
+<div class="card" id="s1">
+  <div class="eyebrow">BOOKBLOOM</div>
+  <div class="q">가장 중요한 건<br/>눈에 보이지 않아.</div>
+  <div class="rule"></div>
+  <div class="src">생텍쥐페리 『어린 왕자』</div>
+  <div class="brand">🌱 북블룸</div>
+</div>
+
+<div class="card" id="s2">
+  <div class="glass">
+    <div class="mark">“</div>
+    <div class="q">가장 중요한 건<br/>눈에 보이지 않아.</div>
+    <div class="src">생텍쥐페리 『어린 왕자』</div>
+    <div class="brand">🌱 북블룸</div>
+  </div>
+</div>
+
+<div class="card" id="s3">
+  <div class="glow"></div>
+  <img class="cover" src="https://image.aladin.co.kr/product/26/0/cover500/s452139198_1.jpg" crossorigin="anonymous" />
+  <div class="q">새는 알에서 나오려고<br/>투쟁한다.</div>
+  <div class="src">헤르만 헤세 『데미안』</div>
+  <div class="brand">🌱 북블룸</div>
+</div>
+
+</body>
+</html>

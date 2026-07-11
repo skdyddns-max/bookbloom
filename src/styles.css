@@ -1281,6 +1281,42 @@ textarea {
   gap: 10px;
   align-items: center;
 }
+.card-style-picker {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-style-row {
+  display: flex;
+  gap: 8px;
+}
+.card-style-btn {
+  flex: 1;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 8px;
+  font-size: 13px;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+}
+.card-style-forest {
+  background: linear-gradient(135deg, #1e3329, #16281f);
+  color: #f7f4ec;
+  border-color: transparent;
+}
+.card-style-light {
+  background: #fbf9f4;
+  color: #1a1a1a;
+}
+.card-style-mesh {
+  background: linear-gradient(135deg, #bde9ce, #ffe1c9 55%, #cfe0ff);
+  color: #243b2e;
+  border-color: transparent;
+}
 
 /* ---------- 독서 뱃지 ---------- */
 .badge-grid {
