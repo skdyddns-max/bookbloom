@@ -33,6 +33,38 @@ const COMMON = [
   '누구에게 이 책을 권하고 싶나요? 왜요?',
 ]
 
+// ---- 읽는 중 생각거리 (진도에 따라: 초반/중반/후반) ----
+const READING_EARLY = [
+  '지금까지 가장 눈길이 가는 인물이나 문장은 무엇인가요?',
+  '이 책이 시작하며 나에게 던진 질문은 무엇일까요?',
+  '왜 지금 이 책을 펼쳤는지, 떠오르는 이유가 있나요?',
+  '도입부의 분위기를 한 단어로 고른다면?',
+  '첫 장면이 어떤 기대를 만들었나요?',
+]
+const READING_MID = [
+  '여기서 멈춘다면, 다음엔 무슨 일이 일어날 것 같나요?',
+  '방금 읽은 부분에서 밑줄 긋고 싶은 문장이 있었나요?',
+  '나라면 지금 인물과 다르게 했을 것 같은 순간이 있나요?',
+  '읽다가 내 삶의 한 장면이 겹쳐 떠오른 적 있나요?',
+  '작가가 지금 나를 어디로 데려가려는 것 같나요?',
+  '지금 이 책의 온도를 한 단어로 표현하면?',
+]
+const READING_LATE = [
+  '결말이 어떻게 되길 바라나요?',
+  '이 책이 나에게 남기려는 한 가지는 무엇일까요?',
+  '다 읽고 나면 누구에게 가장 먼저 이야기하고 싶나요?',
+  '지금, 책을 덮고 싶지 않은 이유가 있다면?',
+  '여기까지 오며 처음 생각과 달라진 게 있나요?',
+]
+
+/** 읽는 중 진도(%)에 맞는 생각거리 — bookId 기반 결정적, index로 순환 */
+export function readingPrompt(bookId: string, pct: number, index: number): string {
+  const pool = pct < 34 ? READING_EARLY : pct < 67 ? READING_MID : READING_LATE
+  let seed = 0
+  for (const ch of bookId) seed = (seed * 31 + ch.charCodeAt(0)) % 997
+  return pool[(seed + index) % pool.length]
+}
+
 const LITERARY_CATS = ['소설/시/희곡', '에세이', '어린이']
 
 export function questionsFor(category: string): string[] {

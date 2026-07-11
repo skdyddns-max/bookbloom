@@ -7,7 +7,7 @@ import { ocrImage } from '../lib/ocr'
 import { getGroupSession, setPostDraft } from '../lib/group'
 import { hasSupabase } from '../lib/supabase'
 import { aladinBookUrl } from '../config'
-import { pickQuestion } from '../lib/questions'
+import { pickQuestion, readingPrompt } from '../lib/questions'
 import type { BookStatus } from '../types'
 
 export function BookDetail({
@@ -44,6 +44,14 @@ export function BookDetail({
     .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
   const current = logs.reduce((max, l) => Math.max(max, l.page), 0)
   const notes = data.notes.filter((n) => n.bookId === book.id)
+
+  // 읽는 중이면 진도 단계(초/중/후반)에 맞는 생각거리, 다 읽었으면 독후 질문
+  const pct = book.totalPages > 0 ? Math.round((current / book.totalPages) * 100) : 0
+  const isReading = book.status === 'reading'
+  const question = isReading
+    ? readingPrompt(book.id, pct, qIndex)
+    : pickQuestion(book.category, book.id, qIndex)
+  const qTitle = isReading ? '읽는 중 생각거리' : '독후 질문 카드'
 
   const setStatus = (s: BookStatus) => {
     const patch: Parameters<typeof store.updateBook>[1] = { status: s }
@@ -249,17 +257,17 @@ export function BookDetail({
       {book.status !== 'want' && (
         <section className="card question-card">
           <div className="card-title-row">
-            <h2>독후 질문 카드</h2>
+            <h2>{qTitle}</h2>
             <button className="btn-text" onClick={() => setQIndex(qIndex + 1)}>다른 질문 ↻</button>
           </div>
-          <p className="question-text serif">{pickQuestion(book.category, book.id, qIndex)}</p>
+          <p className="question-text serif">{question}</p>
           <div className="note-actions">
             <button
               className="btn btn-outline btn-sm"
               onClick={() => {
                 setNoteType('note')
                 setNoteText((prev) => {
-                  const q = `Q. ${pickQuestion(book.category, book.id, qIndex)}\n\n`
+                  const q = `Q. ${question}\n\n`
                   return prev.startsWith('Q. ') ? q : q + prev
                 })
               }}
@@ -275,7 +283,7 @@ export function BookDetail({
                     bookAuthor: book.author,
                     coverUrl: book.coverUrl ?? '',
                     kind: 'thought',
-                    content: `Q. ${pickQuestion(book.category, book.id, qIndex)}\n\n`,
+                    content: `Q. ${question}\n\n`,
                     rating: 0,
                   })
                   onShareToGroup()

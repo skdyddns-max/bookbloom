@@ -1236,6 +1236,35 @@ textarea {
   gap: 10px;
 }
 
+/* ---------- 읽는 중 생각 한 조각 ---------- */
+.think-chip {
+  margin-top: 10px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--green-soft), #f2ead8);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadein 0.3s ease;
+}
+.think-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green-dark);
+  letter-spacing: 0.02em;
+}
+.think-q {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.think-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
 /* ---------- 독후 질문 카드 ---------- */
 .question-card {
   background: linear-gradient(120deg, var(--green-soft), #f2ead8);

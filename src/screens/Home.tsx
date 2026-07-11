@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { useAppData, store } from '../store'
 import { calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp } from '../utils'
 import { BookCover, ProgressBar } from '../components'
+import { readingPrompt } from '../lib/questions'
 import type { Book } from '../types'
 
-function QuickLog({ book }: { book: Book }) {
+function QuickLog({ book, onOpenBook }: { book: Book; onOpenBook: (id: string) => void }) {
   const data = useAppData()
   const [page, setPage] = useState('')
+  const [think, setThink] = useState<string | null>(null)
   const logs = data.logs.filter((l) => l.bookId === book.id)
   const current = logs.reduce((max, l) => Math.max(max, l.page), 0)
 
@@ -14,8 +16,14 @@ function QuickLog({ book }: { book: Book }) {
     const p = clamp(parseInt(page, 10) || 0, 1, book.totalPages > 0 ? book.totalPages : 99999)
     if (!p) return
     store.addLog({ id: uid(), bookId: book.id, page: p, date: todayStr(), createdAt: new Date().toISOString() })
-    if (book.totalPages > 0 && p >= book.totalPages) {
+    const done = book.totalPages > 0 && p >= book.totalPages
+    if (done) {
       store.updateBook(book.id, { status: 'done', finishedAt: todayStr() })
+      setThink(null)
+    } else {
+      // 진도를 기록한 '그 순간' = 독서 상황 → 읽은 지점에 맞는 생각거리를 띄운다
+      const pct = book.totalPages > 0 ? (p / book.totalPages) * 100 : 0
+      setThink(readingPrompt(book.id, pct, logs.length))
     }
     setPage('')
   }
@@ -36,6 +44,16 @@ function QuickLog({ book }: { book: Book }) {
           기록
         </button>
       </div>
+      {think && (
+        <div className="think-chip">
+          <span className="think-label">🌱 생각 한 조각</span>
+          <p className="think-q serif">{think}</p>
+          <div className="think-actions">
+            <button className="btn-text" onClick={() => onOpenBook(book.id)}>메모하기 →</button>
+            <button className="btn-text muted" onClick={() => setThink(null)}>닫기</button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -144,7 +162,7 @@ export function Home({
                   <span className="muted small">{b.author}</span>
                 </div>
               </div>
-              <QuickLog book={b} />
+              <QuickLog book={b} onOpenBook={onOpenBook} />
             </div>
           ))
         )}
