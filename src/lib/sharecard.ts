@@ -115,7 +115,10 @@ export function makeShareCard(book: Book): string {
 
   ctx.font = font(700, 40)
   ctx.fillStyle = GREEN
-  ctx.fillText('🌱 북블룸', W / 2, H - 60)
+  ctx.fillText('🌱 북블룸', W / 2, H - 78)
+  ctx.font = font(400, 26)
+  ctx.fillStyle = '#9a9a9a'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
 
   return canvas.toDataURL('image/png')
 }
@@ -195,7 +198,10 @@ export function makeYearCard(s: YearSummary): string {
 
   ctx.font = font(700, 40)
   ctx.fillStyle = GREEN
-  ctx.fillText('🌱 북블룸', W / 2, H - 60)
+  ctx.fillText('🌱 북블룸', W / 2, H - 78)
+  ctx.font = font(400, 26)
+  ctx.fillStyle = '#9a9a9a'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
 
   return canvas.toDataURL('image/png')
 }
@@ -270,7 +276,10 @@ export function makeQuoteCard(book: Pick<Book, 'title' | 'author'>, quote: strin
   }
   ctx.font = sans(700, 28)
   ctx.fillStyle = '#6DBE8A'
-  ctx.fillText('🌱 북블룸', W / 2, H - 56)
+  ctx.fillText('🌱 북블룸', W / 2, H - 72)
+  ctx.font = sans(400, 24)
+  ctx.fillStyle = 'rgba(247,244,236,0.45)'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 40)
 
   return canvas.toDataURL('image/png')
 }
