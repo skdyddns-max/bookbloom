@@ -90,8 +90,10 @@ export function BookDetail({
     setOcrPct(0)
     try {
       const text = await ocrImage(file, setOcrPct)
-      if (text) setNoteText((prev) => (prev ? prev + '\n' + text : text))
-      else alert('사진에서 글자를 찾지 못했어요. 더 밝고 평평하게 찍어보세요.')
+      if (text) {
+        setNoteType('quote') // 사진에서 뽑은 글은 '밑줄'(문장)로 담아 이번 주 밑줄·문장 수집에 반영
+        setNoteText((prev) => (prev ? prev + '\n' + text : text))
+      } else alert('사진에서 글자를 찾지 못했어요. 더 밝고 평평하게 찍어보세요.')
     } catch (e) {
       alert(e instanceof Error ? e.message : 'OCR에 실패했어요.')
     } finally {
@@ -324,7 +326,7 @@ export function BookDetail({
             onClick={() => fileRef.current?.click()}
             disabled={ocrState === 'busy'}
           >
-            {ocrState === 'busy' ? `📷 인식 중… ${ocrPct}%` : '📷 사진에서 글자 추출 (베타)'}
+            {ocrState === 'busy' ? `📷 인식 중… ${ocrPct}%` : '📷 사진으로 밑줄 담기 (베타)'}
           </button>
           <button className="btn btn-green btn-sm" onClick={addNote} disabled={!noteText.trim()}>
             저장

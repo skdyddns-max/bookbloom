@@ -93,7 +93,7 @@ export default function App() {
   return (
     <div className="app">
       {screen.view === 'tab' && screen.tab === 'home' && (
-        <Home onOpenBook={openBook} onSearch={openSearch} />
+        <Home onOpenBook={openBook} onSearch={openSearch} onOpenGroup={() => goTab('group')} />
       )}
       {screen.view === 'tab' && screen.tab === 'library' && (
         <Library onOpenBook={openBook} onSearch={openSearch} />

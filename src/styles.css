@@ -2048,3 +2048,66 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 .board-done .board-val { color: var(--green-dark); }
+
+/* ── 홈: 이달의 챌린지 티저 ── */
+.home-challenge {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: #f4efe2;
+  background:
+    radial-gradient(120% 100% at 100% 0%, rgba(109,190,138,0.35), transparent 60%),
+    linear-gradient(135deg, #24382c, #1a2c22);
+  box-shadow: var(--shadow);
+  -webkit-tap-highlight-color: transparent;
+}
+.home-challenge:active { transform: scale(0.995); }
+.home-challenge-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home-challenge-eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: rgba(244,239,226,0.72);
+}
+.home-challenge-count {
+  font-size: 12px;
+  font-weight: 600;
+  color: #bfe6cd;
+  background: rgba(109,190,138,0.18);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.home-challenge-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.home-challenge-emoji { font-size: 24px; }
+.home-challenge-title {
+  font-size: 18px;
+  color: #f7f3ea;
+  word-break: keep-all;
+}
+.home-challenge-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.14);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.home-challenge-fill {
+  height: 100%;
+  background: #6dbe8a;
+  border-radius: 999px;
+}
+.home-challenge-cta {
+  font-size: 13px;
+  font-weight: 600;
+  color: #bfe6cd;
+}

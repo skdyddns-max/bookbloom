@@ -1,11 +1,50 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppData, store } from '../store'
 import { addDays, calcStreak, daysSinceLastLog, pagesReadByLog, todayStr, uid, clamp, fmtDate } from '../utils'
 import { BookCover, ProgressBar } from '../components'
 import { readingPrompt } from '../lib/questions'
 import { makeWeeklyCard, ensureCardFonts } from '../lib/sharecard'
 import { lastWeekReview, weekStartOf, isReviewSeen, markReviewSeen } from '../lib/weekly'
+import { activeChallenges, challengeProgress, challengeApi } from '../lib/challenges'
 import type { Book } from '../types'
+
+function HomeChallenge({ onOpenGroup }: { onOpenGroup: () => void }) {
+  const data = useAppData()
+  const list = activeChallenges(todayStr())
+  // 진행 중이면 진도 높은 것, 아니면 이달의 함께읽기(첫 번째)를 대표로
+  const pick = [...list].sort((a, b) => challengeProgress(b, data).pct - challengeProgress(a, data).pct)[0]
+  const [count, setCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (!pick) return
+    let alive = true
+    challengeApi.stats(pick.id).then((s) => alive && setCount(s?.count ?? null))
+    return () => { alive = false }
+  }, [pick?.id])
+
+  if (!pick) return null
+  const prog = challengeProgress(pick, data)
+
+  return (
+    <section className="home-challenge" onClick={onOpenGroup} role="button" tabIndex={0}
+      onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onOpenGroup()}>
+      <div className="home-challenge-top">
+        <span className="home-challenge-eyebrow">이달의 결 챌린지</span>
+        {count !== null && count > 0 && <span className="home-challenge-count">{count}명 참여</span>}
+      </div>
+      <div className="home-challenge-main">
+        <span className="home-challenge-emoji">{pick.emoji}</span>
+        <b className="home-challenge-title serif">{pick.title}</b>
+      </div>
+      <div className="home-challenge-bar">
+        <div className="home-challenge-fill" style={{ width: `${prog.pct}%` }} />
+      </div>
+      <span className="home-challenge-cta">
+        {prog.done ? '완주했어요 🎉 · 모임에서 카드 저장 →' : '모임에서 함께 읽기 →'}
+      </span>
+    </section>
+  )
+}
 
 function WeeklyReview() {
   const data = useAppData()
@@ -161,9 +200,11 @@ function QuickLog({ book, onOpenBook }: { book: Book; onOpenBook: (id: string) =
 export function Home({
   onOpenBook,
   onSearch,
+  onOpenGroup,
 }: {
   onOpenBook: (id: string) => void
   onSearch: () => void
+  onOpenGroup: () => void
 }) {
   const data = useAppData()
   const streak = calcStreak(data.logs)
@@ -270,6 +311,8 @@ export function Home({
       </header>
 
       <WeeklyReview />
+
+      <HomeChallenge onOpenGroup={onOpenGroup} />
 
       {showRest && (
         <div className="card rest-banner">

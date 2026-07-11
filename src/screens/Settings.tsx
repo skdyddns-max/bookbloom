@@ -254,7 +254,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        결 v0.29 · 한 줄씩, 나의 결이 쌓여요 🌱
+        결 v0.30 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )
