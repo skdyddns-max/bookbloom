@@ -329,18 +329,18 @@ export function makeQuoteCard(
   const size = quote.length > 120 ? 40 : quote.length > 60 ? 48 : 56
 
   if (style === 'light') {
-    // 밝은 종이 + 페이퍼로지 (미니멀·모던, 2026 트렌드 산세리프)
-    ctx.fillStyle = '#FBF9F4'
+    // 웜 종이 + 페이퍼로지 (앱 페이퍼 에디션과 동일 톤)
+    ctx.fillStyle = '#FAF6EC'
     ctx.fillRect(0, 0, W, H)
     ctx.font = paper(600, 22)
-    ctx.fillStyle = '#B0A99A'
+    ctx.fillStyle = '#A79E8D'
     ctx.save()
     ctx.letterSpacing = '8px'
     ctx.fillText('BOOKBLOOM', W / 2, 150)
     ctx.restore()
 
     ctx.font = paper(800, size + 4)
-    ctx.fillStyle = '#1A1A1A'
+    ctx.fillStyle = '#211D16'
     const lines = wrapQuote(ctx, quote, W - 220)
     const lh = (size + 6) * 1.5
     let y = H / 2 - ((lines.length - 1) * lh) / 2
@@ -348,14 +348,14 @@ export function makeQuoteCard(
       ctx.fillText(l, W / 2, y)
       y += lh
     }
-    ctx.strokeStyle = '#1A1A1A'
+    ctx.strokeStyle = '#211D16'
     ctx.lineWidth = 3
     ctx.beginPath()
     ctx.moveTo(W / 2 - 40, y + 6)
     ctx.lineTo(W / 2 + 40, y + 6)
     ctx.stroke()
     ctx.font = sans(500, 30)
-    ctx.fillStyle = '#8a8375'
+    ctx.fillStyle = '#8a8175'
     ctx.fillText(`${book.author ? book.author + ' ' : ''}『${book.title}』`, W / 2, y + 66)
     ctx.font = sans(800, 28)
     ctx.fillStyle = '#4E9C6F'

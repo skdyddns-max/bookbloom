@@ -31,6 +31,7 @@
   --paper: #faf6ec; /* 따뜻한 종이 */
   --coral: #211d16; /* 미니멀: 코랄 → 잉크 (공유 카드는 별도 팔레트 유지) */
   --gold: #8a8175;
+  --star: #c39b52; /* 별점 전용 웜 앰버 (레이팅 시맨틱 액센트) */
   --dark: #2a251d;
   --muted: #9c9587;
   --card: #fffdf7;
@@ -646,7 +647,7 @@ textarea {
 }
 .shelf-rating {
   font-size: 12px;
-  color: var(--gold);
+  color: var(--star);
   font-weight: 700;
 }
 
@@ -914,7 +915,7 @@ textarea {
 }
 .star-full,
 .star-half {
-  color: var(--gold);
+  color: var(--star);
 }
 .stars-num {
   font-size: 15px;
@@ -1164,7 +1165,7 @@ textarea {
   align-items: center;
 }
 .post-rating {
-  color: var(--gold);
+  color: var(--star);
 }
 .post-content {
   font-size: 15px;
@@ -1559,6 +1560,107 @@ textarea {
 }
 .tabbar-btn-on .tabbar-svg {
   stroke-width: 2.3;
+}
+
+/* ---------- 완독 축하 오버레이 (페이퍼 톤) ---------- */
+.celebrate-back {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(33, 29, 22, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadein 0.25s ease;
+}
+.celebrate-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--paper);
+  border-radius: 24px;
+  padding: 36px 28px 26px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 30px 70px rgba(20, 16, 10, 0.4);
+  animation: celebrate-pop 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes celebrate-pop {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.celebrate-eyebrow {
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  font-weight: 800;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+.celebrate-cover {
+  position: relative;
+  animation: celebrate-cover-in 0.6s 0.1s backwards cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+@keyframes celebrate-cover-in {
+  from { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+  to { opacity: 1; transform: none; }
+}
+.celebrate-seal {
+  position: absolute;
+  right: -14px;
+  bottom: -10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 2px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--shadow-lift);
+}
+.celebrate-title {
+  font-weight: 900;
+  font-size: 24px;
+  color: var(--ink);
+  margin-top: 16px;
+}
+.celebrate-book {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--green-dark);
+}
+.celebrate-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.celebrate-actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2px;
+  margin-top: 10px;
+}
+.celebrate-cta {
+  width: 100%;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 800;
+  padding: 15px;
+  font-size: 15px;
+}
+.celebrate-close {
+  align-self: center;
+  color: var(--muted);
+  padding: 10px;
 }
 
 /* ---------- 유틸 ---------- */

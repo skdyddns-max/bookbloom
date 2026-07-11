@@ -1,5 +1,6 @@
 import { useSyncExternalStore } from 'react'
 import type { AppData, Book, Note, ProgressLog, Settings } from './types'
+import { todayStr } from './utils'
 
 const KEY = 'bookbloom_v1'
 
@@ -53,6 +54,15 @@ function mutate(next: Partial<AppData>) {
   persist()
 }
 
+// 완독 축하 모먼트 — 진도 100% 도달 시 앱에서 오버레이를 띄우기 위한 이벤트
+let celebrateFn: ((book: Book) => void) | null = null
+export function onCelebrate(fn: (book: Book) => void): () => void {
+  celebrateFn = fn
+  return () => {
+    if (celebrateFn === fn) celebrateFn = null
+  }
+}
+
 export const store = {
   addBook(book: Book) {
     if (data.books.some((b) => b.id === book.id)) return false
@@ -61,6 +71,19 @@ export const store = {
   },
   updateBook(id: string, patch: Partial<Book>) {
     mutate({ books: data.books.map((b) => (b.id === id ? { ...b, ...patch } : b)) })
+  },
+  /** 완독 처리 + 축하 모먼트 발화 (진도로 다 읽었을 때) */
+  completeBook(id: string) {
+    const already = data.books.find((b) => b.id === id)?.status === 'done'
+    mutate({
+      books: data.books.map((b) =>
+        b.id === id ? { ...b, status: 'done', finishedAt: b.finishedAt || todayStr() } : b,
+      ),
+    })
+    if (!already) {
+      const book = data.books.find((b) => b.id === id)
+      if (book) celebrateFn?.(book)
+    }
   },
   removeBook(id: string) {
     mutate({

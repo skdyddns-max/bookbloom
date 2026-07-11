@@ -69,7 +69,7 @@ export function BookDetail({
     if (!p) return
     store.addLog({ id: uid(), bookId: book.id, page: p, date: todayStr(), createdAt: new Date().toISOString() })
     if (book.status !== 'reading' && book.status !== 'done') setStatus('reading')
-    if (book.totalPages > 0 && p >= book.totalPages) setStatus('done')
+    if (book.totalPages > 0 && p >= book.totalPages) store.completeBook(book.id)
     setPage('')
   }
 

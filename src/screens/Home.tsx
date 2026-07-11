@@ -18,7 +18,7 @@ function QuickLog({ book, onOpenBook }: { book: Book; onOpenBook: (id: string) =
     store.addLog({ id: uid(), bookId: book.id, page: p, date: todayStr(), createdAt: new Date().toISOString() })
     const done = book.totalPages > 0 && p >= book.totalPages
     if (done) {
-      store.updateBook(book.id, { status: 'done', finishedAt: todayStr() })
+      store.completeBook(book.id)
       setThink(null)
     } else {
       // 진도를 기록한 '그 순간' = 독서 상황 → 읽은 지점에 맞는 생각거리를 띄운다

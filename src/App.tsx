@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import type { Screen, Tab } from './types'
+import { useEffect, useState } from 'react'
+import type { Book, Screen, Tab } from './types'
 import { Home } from './screens/Home'
 import { Library } from './screens/Library'
 import { Search } from './screens/Search'
@@ -8,6 +8,8 @@ import { Stats } from './screens/Stats'
 import { Settings } from './screens/Settings'
 import { Welcome } from './screens/Welcome'
 import { Group } from './screens/Group'
+import { Celebration } from './screens/Celebration'
+import { onCelebrate } from './store'
 
 const ONBOARD_KEY = 'bookbloom_onboarded'
 
@@ -46,6 +48,9 @@ export default function App() {
       return false
     }
   })
+
+  const [celebrateBook, setCelebrateBook] = useState<Book | null>(null)
+  useEffect(() => onCelebrate((book) => setCelebrateBook(book)), [])
 
   const dismissWelcome = () => {
     try {
@@ -106,6 +111,10 @@ export default function App() {
             </button>
           ))}
         </nav>
+      )}
+
+      {celebrateBook && (
+        <Celebration book={celebrateBook} onClose={() => setCelebrateBook(null)} />
       )}
     </div>
   )
