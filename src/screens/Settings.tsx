@@ -118,7 +118,7 @@ export function Settings() {
       </section>
 
       <p className="muted small center">
-        북블룸 v0.21 · 기록이 쌓이면, 습관이 피어나요 🌱
+        북블룸 v0.22 · 기록이 쌓이면, 습관이 피어나요 🌱
       </p>
     </div>
   )

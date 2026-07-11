@@ -22,24 +22,25 @@
 }
 
 :root {
-  /* 페이퍼 에디션 (웜) — Typographic·Minimal·Clean (따뜻한 종이 + 웜 잉크 + 그린 한 방울) */
+  /* 웜 페이퍼 + 개성 — 따뜻한 종이 · 웜 잉크 · 그린(습관) · 코랄(딜라이트) */
   --ink: #211d16; /* 웜 잉크 — 타이포·강조 */
   --ink-2: #211d16;
-  --green: #4e9c6f; /* 유일한 액센트 */
+  --green: #4e9c6f; /* 프라이머리 액센트 (습관·진행) */
   --green-dark: #3e7d59;
-  --green-soft: #eaf1e7;
-  --paper: #faf6ec; /* 따뜻한 종이 */
-  --coral: #211d16; /* 미니멀: 코랄 → 잉크 (공유 카드는 별도 팔레트 유지) */
+  --green-soft: #e7f0e6;
+  --paper: #faf5ea; /* 따뜻한 종이 */
+  --coral: #e07a55; /* 웜 액센트 (딜라이트·스트릭·CTA 강조) */
+  --coral-soft: #fbe7db;
   --gold: #8a8175;
-  --star: #c39b52; /* 별점 전용 웜 앰버 (레이팅 시맨틱 액센트) */
+  --star: #c39b52; /* 별점 전용 웜 앰버 */
   --dark: #2a251d;
   --muted: #9c9587;
-  --card: #fffdf7;
-  --line: #eae2d3;
-  --track: #efe8da; /* 진행·차트 트랙 (웜 뉴트럴) */
-  --radius: 16px;
-  --shadow: none;
-  --shadow-lift: 0 8px 24px rgba(33, 29, 22, 0.1);
+  --card: #fffdf6;
+  --line: #ece4d4;
+  --track: #efe8da;
+  --radius: 18px;
+  --shadow: 0 3px 16px rgba(122, 92, 52, 0.08);
+  --shadow-lift: 0 10px 28px rgba(122, 92, 52, 0.16);
   --serif: 'MaruBuriDisplay', 'Noto Serif KR', 'Pretendard Variable', serif;
 }
 
@@ -88,10 +89,12 @@ body {
 /* 페이퍼 히어로 — 흰 종이 위 대형 타이포 + 헤어라인 (Typographic·Minimal) */
 .hero {
   margin: 0 -18px;
-  padding: 30px 24px 22px;
-  background: none;
+  padding: 32px 24px 22px;
+  background:
+    radial-gradient(120% 80% at 92% -8%, rgba(224, 122, 85, 0.14) 0%, transparent 55%),
+    radial-gradient(90% 70% at 4% -2%, rgba(78, 156, 111, 0.1) 0%, transparent 50%);
   color: var(--ink);
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -134,7 +137,7 @@ body {
   line-height: 1;
 }
 .hero-stat-num.accent {
-  color: var(--ink);
+  color: var(--coral);
 }
 .hero-stat-label {
   font-size: 11px;
@@ -415,9 +418,22 @@ body {
 .empty-card {
   align-items: center;
   text-align: center;
-  padding: 30px 18px;
-  color: var(--muted);
-  gap: 14px;
+  padding: 34px 20px 30px;
+  color: var(--dark);
+  gap: 12px;
+  background: linear-gradient(155deg, var(--green-soft), var(--coral-soft));
+  border: none;
+  box-shadow: none;
+}
+.empty-card::before {
+  content: '🌱';
+  font-size: 40px;
+  line-height: 1;
+  filter: saturate(1.05);
+}
+.empty-card p {
+  font-size: 15px;
+  font-weight: 600;
 }
 .notice-card {
   background: var(--green-soft);
@@ -427,7 +443,7 @@ body {
   line-height: 1.65;
 }
 .rest-banner {
-  background: var(--green-soft);
+  background: linear-gradient(150deg, var(--coral-soft), var(--green-soft));
   border: none;
   box-shadow: none;
   font-size: 14px;
@@ -580,13 +596,22 @@ textarea {
 .cover {
   border-radius: 6px 10px 10px 6px; /* 책등 느낌 */
   object-fit: cover;
-  box-shadow: 0 6px 14px rgba(30, 51, 41, 0.28);
+  box-shadow: 0 6px 16px rgba(80, 55, 30, 0.22);
   flex-shrink: 0;
   background: var(--green-soft);
 }
 .cover-sm {
   width: 58px;
   height: 84px;
+}
+.reading-card .cover {
+  width: 72px;
+  height: 104px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.reading-card-top:active .cover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lift);
 }
 .cover-md {
   width: 100%;
