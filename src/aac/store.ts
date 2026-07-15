@@ -16,6 +16,12 @@ export type Settings = {
   sentenceMode: boolean // 문장 만들기(여러 장 조합) vs. 바로 말하기
   hapticFeedback: boolean // 진동 피드백
   bigText: boolean // 더 큰 글자
+
+  // 음성 제공자 — 'browser'(기기 내장) 또는 'elevenlabs'(고품질·안정)
+  voiceProvider: 'browser' | 'elevenlabs'
+  elevenApiKey: string // 이 기기에만 저장. 코드/서버에 없음
+  elevenVoiceId: string
+  elevenModel: string
 }
 
 export type State = {
@@ -36,6 +42,10 @@ const DEFAULT_SETTINGS: Settings = {
   sentenceMode: false,
   hapticFeedback: false,
   bigText: false,
+  voiceProvider: 'browser',
+  elevenApiKey: '',
+  elevenVoiceId: '',
+  elevenModel: 'eleven_multilingual_v2',
 }
 
 const DEFAULT_STATE: State = {
@@ -126,4 +136,15 @@ export function visibleCards(categoryId: string): Card[] {
 // 편집 화면용(숨김 포함 전체)
 export function allCards(categoryId: string): Card[] {
   return [...DEFAULT_CARDS, ...state.customCards].filter((c) => c.categoryId === categoryId)
+}
+
+// 미리 캐시할 문장 모음(보이는 카드의 말할 문장 + 낱말, 중복 제거)
+export function allSpeakables(): string[] {
+  const set = new Set<string>()
+  for (const c of [...DEFAULT_CARDS, ...state.customCards]) {
+    if (state.hiddenIds.includes(c.id)) continue
+    set.add(c.speak ?? c.label)
+    set.add(c.label)
+  }
+  return [...set]
 }

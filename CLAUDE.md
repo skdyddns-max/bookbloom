@@ -19,9 +19,9 @@
 
 ## 독립 모듈 — 또박또박 (감각 친화 AAC)
 - 독서앱과 별개인 보완대체의사소통(AAC) 도구. 진입점 `aac.html`(멀티 페이지, vite `rollupOptions.input`) → 배포 시 `/aac.html`
-- `src/aac/` — main / App(카드 그리드·문장 스트립·편집) / Settings(감각 조절 시트) / data(기본 어휘) / store(localStorage `bookbloom_aac_v1`) / speech(Web Speech API TTS) / aac.css
+- `src/aac/` — main / App(카드 그리드·문장 스트립·편집) / Settings(감각 조절 시트) / data(기본 어휘) / store(localStorage `bookbloom_aac_v1`) / speech(Web Speech API TTS) / eleven(ElevenLabs TTS + IndexedDB 캐시) / aac.css
 - 설계: 저채도 팔레트·큰 탭 영역·움직임 최소화·번쩍임 없음. 테마/모션/색상은 `<html data-aac-*>` 속성으로 전환
-- 브라우저 내장 TTS(한국어 음성)만 사용 — 서버·외부 키 불필요
+- 음성 2종: ① 기기 내장 TTS(기본, 키 불필요) ② **일레븐랩스**(고품질·안정) — 키는 설정 화면에서 사용자 입력(이 기기에만 저장, 코드에 없음). 생성 음성은 IndexedDB(`aac_tts`) 캐시 → 반복 재생 시 즉시·오프라인·동일 목소리. 실패 시 기기 음성으로 자동 대체. "모든 카드 미리 만들기"로 사전 캐시 가능
 
 ## 디자인 (페이퍼 에디션 — v0.19)
 - 팔레트: 웜 잉크 `#211d16` · 종이 `#faf6ec` · 카드 `#fffdf7` · 라인 `#eae2d3` · 트랙 `#efe8da`

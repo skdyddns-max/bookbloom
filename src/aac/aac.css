@@ -595,6 +595,70 @@ body {
 .aac-preview {
   align-self: flex-start;
 }
+
+/* 일레븐랩스 설정 */
+.aac-eleven {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.aac-eleven-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.aac-eleven-row .aac-ghostbtn,
+.aac-eleven-row .aac-primarybtn {
+  flex: 1;
+  min-width: 130px;
+}
+.aac-progress {
+  position: relative;
+  height: 30px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.aac-progress-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+:root[data-aac-motion='reduce'] .aac-progress-bar {
+  transition: none;
+}
+.aac-progress-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.aac-eleven-status {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.aac-eleven-status.is-err {
+  color: #b4553f;
+}
+.aac-eleven-status.is-ok {
+  color: var(--accent);
+}
+.aac-eleven-status.is-busy {
+  color: var(--ink-soft);
+}
+.aac-eleven-help {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
 .aac-sheet-foot {
   font-size: 13px;
   color: var(--ink-soft);

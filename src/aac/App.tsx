@@ -9,7 +9,8 @@ import {
   visibleCards,
   allCards,
 } from './store'
-import { speak, stopSpeaking, speechSupported } from './speech'
+import { speak as speakBrowser, stopSpeaking, speechSupported } from './speech'
+import { speakEleven, stopEleven } from './eleven'
 import { SettingsSheet } from './Settings'
 
 export default function App() {
@@ -45,8 +46,24 @@ export default function App() {
     }
   }
 
-  function say(text: string) {
-    speak(text, {
+  async function say(text: string) {
+    // 일레븐랩스가 켜져 있고 키·목소리가 있으면 우선 사용, 실패하면 기기 음성으로 대체
+    if (settings.voiceProvider === 'elevenlabs' && settings.elevenApiKey && settings.elevenVoiceId) {
+      try {
+        await speakEleven(text, {
+          apiKey: settings.elevenApiKey,
+          voiceId: settings.elevenVoiceId,
+          model: settings.elevenModel,
+          volume: settings.volume,
+          rate: settings.rate,
+        })
+        return
+      } catch {
+        /* 네트워크·키 문제 → 아래 기기 음성으로 안전하게 대체 */
+      }
+    }
+    stopEleven()
+    speakBrowser(text, {
       volume: settings.volume,
       rate: settings.rate,
       pitch: settings.pitch,
@@ -157,6 +174,7 @@ export default function App() {
             onClick={() => {
               setCategoryId(cat.id)
               stopSpeaking()
+              stopEleven()
             }}
           >
             <span className="aac-tab-emoji" aria-hidden>{cat.emoji}</span>
