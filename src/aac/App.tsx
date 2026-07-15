@@ -48,11 +48,12 @@ export default function App() {
   useEffect(() => {
     const root = document.documentElement
     root.dataset.aacTheme = settings.theme
+    root.dataset.aacContrast = settings.highContrast ? 'high' : 'normal'
     root.dataset.aacMotion = settings.reduceMotion ? 'reduce' : 'ok'
     root.dataset.aacColor = settings.colorCards ? 'on' : 'off'
     root.dataset.aacBigtext = settings.bigText ? 'on' : 'off'
     root.dataset.aacDensity = settings.density
-  }, [settings.theme, settings.reduceMotion, settings.colorCards, settings.bigText, settings.density])
+  }, [settings.theme, settings.highContrast, settings.reduceMotion, settings.colorCards, settings.bigText, settings.density])
 
   const cards = useMemo(
     () => (editing ? allCards(categoryId) : visibleCards(categoryId)),

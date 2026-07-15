@@ -10,6 +10,7 @@ export type Settings = {
   pitch: number // 0.5 ~ 1.5
   voiceURI: string // '' = 자동(한국어 우선)
   theme: 'calm' | 'dim' | 'paper' // 저채도 팔레트
+  highContrast: boolean // 선명하게 — 진한 글자·두꺼운 테두리(야외·저시력)
   reduceMotion: boolean // 움직임 최소화(애니메이션 끔)
   colorCards: boolean // 카테고리별 옅은 색조 on/off (단색이 더 차분)
   density: 'roomy' | 'normal' // 한 화면 카드 수(과부하 방지)
@@ -37,6 +38,7 @@ const DEFAULT_SETTINGS: Settings = {
   pitch: 1,
   voiceURI: '',
   theme: 'calm',
+  highContrast: false,
   reduceMotion: false,
   colorCards: true,
   density: 'normal',

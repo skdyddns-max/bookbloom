@@ -115,6 +115,12 @@ export function SettingsSheet({ onClose, onPreview }: Props) {
               ))}
             </div>
             <Toggle
+              label="선명하게 (고대비)"
+              hint="글자·테두리를 진하게 — 밝은 야외나 저시력에 좋아요"
+              checked={settings.highContrast}
+              onChange={(v) => updateSettings({ highContrast: v })}
+            />
+            <Toggle
               label="움직임 최소화"
               hint="눌렀을 때 애니메이션을 끕니다"
               checked={settings.reduceMotion}
