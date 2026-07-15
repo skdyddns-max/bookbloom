@@ -6,7 +6,40 @@ import { readingPrompt } from '../lib/questions'
 import { makeWeeklyCard, ensureCardFonts } from '../lib/sharecard'
 import { lastWeekReview, weekStartOf, isReviewSeen, markReviewSeen } from '../lib/weekly'
 import { activeChallenges, challengeProgress, challengeApi } from '../lib/challenges'
+import { lastMonthReview, isStorySeen, markStorySeen } from '../lib/monthly'
+import { MonthlyStory } from './MonthlyStory'
+import { Garden } from './Garden'
+import { Focus } from './Focus'
 import type { Book } from '../types'
+
+function MonthlyStoryBanner() {
+  const data = useAppData()
+  const review = lastMonthReview(data, todayStr())
+  const [open, setOpen] = useState(false)
+  const [dismissed, setDismissed] = useState(() => (review ? isStorySeen(review.ym) : true))
+
+  if (!review || dismissed) return null
+
+  const close = () => {
+    markStorySeen(review.ym)
+    setDismissed(true)
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <button className="card story-banner" onClick={() => setOpen(true)}>
+        <span className="story-banner-icon">🎁</span>
+        <span className="story-banner-text">
+          <b>{review.label}의 결산이 도착했어요</b>
+          <span className="muted small">한 달의 결, 스토리로 넘겨보세요</span>
+        </span>
+        <span className="help-entry-arrow">›</span>
+      </button>
+      {open && <MonthlyStory review={review} onClose={close} />}
+    </>
+  )
+}
 
 function HomeChallenge({ onOpenGroup }: { onOpenGroup: () => void }) {
   const data = useAppData()
@@ -242,6 +275,7 @@ export function Home({
   const weekReadCount = weekDays.filter((d) => d.read).length
 
   const want = data.books.filter((b) => b.status === 'want')
+  const [focusBook, setFocusBook] = useState<Book | null>(null)
 
   const goalLeft = goal - doneThisYear
 
@@ -310,6 +344,10 @@ export function Home({
         </div>
       </header>
 
+      <MonthlyStoryBanner />
+
+      <Garden />
+
       <WeeklyReview />
 
       <HomeChallenge onOpenGroup={onOpenGroup} />
@@ -343,6 +381,15 @@ export function Home({
                   <b className="book-title serif">{b.title}</b>
                   <span className="muted small">{b.author}</span>
                 </div>
+                <button
+                  className="focus-launch"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setFocusBook(b)
+                  }}
+                >
+                  ⏳ 몰입
+                </button>
               </div>
               <QuickLog book={b} onOpenBook={onOpenBook} />
             </div>
@@ -351,6 +398,8 @@ export function Home({
       </section>
 
       <WeeklyUnderline weekStart={weekStart} weekEnd={addDays(weekStart, 6)} />
+
+      {focusBook && <Focus book={focusBook} onClose={() => setFocusBook(null)} />}
 
       {want.length > 0 && (
         <section>

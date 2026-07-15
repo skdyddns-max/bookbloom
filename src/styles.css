@@ -2178,3 +2178,223 @@ textarea {
   background: var(--green);
 }
 .help-openchat { margin-top: 4px; }
+
+/* ── 월간 결산 스토리 ── */
+.story-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  animation: story-in 0.35s ease;
+}
+@keyframes story-in { from { opacity: 0; } to { opacity: 1; } }
+.story-paper { background: radial-gradient(120% 90% at 50% 0%, #fffdf6, var(--paper)); color: var(--ink); }
+.story-forest {
+  background: linear-gradient(160deg, #1e3329, #16281f);
+  color: #f7f4ec;
+}
+.story-forest .story-sub, .story-forest .story-sub2 { color: rgba(247,244,236,0.66); }
+.story-progress {
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  gap: 6px;
+}
+.story-progress span {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(128,120,100,0.25);
+}
+.story-forest .story-progress span { background: rgba(255,255,255,0.2); }
+.story-progress .sp-on { background: var(--green); }
+.story-forest .story-progress .sp-on { background: #6dbe8a; }
+.story-close {
+  position: absolute;
+  top: 26px;
+  right: 18px;
+  z-index: 210;
+  background: none;
+  border: none;
+  font-size: 30px;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.story-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  max-width: 340px;
+  animation: story-slide 0.4s ease;
+}
+@keyframes story-slide { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.story-eyebrow {
+  font-size: 13px;
+  letter-spacing: 3px;
+  font-weight: 600;
+  opacity: 0.55;
+  margin-bottom: 14px;
+}
+.story-hello {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.4;
+  margin: 0;
+}
+.story-num {
+  font-family: var(--serif);
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1;
+  margin: 0;
+  color: var(--green-dark);
+}
+.story-forest .story-num { color: #6dbe8a; }
+.story-unit {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  margin: 4px 0 10px;
+}
+.story-sub { font-size: 15px; color: var(--gold); margin: 8px 0 0; word-break: keep-all; line-height: 1.6; }
+.story-sub2 { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+.story-book { font-size: 30px; font-weight: 800; line-height: 1.45; margin: 0; word-break: keep-all; }
+.story-quote { font-size: 24px; font-weight: 600; line-height: 1.65; margin: 0; word-break: keep-all; }
+.story-list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+.story-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 10px;
+}
+.story-summary div { display: flex; flex-direction: column; gap: 2px; }
+.story-summary b { font-family: var(--serif); font-size: 24px; font-weight: 800; }
+.story-summary span { font-size: 11px; color: var(--muted); }
+.story-save { margin-top: 18px; position: relative; z-index: 220; }
+.story-taps { position: absolute; inset: 0; display: flex; }
+.story-tap-left { width: 34%; background: none; border: none; cursor: pointer; }
+.story-tap-right { flex: 1; background: none; border: none; cursor: pointer; }
+.story-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  background: linear-gradient(120deg, var(--green-soft), var(--card) 65%);
+}
+.story-banner-icon { font-size: 26px; }
+.story-banner-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.story-banner-text b { color: var(--ink); }
+.story-replay { width: 100%; margin-bottom: 4px; }
+
+/* ── 결 정원 ── */
+.garden-card { display: flex; flex-direction: column; gap: 12px; }
+.garden-main { display: flex; align-items: center; gap: 14px; }
+.garden-tree { flex-shrink: 0; }
+.garden-meta { display: flex; flex-direction: column; gap: 4px; }
+.garden-eyebrow {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.garden-status { font-size: 18px; color: var(--ink); word-break: keep-all; }
+.garden-grove {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.garden-grove-row { display: flex; flex-wrap: wrap; gap: 2px; }
+.garden-grove-item { display: inline-flex; }
+
+/* ── 몰입 독서 타이머 ── */
+.focus-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  background: linear-gradient(165deg, #20342a, #141f19);
+  color: #f7f4ec;
+  animation: story-in 0.3s ease;
+}
+.focus-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  max-width: 340px;
+}
+.focus-eyebrow { font-size: 13px; letter-spacing: 3px; font-weight: 600; opacity: 0.55; }
+.focus-book { font-family: var(--serif); font-size: 26px; font-weight: 800; margin: 4px 0 0; word-break: keep-all; line-height: 1.4; }
+.focus-sub { font-size: 14px; color: rgba(247,244,236,0.6); margin: 2px 0 8px; word-break: keep-all; line-height: 1.6; }
+.focus-durations { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 6px 0 14px; }
+.focus-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.16);
+  color: #f0ebdd;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.focus-chip-on { background: #4e9c6f; border-color: #4e9c6f; color: #fff; }
+.focus-start { min-width: 200px; }
+.focus-ring-wrap { position: relative; width: 220px; height: 220px; margin: 8px 0; }
+.focus-ring { width: 100%; height: 100%; }
+.focus-time {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 44px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.focus-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 8px; }
+.focus-stop { color: rgba(247,244,236,0.5); }
+.focus-done { font-family: var(--serif); font-size: 30px; font-weight: 800; line-height: 1.45; margin: 0; }
+.focus-log { width: 100%; max-width: 260px; margin: 8px 0 4px; }
+.focus-log input { background: rgba(255,255,255,0.94); }
+.focus-launch {
+  flex-shrink: 0;
+  align-self: center;
+  background: var(--green-soft);
+  border: none;
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}

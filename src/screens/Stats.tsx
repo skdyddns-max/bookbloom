@@ -6,6 +6,9 @@ import { makeYearCard, makePersonaCard, ensureCardFonts } from '../lib/sharecard
 import { computeBadges } from '../lib/badges'
 import { computePersona } from '../lib/persona'
 import { challengeBadges } from '../lib/challenges'
+import { lastMonthReview } from '../lib/monthly'
+import { MonthlyStory } from './MonthlyStory'
+import { todayStr } from '../utils'
 
 function PersonaCard() {
   const data = useAppData()
@@ -99,6 +102,8 @@ function moveMonth(month: string, delta: number): string {
 export function Stats() {
   const data = useAppData()
   const [month, setMonth] = useState(monthStr())
+  const [storyOpen, setStoryOpen] = useState(false)
+  const lastMonth = lastMonthReview(data, todayStr())
   const year = month.slice(0, 4)
 
   const byLog = pagesReadByLog(data.logs)
@@ -187,6 +192,13 @@ export function Stats() {
           <span className="stat-label">연속 기록일</span>
         </div>
       </div>
+
+      {lastMonth && (
+        <button className="btn btn-outline story-replay" onClick={() => setStoryOpen(true)}>
+          🎁 {lastMonth.label} 결산 스토리 보기
+        </button>
+      )}
+      {storyOpen && lastMonth && <MonthlyStory review={lastMonth} onClose={() => setStoryOpen(false)} />}
 
       <PersonaCard />
 

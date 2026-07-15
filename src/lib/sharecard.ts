@@ -365,6 +365,108 @@ export function makePersonaCard(p: PersonaCardData): string {
   return canvas.toDataURL('image/png')
 }
 
+import type { MonthReview } from './monthly'
+
+/** 월간 결산 공유 카드(1080x1350) — 딥그린, 스토리 마지막 장과 동일 톤 */
+export function makeMonthlyCard(r: MonthReview): string {
+  const W = 1080
+  const H = 1350
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+  ctx.textAlign = 'center'
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H)
+  bg.addColorStop(0, '#1E3329')
+  bg.addColorStop(1, '#16281F')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W / 2, 300, 0, W / 2, 300, 640)
+  glow.addColorStop(0, 'rgba(109,190,138,0.26)')
+  glow.addColorStop(1, 'rgba(109,190,138,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  ctx.font = paper(600, 26)
+  ctx.fillStyle = 'rgba(247,244,236,0.7)'
+  ctx.save()
+  ctx.letterSpacing = '10px'
+  ctx.fillText('나의 독서 결산', W / 2, 150)
+  ctx.restore()
+
+  ctx.fillStyle = '#F7F4EC'
+  ctx.font = maru('MaruBuriBold', 76)
+  ctx.fillText(r.label, W / 2, 260)
+
+  // 쪽수 크게
+  ctx.fillStyle = '#6DBE8A'
+  ctx.font = maru('MaruBuriBold', 190)
+  ctx.fillText(r.pages.toLocaleString(), W / 2, 500)
+  ctx.fillStyle = 'rgba(247,244,236,0.9)'
+  ctx.font = maru('MaruBuriSemiBold', 46)
+  ctx.fillText('쪽을 걸었어요', W / 2, 570)
+
+  // 지표 3칸
+  const stats: Array<[string, string]> = [
+    [`${r.daysRead}일`, '책과 보낸 날'],
+    [`${r.doneBooks.length}권`, '완독'],
+    [`${r.quotes}개`, '모은 밑줄'],
+  ]
+  const colW = (W - 180) / 3
+  let y = 700
+  for (let i = 0; i < stats.length; i++) {
+    const cx = 90 + colW * i + colW / 2
+    ctx.fillStyle = '#F7F4EC'
+    ctx.font = maru('MaruBuriBold', 54)
+    ctx.fillText(stats[i][0], cx, y)
+    ctx.font = sans(500, 26)
+    ctx.fillStyle = 'rgba(247,244,236,0.55)'
+    ctx.fillText(stats[i][1], cx, y + 44)
+  }
+  y += 130
+
+  // 가장 오래 머문 책
+  if (r.topBook) {
+    ctx.strokeStyle = 'rgba(109,190,138,0.6)'
+    ctx.lineWidth = 3
+    ctx.beginPath()
+    ctx.moveTo(W / 2 - 40, y)
+    ctx.lineTo(W / 2 + 40, y)
+    ctx.stroke()
+    y += 64
+    ctx.font = sans(600, 28)
+    ctx.fillStyle = 'rgba(247,244,236,0.6)'
+    ctx.fillText('가장 오래 머문 책', W / 2, y)
+    y += 62
+    ctx.font = maru('MaruBuriSemiBold', 46)
+    ctx.fillStyle = '#F7F4EC'
+    const t = r.topBook.title.length > 16 ? r.topBook.title.slice(0, 16) + '…' : r.topBook.title
+    ctx.fillText(`『${t}』`, W / 2, y)
+    y += 56
+  }
+
+  // 이달의 밑줄
+  if (r.bestQuote && y < H - 320) {
+    y += 30
+    ctx.font = maru('MaruBuriSemiBold', 36)
+    ctx.fillStyle = 'rgba(247,244,236,0.85)'
+    const lines = wrapWords(ctx, `“${r.bestQuote.quote}”`, W - 260, 3)
+    for (const l of lines) {
+      ctx.fillText(l, W / 2, y)
+      y += 54
+    }
+  }
+
+  ctx.font = sans(700, 34)
+  ctx.fillStyle = '#6DBE8A'
+  ctx.fillText('🌱 결', W / 2, H - 78)
+  ctx.font = sans(400, 26)
+  ctx.fillStyle = 'rgba(247,244,236,0.45)'
+  ctx.fillText('skdyddns-max.github.io/bookbloom', W / 2, H - 42)
+  return canvas.toDataURL('image/png')
+}
+
 export interface WeeklyItem { quote: string; title: string }
 
 /** 이번 주 밑줄 회고 카드(1080x1080) — 이번 주 모은 문장 모음 */
