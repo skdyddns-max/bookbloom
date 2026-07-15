@@ -336,6 +336,24 @@ body {
   font-size: 46px;
   line-height: 1;
 }
+/* 사용자 사진 카드 */
+.aac-card-img {
+  width: 68%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  background: var(--track, #eee);
+}
+:root[data-aac-bigtext='on'] .aac-card-img {
+  width: 74%;
+}
+.aac-chip-img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 6px;
+  vertical-align: middle;
+}
 .aac-card-label {
   font-size: 21px;
   font-weight: 800;
@@ -415,6 +433,53 @@ body {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+/* 사진 선택 */
+.aac-photo-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.aac-photo-preview {
+  flex: 0 0 auto;
+  width: 84px;
+  height: 84px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  overflow: hidden;
+}
+.aac-photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.aac-photo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.aac-photo-pick {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  margin: 0;
+}
+.aac-photo-busy {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.aac-photo-err {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #b4553f;
 }
 
 /* ---------- 공통 폼 ---------- */

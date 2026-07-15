@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react'
 import { CATEGORIES, type Card } from './data'
 import { useHold } from './hold'
 import {
@@ -12,10 +12,17 @@ import {
 } from './store'
 import { speak as speakBrowser, stopSpeaking, speechSupported } from './speech'
 import { speakEleven, stopEleven } from './eleven'
+import {
+  getImageUrl,
+  putImage,
+  deleteImage,
+  processImageFile,
+  newImageId,
+} from './images'
 import { SettingsSheet } from './Settings'
 
 export default function App() {
-  const { settings, hiddenIds } = useAacStore()
+  const { settings, hiddenIds, customCards } = useAacStore()
   const [categoryId, setCategoryId] = useState(CATEGORIES[0].id)
   const [sentence, setSentence] = useState<Card[]>([])
   const [showSettings, setShowSettings] = useState(false)
@@ -49,8 +56,8 @@ export default function App() {
 
   const cards = useMemo(
     () => (editing ? allCards(categoryId) : visibleCards(categoryId)),
-    // hiddenIds/settings 변화를 반영하기 위한 의존성
-    [categoryId, editing, hiddenIds],
+    // 카드 추가·삭제(customCards)와 숨김(hiddenIds) 변화를 즉시 반영
+    [categoryId, editing, hiddenIds, customCards],
   )
 
   function haptic() {
@@ -108,6 +115,11 @@ export default function App() {
     say(text)
   }
 
+  async function deleteCard(card: Card) {
+    if (card.image) await deleteImage(card.image) // 사진도 함께 정리
+    removeCustomCard(card.id)
+  }
+
   return (
     <div className="aac">
       <header className="aac-top">
@@ -160,7 +172,7 @@ export default function App() {
             ) : (
               sentence.map((c, i) => (
                 <span className="aac-chip" key={`${c.id}-${i}`}>
-                  <span className="aac-chip-emoji" aria-hidden>{c.emoji}</span>
+                  <CardFace card={c} chip />
                   {c.label}
                 </span>
               ))
@@ -222,7 +234,7 @@ export default function App() {
                 data-cat={card.categoryId}
                 onClick={() => onCardTap(card)}
               >
-                <span className="aac-card-emoji" aria-hidden>{card.emoji}</span>
+                <CardFace card={card} />
                 <span className="aac-card-label">{card.label}</span>
               </button>
               {editing && (
@@ -237,7 +249,7 @@ export default function App() {
                   {isCustom && (
                     <button
                       className="aac-editchip aac-editchip--del"
-                      onClick={() => removeCustomCard(card.id)}
+                      onClick={() => deleteCard(card)}
                       title="삭제"
                     >
                       🗑 삭제
@@ -269,24 +281,108 @@ export default function App() {
   )
 }
 
+// 카드 앞면 — 사진이 있으면 사진, 없으면 이모지
+function useImageUrl(id?: string): string | undefined {
+  const [url, setUrl] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    let alive = true
+    if (!id) {
+      setUrl(undefined)
+      return
+    }
+    getImageUrl(id).then((u) => {
+      if (alive) setUrl(u)
+    })
+    return () => {
+      alive = false
+    }
+  }, [id])
+  return url
+}
+
+function CardFace({ card, chip }: { card: Card; chip?: boolean }) {
+  const url = useImageUrl(card.image)
+  const cls = chip ? 'aac-chip-emoji' : 'aac-card-emoji'
+  if (card.image) {
+    if (url) {
+      return <img className={chip ? 'aac-chip-img' : 'aac-card-img'} src={url} alt="" />
+    }
+    return (
+      <span className={cls} aria-hidden>
+        🖼️
+      </span>
+    )
+  }
+  return (
+    <span className={cls} aria-hidden>
+      {card.emoji || '🙂'}
+    </span>
+  )
+}
+
 function AddCardButton({ categoryId }: { categoryId: string }) {
   const [open, setOpen] = useState(false)
   const [emoji, setEmoji] = useState('🙂')
   const [label, setLabel] = useState('')
   const [speakText, setSpeakText] = useState('')
+  const [imageId, setImageId] = useState<string | undefined>(undefined)
+  const [imgUrl, setImgUrl] = useState<string | undefined>(undefined)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+
+  function reset() {
+    setLabel('')
+    setSpeakText('')
+    setEmoji('🙂')
+    setImageId(undefined)
+    setImgUrl(undefined)
+    setErr('')
+  }
+
+  async function onPickFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // 같은 파일 다시 선택 가능하게
+    if (!file) return
+    setBusy(true)
+    setErr('')
+    try {
+      // 이전에 담아둔(미저장) 사진이 있으면 정리
+      if (imageId) await deleteImage(imageId)
+      const blob = await processImageFile(file)
+      const id = newImageId()
+      await putImage(id, blob)
+      setImageId(id)
+      setImgUrl(URL.createObjectURL(blob))
+    } catch {
+      setErr('사진을 불러오지 못했어요. 다른 사진을 골라 주세요.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function clearPhoto() {
+    if (imageId) await deleteImage(imageId)
+    setImageId(undefined)
+    setImgUrl(undefined)
+  }
 
   function submit() {
     const l = label.trim()
     if (!l) return
     addCard({
-      emoji: emoji.trim() || '🙂',
       label: l,
+      image: imageId,
+      emoji: imageId ? undefined : emoji.trim() || '🙂',
       speak: speakText.trim() || undefined,
       categoryId,
     })
-    setLabel('')
-    setSpeakText('')
-    setEmoji('🙂')
+    reset()
+    setOpen(false)
+  }
+
+  async function cancel() {
+    if (imageId) await deleteImage(imageId) // 저장 안 한 사진은 정리
+    reset()
     setOpen(false)
   }
 
@@ -301,16 +397,41 @@ function AddCardButton({ categoryId }: { categoryId: string }) {
 
   return (
     <div className="aac-addform">
-      <label className="aac-field">
-        <span>아이콘(이모지)</span>
-        <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={4} />
-      </label>
+      <div className="aac-photo-row">
+        <div className="aac-photo-preview" aria-hidden>
+          {imgUrl ? <img src={imgUrl} alt="" /> : <span>{emoji || '🙂'}</span>}
+        </div>
+        <div className="aac-photo-actions">
+          <label className="aac-ghostbtn aac-photo-pick">
+            📷 사진 선택
+            <input
+              type="file"
+              accept="image/*"
+              onChange={onPickFile}
+              style={{ display: 'none' }}
+            />
+          </label>
+          {imageId && (
+            <button className="aac-ghostbtn" onClick={clearPhoto}>
+              사진 빼기
+            </button>
+          )}
+          {busy && <span className="aac-photo-busy">사진 준비 중…</span>}
+        </div>
+      </div>
+
+      {!imageId && (
+        <label className="aac-field">
+          <span>아이콘(이모지) — 사진을 안 쓸 때</span>
+          <input value={emoji} onChange={(e) => setEmoji(e.target.value)} maxLength={4} />
+        </label>
+      )}
       <label className="aac-field">
         <span>낱말</span>
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          placeholder="예: 안아줘"
+          placeholder="예: 우리 엄마"
           autoFocus
         />
       </label>
@@ -322,11 +443,12 @@ function AddCardButton({ categoryId }: { categoryId: string }) {
           placeholder="비우면 낱말을 그대로 말해요"
         />
       </label>
+      {err && <p className="aac-photo-err">{err}</p>}
       <div className="aac-addform-btns">
-        <button className="aac-ghostbtn" onClick={() => setOpen(false)}>
+        <button className="aac-ghostbtn" onClick={cancel}>
           취소
         </button>
-        <button className="aac-primarybtn" onClick={submit} disabled={!label.trim()}>
+        <button className="aac-primarybtn" onClick={submit} disabled={!label.trim() || busy}>
           추가
         </button>
       </div>

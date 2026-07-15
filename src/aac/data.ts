@@ -4,7 +4,8 @@
 export type Card = {
   id: string
   label: string // 카드에 보이는 낱말
-  emoji: string
+  emoji?: string // 이모지 아이콘(사진이 없을 때 표시)
+  image?: string // 사용자 사진 id(IndexedDB aac_images). 있으면 사진을 우선 표시
   speak?: string // 실제로 말할 문장(없으면 label)
   categoryId: string
 }
