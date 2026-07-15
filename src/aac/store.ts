@@ -1,0 +1,129 @@
+import { useSyncExternalStore } from 'react'
+import { DEFAULT_CARDS, type Card } from './data'
+
+const KEY = 'bookbloom_aac_v1'
+
+// 감각 예민 아동을 위한 조절 값. 기본값은 "낮은 자극"으로 시작합니다.
+export type Settings = {
+  volume: number // 0 ~ 1  — 기본 조금 낮게
+  rate: number // 0.5 ~ 1.5 — 또박또박(느리게)
+  pitch: number // 0.5 ~ 1.5
+  voiceURI: string // '' = 자동(한국어 우선)
+  theme: 'calm' | 'dim' | 'paper' // 저채도 팔레트
+  reduceMotion: boolean // 움직임 최소화(애니메이션 끔)
+  colorCards: boolean // 카테고리별 옅은 색조 on/off (단색이 더 차분)
+  density: 'roomy' | 'normal' // 한 화면 카드 수(과부하 방지)
+  sentenceMode: boolean // 문장 만들기(여러 장 조합) vs. 바로 말하기
+  hapticFeedback: boolean // 진동 피드백
+  bigText: boolean // 더 큰 글자
+}
+
+export type State = {
+  settings: Settings
+  customCards: Card[] // 보호자가 추가한 카드
+  hiddenIds: string[] // 숨긴 기본 카드 id
+}
+
+const DEFAULT_SETTINGS: Settings = {
+  volume: 0.85,
+  rate: 0.85,
+  pitch: 1,
+  voiceURI: '',
+  theme: 'calm',
+  reduceMotion: false,
+  colorCards: true,
+  density: 'normal',
+  sentenceMode: false,
+  hapticFeedback: false,
+  bigText: false,
+}
+
+const DEFAULT_STATE: State = {
+  settings: DEFAULT_SETTINGS,
+  customCards: [],
+  hiddenIds: [],
+}
+
+function load(): State {
+  try {
+    const raw = localStorage.getItem(KEY)
+    if (!raw) return DEFAULT_STATE
+    const parsed = JSON.parse(raw) as Partial<State>
+    return {
+      settings: { ...DEFAULT_SETTINGS, ...(parsed.settings ?? {}) },
+      customCards: parsed.customCards ?? [],
+      hiddenIds: parsed.hiddenIds ?? [],
+    }
+  } catch {
+    return DEFAULT_STATE
+  }
+}
+
+let state: State = load()
+const listeners = new Set<() => void>()
+
+function emit() {
+  listeners.forEach((l) => l())
+}
+
+function persist() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(state))
+  } catch {
+    /* 저장 실패는 조용히 무시(사용에 지장 없음) */
+  }
+}
+
+function set(next: Partial<State>) {
+  state = { ...state, ...next }
+  persist()
+  emit()
+}
+
+export function subscribe(cb: () => void): () => void {
+  listeners.add(cb)
+  return () => listeners.delete(cb)
+}
+
+export function getState(): State {
+  return state
+}
+
+export function useAacStore(): State {
+  return useSyncExternalStore(subscribe, getState, getState)
+}
+
+// --- 액션 ---
+
+export function updateSettings(patch: Partial<Settings>) {
+  set({ settings: { ...state.settings, ...patch } })
+}
+
+export function addCard(card: Omit<Card, 'id'>) {
+  const id = `custom_${Date.now().toString(36)}`
+  set({ customCards: [...state.customCards, { ...card, id }] })
+}
+
+export function removeCustomCard(id: string) {
+  set({ customCards: state.customCards.filter((c) => c.id !== id) })
+}
+
+export function toggleHidden(id: string) {
+  const hidden = state.hiddenIds.includes(id)
+  set({
+    hiddenIds: hidden
+      ? state.hiddenIds.filter((x) => x !== id)
+      : [...state.hiddenIds, id],
+  })
+}
+
+// 화면에 보일 카드(기본 + 커스텀, 숨김 제외)
+export function visibleCards(categoryId: string): Card[] {
+  const all = [...DEFAULT_CARDS, ...state.customCards]
+  return all.filter((c) => c.categoryId === categoryId && !state.hiddenIds.includes(c.id))
+}
+
+// 편집 화면용(숨김 포함 전체)
+export function allCards(categoryId: string): Card[] {
+  return [...DEFAULT_CARDS, ...state.customCards].filter((c) => c.categoryId === categoryId)
+}

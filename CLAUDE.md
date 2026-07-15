@@ -17,6 +17,12 @@
 - `src/lib/group.ts` — 모임(방코드·피드·함께읽기) API. Supabase 미설정 시 비활성
 - `src/screens/` — Home(스트릭·목표·읽는중) / Library / Search / BookDetail / Stats(뱃지·캘린더·도넛·결산) / Group(모임) / Settings
 
+## 독립 모듈 — 또박또박 (감각 친화 AAC)
+- 독서앱과 별개인 보완대체의사소통(AAC) 도구. 진입점 `aac.html`(멀티 페이지, vite `rollupOptions.input`) → 배포 시 `/aac.html`
+- `src/aac/` — main / App(카드 그리드·문장 스트립·편집) / Settings(감각 조절 시트) / data(기본 어휘) / store(localStorage `bookbloom_aac_v1`) / speech(Web Speech API TTS) / aac.css
+- 설계: 저채도 팔레트·큰 탭 영역·움직임 최소화·번쩍임 없음. 테마/모션/색상은 `<html data-aac-*>` 속성으로 전환
+- 브라우저 내장 TTS(한국어 음성)만 사용 — 서버·외부 키 불필요
+
 ## 디자인 (페이퍼 에디션 — v0.19)
 - 팔레트: 웜 잉크 `#211d16` · 종이 `#faf6ec` · 카드 `#fffdf7` · 라인 `#eae2d3` · 트랙 `#efe8da`
 - **그린 `#4e9c6f`이 유일한 액센트** (구 코랄 `#F2845C`은 잉크로 통일, 미니멀 방향으로 폐기)
