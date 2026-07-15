@@ -9,6 +9,7 @@ import { Settings } from './screens/Settings'
 import { Welcome } from './screens/Welcome'
 import { Group } from './screens/Group'
 import { Help } from './screens/Help'
+import { PublicShelfView } from './screens/PublicShelf'
 import { Celebration } from './screens/Celebration'
 import { onCelebrate, getData } from './store'
 import { startSyncEngine, pullMerge } from './lib/cloudsync'
@@ -42,9 +43,21 @@ const TABS: Array<{ key: Tab; label: string }> = [
   { key: 'settings', label: '설정' },
 ]
 
+function shelfSlugFromHash(): string | null {
+  const m = location.hash.match(/^#\/shelf\/([^/?#]+)/)
+  return m ? decodeURIComponent(m[1]) : null
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>({ view: 'tab', tab: 'home' })
   const [lastTab, setLastTab] = useState<Tab>('home')
+  const [shelfSlug, setShelfSlug] = useState<string | null>(shelfSlugFromHash)
+
+  useEffect(() => {
+    const onHash = () => setShelfSlug(shelfSlugFromHash())
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
   const [showWelcome, setShowWelcome] = useState(() => {
     try {
       return localStorage.getItem(ONBOARD_KEY) !== '1'
@@ -78,6 +91,11 @@ export default function App() {
   const openBook = (bookId: string) => setScreen({ view: 'book', bookId })
   const openSearch = () => setScreen({ view: 'search' })
   const back = () => setScreen({ view: 'tab', tab: lastTab })
+
+  // 공개 서재 링크(#/shelf/핸들) — 앱 데이터·온보딩과 무관하게 열림
+  if (shelfSlug) {
+    return <PublicShelfView slug={shelfSlug} />
+  }
 
   if (showWelcome) {
     return (

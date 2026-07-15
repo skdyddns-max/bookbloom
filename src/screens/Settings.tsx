@@ -8,6 +8,107 @@ import {
 import {
   notificationsSupported, reviewNotifyOn, enableReviewNotify, disableReviewNotify,
 } from '../lib/weekly'
+import {
+  shelfAvailable, getShelfState, publishShelf, unpublishShelf, shelfUrl,
+} from '../lib/shelf'
+import { getGroupSession } from '../lib/group'
+
+function ShelfLink() {
+  const [state, setState] = useState(getShelfState())
+  const [handle, setHandle] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  const [copied, setCopied] = useState(false)
+  const [updated, setUpdated] = useState(false)
+
+  if (!shelfAvailable) return null
+
+  const publish = async (slug: string) => {
+    setBusy(true); setErr('')
+    try {
+      await publishShelf(slug, getGroupSession()?.nickname ?? slug)
+      setState(getShelfState())
+      return true
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : '실패했어요')
+      return false
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <section className="card">
+      <h2>나의 서재 링크</h2>
+      {state ? (
+        <>
+          <p className="muted small">
+            이 링크를 열면 누구나 내 완독 책·밑줄·페르소나를 볼 수 있어요.
+            인스타 프로필에 걸어보세요.
+          </p>
+          <div className="sync-code-box">
+            <span className="shelf-url">{shelfUrl(state.slug)}</span>
+            <button
+              className="btn btn-outline btn-sm"
+              onClick={() => {
+                navigator.clipboard?.writeText(shelfUrl(state.slug))
+                setCopied(true); setTimeout(() => setCopied(false), 1500)
+              }}
+            >
+              {copied ? '복사됨' : '링크 복사'}
+            </button>
+          </div>
+          <div className="settings-actions">
+            <button
+              className="btn btn-outline"
+              disabled={busy}
+              onClick={async () => {
+                if (await publish(state.slug)) {
+                  setUpdated(true); setTimeout(() => setUpdated(false), 1500)
+                }
+              }}
+            >
+              {updated ? '반영됐어요 ✓' : busy ? '…' : '지금 기록으로 업데이트'}
+            </button>
+            <button
+              className="btn-text danger"
+              onClick={async () => {
+                if (confirm('서재를 비공개로 돌릴까요? 링크가 더 이상 열리지 않아요.')) {
+                  await unpublishShelf()
+                  setState(null)
+                }
+              }}
+            >
+              공개 해제
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="muted small">
+            핸들을 정하면 내 서재를 보여주는 링크가 생겨요. 완독 책·밑줄·페르소나만 공개되고,
+            읽는 중인 책과 메모는 공개되지 않아요.
+          </p>
+          <div className="quicklog-row">
+            <input
+              placeholder="예: yongdi"
+              value={handle}
+              onChange={(e) => setHandle(e.target.value)}
+            />
+            <button
+              className="btn btn-green btn-sm"
+              disabled={busy || handle.trim().length < 2}
+              onClick={() => publish(handle)}
+            >
+              {busy ? '…' : '서재 공개'}
+            </button>
+          </div>
+        </>
+      )}
+      {err && <p className="error-msg">{err}</p>}
+    </section>
+  )
+}
 
 function WeeklyNotify() {
   const [on, setOn] = useState(reviewNotifyOn())
@@ -231,6 +332,8 @@ export function Settings({ onOpenHelp }: { onOpenHelp: () => void }) {
 
       <CloudSync />
 
+      <ShelfLink />
+
       <WeeklyNotify />
 
       <section className="card">
@@ -263,7 +366,7 @@ export function Settings({ onOpenHelp }: { onOpenHelp: () => void }) {
       </section>
 
       <p className="muted small center">
-        결 v0.32 · 한 줄씩, 나의 결이 쌓여요 🌱
+        결 v0.33 · 한 줄씩, 나의 결이 쌓여요 🌱
       </p>
     </div>
   )

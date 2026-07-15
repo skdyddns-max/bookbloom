@@ -126,3 +126,4 @@ create table if not exists bb_challenge_participants (
 alter table bb_challenge_participants enable row level security; -- 직접 접근 차단, RPC(security definer)만 허용
 -- RPC: bb_challenge_stats / bb_challenge_join / bb_challenge_progress / bb_challenge_leave (anon execute)
 -- v0.29: bb_challenge_stats에 'board'(완주 리더보드, done desc·progress desc, limit 20) 추가 (bb-migrate-ch2로 배포)
+-- v0.33: bb_shelves(공개 서재: slug pk·pid unique·nickname·data jsonb) + RPC publish/get/unpublish (bb-migrate-shelf로 배포)
