@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { CATEGORIES, type Card } from './data'
+import { useHold } from './hold'
 import {
   addCard,
   removeCustomCard,
@@ -19,6 +20,22 @@ export default function App() {
   const [sentence, setSentence] = useState<Card[]>([])
   const [showSettings, setShowSettings] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [hint, setHint] = useState<string | null>(null)
+  const hintTimer = useRef<number | null>(null)
+
+  function showHint(msg: string) {
+    setHint(msg)
+    if (hintTimer.current !== null) window.clearTimeout(hintTimer.current)
+    hintTimer.current = window.setTimeout(() => setHint(null), 1800)
+  }
+
+  const lock = settings.guardianLock
+  const settingsHold = useHold(() => setShowSettings(true), lock, 600, () =>
+    showHint('설정은 길게 눌러 열어요'),
+  )
+  const editHold = useHold(() => setEditing(true), lock, 600, () =>
+    showHint('편집은 길게 눌러 열어요'),
+  )
 
   // 테마·감각 설정을 최상위 data 속성으로 반영(CSS가 이걸 읽음)
   useEffect(() => {
@@ -99,21 +116,32 @@ export default function App() {
           <span>또박또박</span>
         </div>
         <div className="aac-top-actions">
+          {editing ? (
+            <button
+              className="aac-iconbtn is-on"
+              onClick={() => setEditing(false)}
+              aria-pressed={true}
+              title="편집 마치기"
+            >
+              완료
+            </button>
+          ) : (
+            <button
+              className={`aac-iconbtn ${editHold.holding ? 'is-holding' : ''}`}
+              {...editHold.handlers}
+              aria-label={lock ? '카드 편집 (길게 눌러요)' : '카드 편집'}
+              title="카드 편집(보호자)"
+            >
+              ✏️ 편집{lock && <span className="aac-lock" aria-hidden>🔒</span>}
+            </button>
+          )}
           <button
-            className={`aac-iconbtn ${editing ? 'is-on' : ''}`}
-            onClick={() => setEditing((e) => !e)}
-            aria-pressed={editing}
-            title="카드 편집(보호자)"
-          >
-            {editing ? '완료' : '✏️ 편집'}
-          </button>
-          <button
-            className="aac-iconbtn"
-            onClick={() => setShowSettings(true)}
+            className={`aac-iconbtn ${settingsHold.holding ? 'is-holding' : ''}`}
+            {...settingsHold.handlers}
             title="설정"
-            aria-label="설정 열기"
+            aria-label={lock ? '설정 열기 (길게 눌러요)' : '설정 열기'}
           >
-            ⚙️
+            ⚙️{lock && <span className="aac-lock" aria-hidden>🔒</span>}
           </button>
         </div>
       </header>
@@ -230,6 +258,12 @@ export default function App() {
           onPreview={() => say('안녕하세요. 이렇게 말해요.')}
           onSettingChange={(patch) => updateSettings(patch)}
         />
+      )}
+
+      {hint && (
+        <div className="aac-hint" role="status">
+          {hint}
+        </div>
       )}
     </div>
   )

@@ -16,6 +16,7 @@ export type Settings = {
   sentenceMode: boolean // 문장 만들기(여러 장 조합) vs. 바로 말하기
   hapticFeedback: boolean // 진동 피드백
   bigText: boolean // 더 큰 글자
+  guardianLock: boolean // 설정·편집을 '길게 눌러' 열기(아이 오작동 방지)
 
   // 음성 제공자 — 'browser'(기기 내장) 또는 'elevenlabs'(고품질·안정)
   voiceProvider: 'browser' | 'elevenlabs'
@@ -42,6 +43,7 @@ const DEFAULT_SETTINGS: Settings = {
   sentenceMode: false,
   hapticFeedback: false,
   bigText: false,
+  guardianLock: true,
   voiceProvider: 'browser',
   elevenApiKey: '',
   elevenVoiceId: '',

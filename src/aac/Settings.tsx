@@ -165,6 +165,16 @@ export function SettingsSheet({ onClose, onPreview }: Props) {
             />
           </section>
 
+          <section className="aac-set-group">
+            <h3>🔒 보호자</h3>
+            <Toggle
+              label="보호자 잠금"
+              hint="설정·편집을 ‘길게 눌러야’ 열려요 (아이 오작동 방지)"
+              checked={settings.guardianLock}
+              onChange={(v) => updateSettings({ guardianLock: v })}
+            />
+          </section>
+
           <p className="aac-sheet-foot">
             설정은 이 기기에 저장돼요. 카드 편집은 상단 ‘편집’에서 할 수 있어요.
           </p>
