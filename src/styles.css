@@ -2474,3 +2474,46 @@ textarea {
   word-break: break-all;
   flex: 1;
 }
+
+/* ── 결 사서 ── */
+.libra-card {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(195,155,82,0.10), transparent 55%),
+    var(--card);
+}
+.libra-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.libra-mark { font-size: 28px; line-height: 1.2; }
+.libra-head h2 { margin-bottom: 2px; }
+.libra-ask { margin-top: 12px; }
+.libra-result { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.libra-note {
+  font-size: 14.5px;
+  color: var(--green-dark);
+  line-height: 1.6;
+  word-break: keep-all;
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
+  margin: 0;
+}
+.libra-rec {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.libra-rec b { font-size: 16px; color: var(--ink); word-break: keep-all; }
+.libra-rec p { font-size: 13.5px; color: var(--dark); line-height: 1.6; word-break: keep-all; margin: 4px 0 2px; }
+.libra-link { padding: 0; font-size: 13px; align-self: flex-start; }
+.libra-answer {
+  margin-top: 14px;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--dark);
+  word-break: keep-all;
+  background: var(--green-soft);
+  border-radius: 14px;
+  padding: 14px 16px;
+  white-space: pre-wrap;
+}
