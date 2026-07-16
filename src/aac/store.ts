@@ -10,6 +10,7 @@ export type Settings = {
   pitch: number // 0.5 ~ 1.5
   voiceURI: string // '' = 자동(한국어 우선)
   theme: 'calm' | 'dim' | 'paper' // 저채도 팔레트
+  highContrast: boolean // 선명하게 — 진한 글자·두꺼운 테두리(야외·저시력)
   reduceMotion: boolean // 움직임 최소화(애니메이션 끔)
   colorCards: boolean // 카테고리별 옅은 색조 on/off (단색이 더 차분)
   density: 'roomy' | 'normal' // 한 화면 카드 수(과부하 방지)
@@ -29,6 +30,7 @@ export type State = {
   settings: Settings
   customCards: Card[] // 보호자가 추가한 카드
   hiddenIds: string[] // 숨긴 기본 카드 id
+  locked: boolean // 사용 잠금(어린이 모드) — 카드 말하기만 가능, 길게 눌러 해제
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -37,6 +39,7 @@ const DEFAULT_SETTINGS: Settings = {
   pitch: 1,
   voiceURI: '',
   theme: 'calm',
+  highContrast: false,
   reduceMotion: false,
   colorCards: true,
   density: 'normal',
@@ -54,6 +57,7 @@ const DEFAULT_STATE: State = {
   settings: DEFAULT_SETTINGS,
   customCards: [],
   hiddenIds: [],
+  locked: false,
 }
 
 function load(): State {
@@ -65,6 +69,7 @@ function load(): State {
       settings: { ...DEFAULT_SETTINGS, ...(parsed.settings ?? {}) },
       customCards: parsed.customCards ?? [],
       hiddenIds: parsed.hiddenIds ?? [],
+      locked: parsed.locked ?? false,
     }
   } catch {
     return DEFAULT_STATE
@@ -118,6 +123,10 @@ export function addCard(card: Omit<Card, 'id'>) {
 
 export function removeCustomCard(id: string) {
   set({ customCards: state.customCards.filter((c) => c.id !== id) })
+}
+
+export function setLocked(locked: boolean) {
+  set({ locked })
 }
 
 export function toggleHidden(id: string) {

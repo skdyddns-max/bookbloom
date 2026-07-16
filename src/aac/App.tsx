@@ -6,6 +6,7 @@ import {
   removeCustomCard,
   toggleHidden,
   updateSettings,
+  setLocked,
   useAacStore,
   visibleCards,
   allCards,
@@ -22,7 +23,7 @@ import {
 import { SettingsSheet } from './Settings'
 
 export default function App() {
-  const { settings, hiddenIds, customCards } = useAacStore()
+  const { settings, hiddenIds, customCards, locked } = useAacStore()
   const [categoryId, setCategoryId] = useState(CATEGORIES[0].id)
   const [sentence, setSentence] = useState<Card[]>([])
   const [showSettings, setShowSettings] = useState(false)
@@ -43,16 +44,37 @@ export default function App() {
   const editHold = useHold(() => setEditing(true), lock, 600, () =>
     showHint('편집은 길게 눌러 열어요'),
   )
+  // 사용 잠금 해제는 항상 3초 길게 누르기 — 아이가 우연히 풀 수 없게
+  const unlockHold = useHold(
+    () => {
+      setLocked(false)
+      showHint('잠금이 풀렸어요')
+      if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {})
+    },
+    true,
+    3000,
+    () => showHint('3초간 꾹 누르면 풀려요'),
+  )
+
+  function engageLock() {
+    setLocked(true)
+    setEditing(false)
+    setShowSettings(false)
+    showHint('잠금! 카드만 누를 수 있어요')
+    // 안드로이드 크롬: 전체화면으로 브라우저 UI 숨김(미지원 기기는 조용히 무시)
+    document.documentElement.requestFullscreen?.().catch(() => {})
+  }
 
   // 테마·감각 설정을 최상위 data 속성으로 반영(CSS가 이걸 읽음)
   useEffect(() => {
     const root = document.documentElement
     root.dataset.aacTheme = settings.theme
+    root.dataset.aacContrast = settings.highContrast ? 'high' : 'normal'
     root.dataset.aacMotion = settings.reduceMotion ? 'reduce' : 'ok'
     root.dataset.aacColor = settings.colorCards ? 'on' : 'off'
     root.dataset.aacBigtext = settings.bigText ? 'on' : 'off'
     root.dataset.aacDensity = settings.density
-  }, [settings.theme, settings.reduceMotion, settings.colorCards, settings.bigText, settings.density])
+  }, [settings.theme, settings.highContrast, settings.reduceMotion, settings.colorCards, settings.bigText, settings.density])
 
   const cards = useMemo(
     () => (editing ? allCards(categoryId) : visibleCards(categoryId)),
@@ -128,33 +150,54 @@ export default function App() {
           <span>또박또박</span>
         </div>
         <div className="aac-top-actions">
-          {editing ? (
+          {locked ? (
             <button
-              className="aac-iconbtn is-on"
-              onClick={() => setEditing(false)}
-              aria-pressed={true}
-              title="편집 마치기"
+              className={`aac-iconbtn aac-unlockbtn ${unlockHold.holding ? 'is-holding' : ''}`}
+              {...unlockHold.handlers}
+              aria-label="잠금 풀기 (3초간 길게 눌러요)"
+              title="3초간 길게 누르면 잠금이 풀려요"
             >
-              완료
+              🔒
             </button>
           ) : (
-            <button
-              className={`aac-iconbtn ${editHold.holding ? 'is-holding' : ''}`}
-              {...editHold.handlers}
-              aria-label={lock ? '카드 편집 (길게 눌러요)' : '카드 편집'}
-              title="카드 편집(보호자)"
-            >
-              ✏️ 편집{lock && <span className="aac-lock" aria-hidden>🔒</span>}
-            </button>
+            <>
+              <button
+                className="aac-iconbtn"
+                onClick={engageLock}
+                aria-label="사용 잠금 켜기"
+                title="잠그면 카드 말하기만 할 수 있어요"
+              >
+                🔓 잠금
+              </button>
+              {editing ? (
+                <button
+                  className="aac-iconbtn is-on"
+                  onClick={() => setEditing(false)}
+                  aria-pressed={true}
+                  title="편집 마치기"
+                >
+                  완료
+                </button>
+              ) : (
+                <button
+                  className={`aac-iconbtn ${editHold.holding ? 'is-holding' : ''}`}
+                  {...editHold.handlers}
+                  aria-label={lock ? '카드 편집 (길게 눌러요)' : '카드 편집'}
+                  title="카드 편집(보호자)"
+                >
+                  ✏️ 편집{lock && <span className="aac-lock" aria-hidden>🔒</span>}
+                </button>
+              )}
+              <button
+                className={`aac-iconbtn ${settingsHold.holding ? 'is-holding' : ''}`}
+                {...settingsHold.handlers}
+                title="설정"
+                aria-label={lock ? '설정 열기 (길게 눌러요)' : '설정 열기'}
+              >
+                ⚙️{lock && <span className="aac-lock" aria-hidden>🔒</span>}
+              </button>
+            </>
           )}
-          <button
-            className={`aac-iconbtn ${settingsHold.holding ? 'is-holding' : ''}`}
-            {...settingsHold.handlers}
-            title="설정"
-            aria-label={lock ? '설정 열기 (길게 눌러요)' : '설정 열기'}
-          >
-            ⚙️{lock && <span className="aac-lock" aria-hidden>🔒</span>}
-          </button>
         </div>
       </header>
 

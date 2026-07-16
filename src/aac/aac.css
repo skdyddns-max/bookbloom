@@ -10,9 +10,10 @@
   --surface: #f7f9f6;
   --card: #ffffff;
   --line: #dfe4de;
-  --ink: #2f342f;
-  --ink-soft: #6b716a;
-  --accent: #6a9a80; /* 부드러운 세이지 그린 */
+  --ink: #262b26;
+  --ink-soft: #5d645c;
+  --accent: #4a7c60; /* 세이지 그린 — 흰 글자 대비 4.8:1 */
+  --accent-ink: #ffffff; /* 액센트 배경 위 글자색 */
   --accent-soft: #e4ede7;
   --shadow: 0 1px 2px rgba(47, 52, 47, 0.05);
   --radius: 20px;
@@ -32,9 +33,9 @@
   --surface: #fbf7ec;
   --card: #fffdf6;
   --line: #e7decd;
-  --ink: #33302a;
-  --ink-soft: #79736a;
-  --accent: #8a8256;
+  --ink: #2b2823;
+  --ink-soft: #6c6659;
+  --accent: #6f6435;
   --accent-soft: #efe9d7;
 }
 
@@ -42,10 +43,11 @@
   --bg: #23262a;
   --surface: #2b2f33;
   --card: #333940;
-  --line: #3f464d;
-  --ink: #e6e8e6;
-  --ink-soft: #a3aaa8;
-  --accent: #86b79a;
+  --line: #464e56;
+  --ink: #eef0ee;
+  --ink-soft: #b2b9b7;
+  --accent: #8fc2a5;
+  --accent-ink: #16241c; /* 어두운 테마에선 밝은 액센트 + 진한 글자 */
   --accent-soft: #33413a;
   --shadow: none;
   --tint-core: #313a36;
@@ -55,6 +57,59 @@
   --tint-people: #37343f;
   --tint-place: #313a35;
   --tint-body: #3d3431;
+}
+
+/* 선명하게(고대비) — 진한 잉크·강한 테두리·어두운 액센트. 야외·저시력 대응 */
+:root[data-aac-contrast='high'] {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --line: #7c857c;
+  --ink: #101410;
+  --ink-soft: #3c433c;
+  --accent: #2e5f47;
+  --accent-ink: #ffffff;
+  --accent-soft: #d7e6dc;
+}
+:root[data-aac-contrast='high'][data-aac-theme='paper'] {
+  --bg: #f8f3e6;
+  --surface: #fffef9;
+  --card: #fffef9;
+  --line: #8c8265;
+  --ink: #17140e;
+  --ink-soft: #4a4436;
+  --accent: #574d1f;
+  --accent-ink: #ffffff;
+  --accent-soft: #efe9d7;
+}
+:root[data-aac-contrast='high'][data-aac-theme='dim'] {
+  --bg: #121417;
+  --surface: #1d2125;
+  --card: #22262b;
+  --line: #8b949c;
+  --ink: #ffffff;
+  --ink-soft: #ced5d3;
+  --accent: #a9dcbf;
+  --accent-ink: #0c1911;
+  --accent-soft: #2b3e34;
+}
+:root[data-aac-contrast='high'] .aac-card {
+  border-width: 2.5px;
+}
+:root[data-aac-contrast='high'] .aac-card-label,
+:root[data-aac-contrast='high'] .aac-tab-name {
+  font-weight: 900;
+}
+:root[data-aac-contrast='high'] .aac-iconbtn,
+:root[data-aac-contrast='high'] .aac-tab,
+:root[data-aac-contrast='high'] .aac-stripbtn,
+:root[data-aac-contrast='high'] .aac-toggle,
+:root[data-aac-contrast='high'] .aac-segbtn {
+  border-width: 2px;
+}
+/* 고대비에선 옅은 색조 카드도 흰 바탕으로 통일해 글자 대비 극대화 */
+:root[data-aac-contrast='high'][data-aac-color='on'] .aac-card {
+  background: var(--card) !important;
 }
 
 * {
@@ -74,6 +129,8 @@ body {
   color: var(--ink);
   word-break: keep-all;
   -webkit-font-smoothing: antialiased;
+  /* 당겨서 새로고침·바운스 차단 (잠금 중 이탈 방지) */
+  overscroll-behavior: none;
 }
 
 .aac {
@@ -122,7 +179,7 @@ body {
 .aac-iconbtn.is-on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 .aac-iconbtn {
   position: relative;
@@ -136,11 +193,45 @@ body {
   background: var(--accent-soft);
   border-color: var(--accent);
 }
+/* 사용 잠금 해제 버튼 — 3초 홀드 동안 서서히 차오르는 표시 */
+.aac-unlockbtn {
+  min-width: 54px;
+  font-size: 20px;
+}
+.aac-unlockbtn.is-holding {
+  animation: aac-unlock-fill 3s linear forwards;
+}
+@keyframes aac-unlock-fill {
+  from {
+    box-shadow: inset 0 0 0 0 var(--accent-soft);
+  }
+  to {
+    box-shadow: inset 0 -46px 0 0 var(--accent-soft);
+  }
+}
+:root[data-aac-motion='reduce'] .aac-unlockbtn.is-holding {
+  animation: none;
+  background: var(--accent-soft);
+}
 .aac-lock {
   font-size: 11px;
   margin-left: 3px;
   opacity: 0.6;
   vertical-align: middle;
+}
+/* 아주 좁은 폰: 상단바를 살짝 줄여 겹침 방지 */
+@media (max-width: 359px) {
+  .aac-title {
+    font-size: 19px;
+  }
+  .aac-logo {
+    font-size: 20px;
+  }
+  .aac-iconbtn {
+    padding: 8px 10px;
+    font-size: 15px;
+    white-space: nowrap;
+  }
 }
 
 /* 안내 힌트 토스트 */
@@ -230,7 +321,7 @@ body {
 .aac-stripbtn--say {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
   min-width: 96px;
   font-size: 18px;
 }
@@ -269,13 +360,13 @@ body {
   font-size: 26px;
 }
 .aac-tab-name {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
 }
 .aac-tab.is-active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 
 /* ---------- 카드 그리드 ---------- */
@@ -290,6 +381,12 @@ body {
 :root[data-aac-density='roomy'] .aac-grid {
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
+}
+/* 아주 좁은 폰(SE 등)은 2열로 — 카드·글자가 좁아지지 않게 */
+@media (max-width: 359px) {
+  .aac-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (min-width: 620px) {
   .aac-grid {
@@ -333,7 +430,7 @@ body {
 :root[data-aac-color='on'] .aac-card[data-cat='body'] { background: var(--tint-body); }
 
 .aac-card-emoji {
-  font-size: 46px;
+  font-size: clamp(42px, 11vw, 52px);
   line-height: 1;
 }
 /* 사용자 사진 카드 */
@@ -355,16 +452,17 @@ body {
   vertical-align: middle;
 }
 .aac-card-label {
-  font-size: 21px;
+  font-size: clamp(20px, 5.4vw, 24px);
   font-weight: 800;
   text-align: center;
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 :root[data-aac-bigtext='on'] .aac-card-label {
-  font-size: 25px;
+  font-size: clamp(24px, 6.6vw, 28px);
 }
 :root[data-aac-bigtext='on'] .aac-card-emoji {
-  font-size: 52px;
+  font-size: clamp(48px, 13vw, 58px);
 }
 
 /* 눌림 피드백 — 부드럽게. 움직임 최소화 시 제거 */
@@ -408,8 +506,9 @@ body {
   background: var(--surface);
   color: var(--ink);
   border-radius: 10px;
-  padding: 6px 8px;
-  font-size: 13px;
+  padding: 8px 10px;
+  min-height: 40px;
+  font-size: 14px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -505,7 +604,7 @@ body {
 .aac-primarybtn {
   border: none;
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
   border-radius: 14px;
   padding: 12px 18px;
   font-size: 16px;
@@ -632,7 +731,7 @@ body {
 .aac-segbtn.is-on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 
 .aac-toggle {
@@ -765,4 +864,16 @@ body {
   color: var(--ink-soft);
   line-height: 1.5;
   margin: 0;
+}
+.aac-kiosk-help {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.aac-kiosk-help b {
+  color: var(--ink);
 }
