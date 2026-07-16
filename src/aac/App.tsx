@@ -7,6 +7,7 @@ import {
   toggleHidden,
   updateSettings,
   setLocked,
+  recordUse,
   useAacStore,
   visibleCards,
   allCards,
@@ -78,8 +79,10 @@ export default function App() {
 
   const cards = useMemo(
     () => (editing ? allCards(categoryId) : visibleCards(categoryId)),
-    // 카드 추가·삭제(customCards)와 숨김(hiddenIds) 변화를 즉시 반영
-    [categoryId, editing, hiddenIds, customCards],
+    // 카드 추가·삭제(customCards)와 숨김(hiddenIds), 정렬 설정 변화를 즉시 반영.
+    // usage는 일부러 뺌 — 누르는 도중 카드가 자리를 옮기면 혼란스러우니
+    // 정렬은 카테고리를 다시 열 때(또는 새로고침) 반영됩니다.
+    [categoryId, editing, hiddenIds, customCards, settings.sortByUsage],
   )
 
   function haptic() {
@@ -120,6 +123,7 @@ export default function App() {
   function onCardTap(card: Card) {
     if (editing) return
     haptic()
+    recordUse(card.id)
     const word = card.speak ?? card.label
     if (settings.sentenceMode) {
       setSentence((s) => [...s, card])

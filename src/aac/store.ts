@@ -15,6 +15,7 @@ export type Settings = {
   colorCards: boolean // 카테고리별 옅은 색조 on/off (단색이 더 차분)
   density: 'roomy' | 'normal' // 한 화면 카드 수(과부하 방지)
   sentenceMode: boolean // 문장 만들기(여러 장 조합) vs. 바로 말하기
+  sortByUsage: boolean // 자주 쓰는 카드를 카테고리 안에서 먼저 보여주기
   hapticFeedback: boolean // 진동 피드백
   bigText: boolean // 더 큰 글자
   guardianLock: boolean // 설정·편집을 '길게 눌러' 열기(아이 오작동 방지)
@@ -31,6 +32,7 @@ export type State = {
   customCards: Card[] // 보호자가 추가한 카드
   hiddenIds: string[] // 숨긴 기본 카드 id
   locked: boolean // 사용 잠금(어린이 모드) — 카드 말하기만 가능, 길게 눌러 해제
+  usage: Record<string, number> // 카드별 누른 횟수 — '자주 쓰는 카드 먼저' 정렬용
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -44,6 +46,7 @@ const DEFAULT_SETTINGS: Settings = {
   colorCards: true,
   density: 'normal',
   sentenceMode: false,
+  sortByUsage: true,
   hapticFeedback: false,
   bigText: false,
   guardianLock: true,
@@ -58,6 +61,7 @@ const DEFAULT_STATE: State = {
   customCards: [],
   hiddenIds: [],
   locked: false,
+  usage: {},
 }
 
 function load(): State {
@@ -70,6 +74,7 @@ function load(): State {
       customCards: parsed.customCards ?? [],
       hiddenIds: parsed.hiddenIds ?? [],
       locked: parsed.locked ?? false,
+      usage: parsed.usage ?? {},
     }
   } catch {
     return DEFAULT_STATE
@@ -129,6 +134,11 @@ export function setLocked(locked: boolean) {
   set({ locked })
 }
 
+// 카드 사용 기록 — 누를 때마다 +1 (기기에만 저장)
+export function recordUse(id: string) {
+  set({ usage: { ...state.usage, [id]: (state.usage[id] ?? 0) + 1 } })
+}
+
 export function toggleHidden(id: string) {
   const hidden = state.hiddenIds.includes(id)
   set({
@@ -138,10 +148,19 @@ export function toggleHidden(id: string) {
   })
 }
 
-// 화면에 보일 카드(기본 + 커스텀, 숨김 제외)
+// 화면에 보일 카드(기본 + 커스텀, 숨김 제외).
+// '자주 쓰는 카드 먼저'가 켜져 있으면 카테고리 안에서 사용 횟수 내림차순으로 정렬
+// (동률이면 원래 순서 유지 — 안 쓴 카드들은 위치가 바뀌지 않아 예측 가능)
 export function visibleCards(categoryId: string): Card[] {
   const all = [...DEFAULT_CARDS, ...state.customCards]
-  return all.filter((c) => c.categoryId === categoryId && !state.hiddenIds.includes(c.id))
+  const cards = all.filter(
+    (c) => c.categoryId === categoryId && !state.hiddenIds.includes(c.id),
+  )
+  if (!state.settings.sortByUsage) return cards
+  return cards
+    .map((c, i) => ({ c, i, n: state.usage[c.id] ?? 0 }))
+    .sort((a, b) => b.n - a.n || a.i - b.i)
+    .map((x) => x.c)
 }
 
 // 편집 화면용(숨김 포함 전체)

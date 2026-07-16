@@ -164,6 +164,12 @@ export function SettingsSheet({ onClose, onPreview }: Props) {
               onChange={(v) => updateSettings({ sentenceMode: v })}
             />
             <Toggle
+              label="자주 쓰는 카드 먼저"
+              hint="많이 누른 카드가 위로 와요 (누르는 도중엔 안 움직여요)"
+              checked={settings.sortByUsage}
+              onChange={(v) => updateSettings({ sortByUsage: v })}
+            />
+            <Toggle
               label="진동 피드백"
               hint="누를 때 짧게 진동 (지원 기기)"
               checked={settings.hapticFeedback}
