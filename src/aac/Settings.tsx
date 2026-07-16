@@ -179,6 +179,15 @@ export function SettingsSheet({ onClose, onPreview }: Props) {
               checked={settings.guardianLock}
               onChange={(v) => updateSettings({ guardianLock: v })}
             />
+            <div className="aac-kiosk-help">
+              <b>🔓 잠금 버튼</b>은 화면 위쪽에 있어요. 잠그면 카드 말하기만 할 수 있고,
+              🔒를 <b>3초간 길게 누르면</b> 풀려요.
+              <br />
+              앱 밖(홈 화면 등)으로도 못 나가게 하려면 휴대폰 기능을 함께 켜 주세요:
+              <br />· 아이폰 — 설정 &gt; 손쉬운 사용 &gt; <b>사용법 유도</b> 켠 뒤, 이 앱에서
+              측면 버튼 3번 클릭
+              <br />· 안드로이드 — 설정 &gt; 보안 &gt; <b>앱 고정</b> 켠 뒤, 최근 앱에서 고정
+            </div>
           </section>
 
           <p className="aac-sheet-foot">

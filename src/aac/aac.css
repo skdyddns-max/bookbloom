@@ -129,6 +129,8 @@ body {
   color: var(--ink);
   word-break: keep-all;
   -webkit-font-smoothing: antialiased;
+  /* 당겨서 새로고침·바운스 차단 (잠금 중 이탈 방지) */
+  overscroll-behavior: none;
 }
 
 .aac {
@@ -190,6 +192,26 @@ body {
 .aac-iconbtn.is-holding {
   background: var(--accent-soft);
   border-color: var(--accent);
+}
+/* 사용 잠금 해제 버튼 — 3초 홀드 동안 서서히 차오르는 표시 */
+.aac-unlockbtn {
+  min-width: 54px;
+  font-size: 20px;
+}
+.aac-unlockbtn.is-holding {
+  animation: aac-unlock-fill 3s linear forwards;
+}
+@keyframes aac-unlock-fill {
+  from {
+    box-shadow: inset 0 0 0 0 var(--accent-soft);
+  }
+  to {
+    box-shadow: inset 0 -46px 0 0 var(--accent-soft);
+  }
+}
+:root[data-aac-motion='reduce'] .aac-unlockbtn.is-holding {
+  animation: none;
+  background: var(--accent-soft);
 }
 .aac-lock {
   font-size: 11px;
@@ -842,4 +864,16 @@ body {
   color: var(--ink-soft);
   line-height: 1.5;
   margin: 0;
+}
+.aac-kiosk-help {
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.aac-kiosk-help b {
+  color: var(--ink);
 }

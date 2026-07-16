@@ -30,6 +30,7 @@ export type State = {
   settings: Settings
   customCards: Card[] // 보호자가 추가한 카드
   hiddenIds: string[] // 숨긴 기본 카드 id
+  locked: boolean // 사용 잠금(어린이 모드) — 카드 말하기만 가능, 길게 눌러 해제
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -56,6 +57,7 @@ const DEFAULT_STATE: State = {
   settings: DEFAULT_SETTINGS,
   customCards: [],
   hiddenIds: [],
+  locked: false,
 }
 
 function load(): State {
@@ -67,6 +69,7 @@ function load(): State {
       settings: { ...DEFAULT_SETTINGS, ...(parsed.settings ?? {}) },
       customCards: parsed.customCards ?? [],
       hiddenIds: parsed.hiddenIds ?? [],
+      locked: parsed.locked ?? false,
     }
   } catch {
     return DEFAULT_STATE
@@ -120,6 +123,10 @@ export function addCard(card: Omit<Card, 'id'>) {
 
 export function removeCustomCard(id: string) {
   set({ customCards: state.customCards.filter((c) => c.id !== id) })
+}
+
+export function setLocked(locked: boolean) {
+  set({ locked })
 }
 
 export function toggleHidden(id: string) {
