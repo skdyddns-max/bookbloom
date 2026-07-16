@@ -152,13 +152,20 @@ body {
 .aac-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 22px;
+  gap: 6px;
+  font-size: clamp(16px, 4.4vw, 22px);
   font-weight: 800;
   letter-spacing: -0.02em;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.aac-top-actions {
+  flex: 0 0 auto;
+  gap: 6px;
 }
 .aac-logo {
-  font-size: 24px;
+  font-size: clamp(19px, 5vw, 24px);
 }
 .aac-top-actions {
   display: flex;
@@ -169,12 +176,13 @@ body {
   background: var(--surface);
   color: var(--ink);
   border-radius: 14px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   min-height: 46px;
+  white-space: nowrap;
 }
 .aac-iconbtn.is-on {
   background: var(--accent);
@@ -219,18 +227,17 @@ body {
   opacity: 0.6;
   vertical-align: middle;
 }
-/* 아주 좁은 폰: 상단바를 살짝 줄여 겹침 방지 */
+/* 아주 좁은 폰: 로고만 남기고 버튼 공간 확보 */
 @media (max-width: 359px) {
-  .aac-title {
-    font-size: 19px;
+  .aac-title > span:not(.aac-logo) {
+    display: none;
   }
   .aac-logo {
-    font-size: 20px;
+    font-size: 22px;
   }
   .aac-iconbtn {
     padding: 8px 10px;
     font-size: 15px;
-    white-space: nowrap;
   }
 }
 
@@ -250,6 +257,57 @@ body {
   z-index: 60;
   max-width: 90vw;
   text-align: center;
+}
+
+/* 화면 상단 소리 크기 바 — 잠금 중에도 사용 가능 */
+.aac-volumebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin: 2px 4px 10px;
+}
+.aac-volumebar-icon {
+  font-size: 20px;
+  flex: 0 0 auto;
+}
+.aac-volumebar input[type='range'] {
+  flex: 1;
+  height: 36px;
+  accent-color: var(--accent);
+  min-width: 0;
+}
+.aac-volumebar-val {
+  flex: 0 0 auto;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+  min-width: 44px;
+  text-align: right;
+}
+.aac-volumebar-test {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 12px;
+  padding: 8px 12px;
+  min-height: 40px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+@media (max-width: 359px) {
+  .aac-volumebar-test {
+    display: none; /* 아주 좁은 폰에선 슬라이더 공간 우선 */
+  }
+}
+:root[data-aac-contrast='high'] .aac-volumebar {
+  border-width: 2px;
 }
 
 .aac-note {

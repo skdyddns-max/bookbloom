@@ -31,6 +31,7 @@ export default function App() {
   const [editing, setEditing] = useState(false)
   const [hint, setHint] = useState<string | null>(null)
   const hintTimer = useRef<number | null>(null)
+  const [showVolume, setShowVolume] = useState(false)
 
   function showHint(msg: string) {
     setHint(msg)
@@ -154,6 +155,15 @@ export default function App() {
           <span>또박또박</span>
         </div>
         <div className="aac-top-actions">
+          <button
+            className={`aac-iconbtn ${showVolume ? 'is-on' : ''}`}
+            onClick={() => setShowVolume((v) => !v)}
+            aria-label="소리 크기 조절"
+            aria-expanded={showVolume}
+            title="소리 크기"
+          >
+            {settings.volume === 0 ? '🔇' : settings.volume < 0.5 ? '🔉' : '🔊'}
+          </button>
           {locked ? (
             <button
               className={`aac-iconbtn aac-unlockbtn ${unlockHold.holding ? 'is-holding' : ''}`}
@@ -171,7 +181,7 @@ export default function App() {
                 aria-label="사용 잠금 켜기"
                 title="잠그면 카드 말하기만 할 수 있어요"
               >
-                🔓 잠금
+                🔓
               </button>
               {editing ? (
                 <button
@@ -189,7 +199,7 @@ export default function App() {
                   aria-label={lock ? '카드 편집 (길게 눌러요)' : '카드 편집'}
                   title="카드 편집(보호자)"
                 >
-                  ✏️ 편집{lock && <span className="aac-lock" aria-hidden>🔒</span>}
+                  ✏️{lock && <span className="aac-lock" aria-hidden>🔒</span>}
                 </button>
               )}
               <button
@@ -204,6 +214,29 @@ export default function App() {
           )}
         </div>
       </header>
+
+      {showVolume && (
+        <div className="aac-volumebar" role="group" aria-label="소리 크기 조절">
+          <span className="aac-volumebar-icon" aria-hidden>🔉</span>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={settings.volume}
+            onChange={(e) => updateSettings({ volume: Number(e.target.value) })}
+            aria-label="소리 크기"
+          />
+          <span className="aac-volumebar-val">{Math.round(settings.volume * 100)}%</span>
+          <button
+            className="aac-volumebar-test"
+            onClick={() => say('이 크기로 말해요')}
+            aria-label="소리 미리 듣기"
+          >
+            들어보기
+          </button>
+        </div>
+      )}
 
       {!speechSupported && (
         <div className="aac-note">
