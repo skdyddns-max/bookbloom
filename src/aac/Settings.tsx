@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { updateSettings, useAacStore, allSpeakables, type Settings } from './store'
 import { getKoreanVoices, onVoicesChanged } from './speech'
 import {
@@ -8,6 +8,7 @@ import {
   speakEleven,
   type ElevenVoice,
 } from './eleven'
+import { exportBackup, importBackup } from './backup'
 
 const ELEVEN_MODELS: Array<[string, string]> = [
   ['eleven_multilingual_v2', '멀티링구얼 v2 (안정·자연)'],
@@ -192,6 +193,7 @@ export function SettingsSheet({ onClose, onPreview, onOpenHelp }: Props) {
               checked={settings.guardianLock}
               onChange={(v) => updateSettings({ guardianLock: v })}
             />
+            <BackupRow />
             <div className="aac-kiosk-help">
               <b>🔓 잠금 버튼</b>은 화면 위쪽에 있어요. 잠그면 카드 말하기만 할 수 있고,
               🔒를 <b>3초간 길게 누르면</b> 풀려요.
@@ -208,6 +210,63 @@ export function SettingsSheet({ onClose, onPreview, onOpenHelp }: Props) {
           </p>
         </div>
       </div>
+    </div>
+  )
+}
+
+function BackupRow() {
+  const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null)
+
+  async function onExport() {
+    try {
+      await exportBackup()
+      setMsg({ kind: 'ok', text: '백업 파일을 저장했어요. 안전한 곳에 보관해 주세요' })
+    } catch {
+      setMsg({ kind: 'err', text: '백업을 만들지 못했어요' })
+    }
+  }
+
+  async function onImport(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const r = await importBackup(file)
+      setMsg({
+        kind: 'ok',
+        text: `복원했어요 — 만든 카드 ${r.cards}개, 사진 ${r.images}장`,
+      })
+    } catch (err) {
+      setMsg({ kind: 'err', text: err instanceof Error ? err.message : '복원하지 못했어요' })
+    }
+  }
+
+  return (
+    <div className="aac-backup">
+      <div className="aac-eleven-row">
+        <button className="aac-ghostbtn" onClick={onExport}>
+          💾 백업 파일 저장
+        </button>
+        <label className="aac-ghostbtn aac-photo-pick">
+          📂 백업 불러오기
+          <input
+            type="file"
+            accept="application/json,.json"
+            onChange={onImport}
+            style={{ display: 'none' }}
+          />
+        </label>
+      </div>
+      {msg && (
+        <p className={`aac-eleven-status is-${msg.kind}`} aria-live="polite">
+          {msg.text}
+        </p>
+      )}
+      <p className="aac-eleven-help">
+        만든 카드·사진·설정을 파일 하나로 저장해요. 휴대폰을 바꿀 때 새 기기에서
+        ‘백업 불러오기’로 그대로 옮길 수 있어요. (일레븐랩스 키는 보안을 위해 백업에
+        담지 않아요)
+      </p>
     </div>
   )
 }

@@ -141,6 +141,26 @@ export function markHelpSeen() {
   set({ helpSeen: true })
 }
 
+// 백업 복원 — API 키는 백업에 없으므로 이 기기의 기존 키를 유지
+export function restoreFromBackup(payload: {
+  settings?: Partial<Settings>
+  customCards?: Card[]
+  hiddenIds?: string[]
+  usage?: Record<string, number>
+}) {
+  set({
+    settings: {
+      ...state.settings,
+      ...(payload.settings ?? {}),
+      elevenApiKey: state.settings.elevenApiKey,
+    },
+    customCards: payload.customCards ?? [],
+    hiddenIds: payload.hiddenIds ?? [],
+    usage: payload.usage ?? {},
+    helpSeen: true,
+  })
+}
+
 // 카드 사용 기록 — 누를 때마다 +1 (기기에만 저장)
 export function recordUse(id: string) {
   set({ usage: { ...state.usage, [id]: (state.usage[id] ?? 0) + 1 } })
