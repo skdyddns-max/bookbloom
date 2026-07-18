@@ -19,9 +19,10 @@ type Props = {
   onClose: () => void
   onPreview: () => void
   onSettingChange: (patch: Partial<Settings>) => void
+  onOpenHelp?: () => void
 }
 
-export function SettingsSheet({ onClose, onPreview }: Props) {
+export function SettingsSheet({ onClose, onPreview, onOpenHelp }: Props) {
   const { settings } = useAacStore()
   const [voices, setVoices] = useState(getKoreanVoices())
 
@@ -46,6 +47,12 @@ export function SettingsSheet({ onClose, onPreview }: Props) {
         </div>
 
         <div className="aac-sheet-body">
+          {onOpenHelp && (
+            <button className="aac-ghostbtn aac-helpbtn" onClick={onOpenHelp}>
+              📖 사용 방법 보기
+            </button>
+          )}
+
           <section className="aac-set-group">
             <h3>🔊 소리</h3>
             <Slider

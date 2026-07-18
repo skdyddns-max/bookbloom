@@ -33,6 +33,7 @@ export type State = {
   hiddenIds: string[] // 숨긴 기본 카드 id
   locked: boolean // 사용 잠금(어린이 모드) — 카드 말하기만 가능, 길게 눌러 해제
   usage: Record<string, number> // 카드별 누른 횟수 — '자주 쓰는 카드 먼저' 정렬용
+  helpSeen: boolean // 첫 환영 안내를 봤는지 (한 번만 표시)
 }
 
 const DEFAULT_SETTINGS: Settings = {
@@ -62,6 +63,7 @@ const DEFAULT_STATE: State = {
   hiddenIds: [],
   locked: false,
   usage: {},
+  helpSeen: false,
 }
 
 function load(): State {
@@ -75,6 +77,7 @@ function load(): State {
       hiddenIds: parsed.hiddenIds ?? [],
       locked: parsed.locked ?? false,
       usage: parsed.usage ?? {},
+      helpSeen: parsed.helpSeen ?? false,
     }
   } catch {
     return DEFAULT_STATE
@@ -132,6 +135,10 @@ export function removeCustomCard(id: string) {
 
 export function setLocked(locked: boolean) {
   set({ locked })
+}
+
+export function markHelpSeen() {
+  set({ helpSeen: true })
 }
 
 // 카드 사용 기록 — 누를 때마다 +1 (기기에만 저장)
