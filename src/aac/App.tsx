@@ -8,6 +8,7 @@ import {
   updateSettings,
   setLocked,
   recordUse,
+  markHelpSeen,
   useAacStore,
   visibleCards,
   allCards,
@@ -22,9 +23,11 @@ import {
   newImageId,
 } from './images'
 import { SettingsSheet } from './Settings'
+import { HelpSheet, Welcome } from './Help'
 
 export default function App() {
-  const { settings, hiddenIds, customCards, locked } = useAacStore()
+  const { settings, hiddenIds, customCards, locked, helpSeen } = useAacStore()
+  const [showHelp, setShowHelp] = useState(false)
   const [categoryId, setCategoryId] = useState(CATEGORIES[0].id)
   const [sentence, setSentence] = useState<Card[]>([])
   const [showSettings, setShowSettings] = useState(false)
@@ -349,6 +352,22 @@ export default function App() {
           onClose={() => setShowSettings(false)}
           onPreview={() => say('안녕하세요. 이렇게 말해요.')}
           onSettingChange={(patch) => updateSettings(patch)}
+          onOpenHelp={() => {
+            setShowSettings(false)
+            setShowHelp(true)
+          }}
+        />
+      )}
+
+      {showHelp && <HelpSheet onClose={() => setShowHelp(false)} />}
+
+      {!helpSeen && !showHelp && (
+        <Welcome
+          onStart={() => markHelpSeen()}
+          onOpenHelp={() => {
+            markHelpSeen()
+            setShowHelp(true)
+          }}
         />
       )}
 

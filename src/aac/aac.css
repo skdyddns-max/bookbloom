@@ -923,6 +923,76 @@ body {
   line-height: 1.5;
   margin: 0;
 }
+/* ---------- 사용 방법(매뉴얼) ---------- */
+.aac-help section {
+  margin-bottom: 4px;
+}
+.aac-help h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 800;
+}
+.aac-help p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.aac-help p b {
+  color: var(--ink);
+}
+.aac-help-close {
+  align-self: center;
+  min-width: 160px;
+}
+.aac-helpbtn {
+  width: 100%;
+}
+
+/* 첫 실행 환영 화면 */
+.aac-welcome {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 34, 30, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 70;
+  padding: 24px;
+}
+.aac-welcome-card {
+  background: var(--bg);
+  border-radius: 24px;
+  padding: 32px 24px 24px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+.aac-welcome-logo {
+  font-size: 52px;
+  margin-bottom: 8px;
+}
+.aac-welcome-card h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 800;
+}
+.aac-welcome-card p {
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+.aac-welcome-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aac-welcome-btns .aac-primarybtn,
+.aac-welcome-btns .aac-ghostbtn {
+  width: 100%;
+}
+
 .aac-kiosk-help {
   font-size: 14px;
   color: var(--ink-soft);
