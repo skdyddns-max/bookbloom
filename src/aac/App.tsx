@@ -152,7 +152,7 @@ export default function App() {
       <header className="aac-top">
         <div className="aac-title">
           <span className="aac-logo" aria-hidden>🗣️</span>
-          <span>또박또박</span>
+          <span>마음말</span>
         </div>
         <div className="aac-top-actions">
           <button

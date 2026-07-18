@@ -17,7 +17,7 @@
 - `src/lib/group.ts` — 모임(방코드·피드·함께읽기) API. Supabase 미설정 시 비활성
 - `src/screens/` — Home(스트릭·목표·읽는중) / Library / Search / BookDetail / Stats(뱃지·캘린더·도넛·결산) / Group(모임) / Settings
 
-## 독립 모듈 — 또박또박 (감각 친화 AAC)
+## 독립 모듈 — 마음말 (감각 친화 AAC)
 - 독서앱과 별개인 보완대체의사소통(AAC) 도구. 진입점 `aac.html`(멀티 페이지, vite `rollupOptions.input`) → 배포 시 `/aac.html`
 - `src/aac/` — main / App(카드 그리드·문장 스트립·편집) / Settings(감각 조절 시트) / data(기본 어휘) / store(localStorage `bookbloom_aac_v1`) / speech(Web Speech API TTS) / eleven(ElevenLabs TTS + IndexedDB 캐시) / images(사용자 사진 카드 — IndexedDB `aac_images`, 업로드 시 512px JPEG 축소) / hold(보호자 잠금 길게 누르기) / aac.css
 - 카드는 이모지 또는 **사용자 사진**(보호자가 편집 모드에서 업로드) 표시. 사진은 IndexedDB 저장·카드엔 id만 보관, 삭제 시 이미지도 정리
