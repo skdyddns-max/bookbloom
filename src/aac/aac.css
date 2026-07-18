@@ -993,6 +993,12 @@ body {
   width: 100%;
 }
 
+.aac-backup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .aac-kiosk-help {
   font-size: 14px;
   color: var(--ink-soft);

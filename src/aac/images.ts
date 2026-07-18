@@ -32,7 +32,7 @@ export async function putImage(id: string, blob: Blob): Promise<void> {
   })
 }
 
-async function getImage(id: string): Promise<Blob | undefined> {
+export async function getImage(id: string): Promise<Blob | undefined> {
   try {
     const db = await openDb()
     return await new Promise((resolve) => {
