@@ -55,9 +55,9 @@ export const DEFAULT_CARDS: Card[] = [
   { id: 'water', label: '물', emoji: '💧', speak: '물 주세요', categoryId: 'food' },
   { id: 'milk', label: '우유', emoji: '🥛', speak: '우유 주세요', categoryId: 'food' },
   { id: 'rice', label: '밥', emoji: '🍚', speak: '밥 먹을래요', categoryId: 'food' },
-  { id: 'bread', label: '빵', emoji: '🍞', categoryId: 'food' },
-  { id: 'fruit', label: '과일', emoji: '🍎', categoryId: 'food' },
-  { id: 'snack', label: '과자', emoji: '🍪', categoryId: 'food' },
+  { id: 'bread', label: '빵', emoji: '🍞', speak: '빵 먹고 싶어요', categoryId: 'food' },
+  { id: 'fruit', label: '과일', emoji: '🍎', speak: '과일 먹고 싶어요', categoryId: 'food' },
+  { id: 'snack', label: '과자', emoji: '🍪', speak: '과자 먹고 싶어요', categoryId: 'food' },
   { id: 'hungry', label: '배고파', emoji: '🍽️', speak: '배고파요', categoryId: 'food' },
   { id: 'thirsty', label: '목말라', emoji: '🥤', speak: '목말라요', categoryId: 'food' },
 
@@ -82,10 +82,10 @@ export const DEFAULT_CARDS: Card[] = [
 
   // 장소
   { id: 'home', label: '집', emoji: '🏠', speak: '집에 가고 싶어요', categoryId: 'place' },
-  { id: 'school', label: '학교', emoji: '🏫', categoryId: 'place' },
-  { id: 'room', label: '내 방', emoji: '🚪', categoryId: 'place' },
-  { id: 'hospital', label: '병원', emoji: '🏥', categoryId: 'place' },
-  { id: 'park', label: '공원', emoji: '🏞️', categoryId: 'place' },
+  { id: 'school', label: '학교', emoji: '🏫', speak: '학교에 가고 싶어요', categoryId: 'place' },
+  { id: 'room', label: '내 방', emoji: '🚪', speak: '내 방에 가고 싶어요', categoryId: 'place' },
+  { id: 'hospital', label: '병원', emoji: '🏥', speak: '병원에 가고 싶어요', categoryId: 'place' },
+  { id: 'park', label: '공원', emoji: '🏞️', speak: '공원에 가고 싶어요', categoryId: 'place' },
 
   // 몸(불편·아픔)
   { id: 'hurt', label: '아파', emoji: '🤕', speak: '아파요', categoryId: 'body' },
